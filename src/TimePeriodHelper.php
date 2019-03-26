@@ -1,5 +1,5 @@
 <?php
-namespace marshung\helper;
+namespace marsapp\helper\timeperiod;
 
 /**
  * Time Period Helper
@@ -9,9 +9,10 @@ namespace marshung\helper;
  * 2. If it is hour/minute/second, the end point is usually not included, for example, 8 o'clock to 9 o'clock is 1 hour.
  * 3. If it is a day/month/year, it usually includes an end point, for example, January to March is 3 months.
  * 4. When processing, assume that the data format is correct. If necessary, you need to call the verification function to verify the data.
- *
+ * 
+ * @version 0.1.0
  * @author Mars Hung <tfaredxj@gmail.com>
- * @see https://github.com/marshung24/helper#TimePeriodHelper
+ * @see https://github.com/marshung24/TimePeriodHelper
  */
 class TimePeriodHelper
 {

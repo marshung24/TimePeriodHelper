@@ -1,13 +1,43 @@
 <?php
-$file = scandir('.');
+include_once '../vendor/autoload.php';
 
-$count = 0;
-foreach ($file as $f) {
-    // 如果是目錄且不是.開頭
-    if ((is_dir($f)) && (! preg_match("/^\..*/", $f))) {
-        $count++;
-        
-        echo $count.' => <a href="'.$f.'">'.$f."</a>";
-        echo "<br>"; 
-    }
-}
+use marsapp\helper\timeperiod\TimePeriodHelper;
+use marsapp\dev\tools\DevTools;
+use marsapp\helper\test\timeperiod\Test;
+
+echo '<pre>';
+
+// Test Sort
+Test::testSort();
+
+// Test Union
+Test::testUnion();
+
+// Test Diff
+Test::testDiff();
+
+// Test Intersect
+Test::testIntersect();
+
+// Test IsOverlap
+Test::testIsOverlap();
+
+// Test Fill
+Test::testFill();
+
+// Test Gap
+Test::testGap();
+
+// Test Time
+Test::testTime();
+
+// Test Format
+Test::testFormat();
+
+// Test Validate
+Test::testValidate();
+
+// Test Filter
+Test::testFilter();
+
+

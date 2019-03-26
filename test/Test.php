@@ -1,8 +1,8 @@
 <?php
-namespace marshung\helperTest\TimePeriodHelper;
+namespace marsapp\helper\test\timeperiod;
 
-use marshung\helper\TimePeriodHelper;
-use marshung\helperTest\tools\DevTools;
+use marsapp\helper\timeperiod\TimePeriodHelper;
+use marsapp\dev\tools\DevTools;
 
 /**
  * Test for TimePeriodHelper

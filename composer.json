@@ -1,7 +1,7 @@
 {
-    "name": "marshung/helper",
-    "description": "PHP Helpers liberaries",
-    "homepage": "https://github.com/marshung24/io",
+    "name": "marsapp/timeperiodhelper",
+    "description": "TimePeriodHelper library provides functions such as sorting, union, difference, intersection, and calculation time.",
+    "homepage": "https://github.com/marshung24/TimePeriodHelper",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -11,9 +11,12 @@
         }
     ],
     "autoload": {
-        "psr-4": { "marshung\\helper\\": "src", "marshung\\helperTest\\": "test" }
+        "psr-4": { "marsapp\\helper\\timeperiod\\": "src", "marsapp\\helper\\test\\timeperiod\\": "test"}
     },
     "minimum-stability": "stable",
+    "require-dev": {
+        "marsapp/devtools": "*"
+    },
     "require": {
     }
 }
