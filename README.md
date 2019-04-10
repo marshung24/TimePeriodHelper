@@ -23,6 +23,10 @@ The time period processing library provides functions such as sorting, union, di
     - [format()](#format)
     - [validate()](#validate)
     - [filter()](#filter)
+    - [setUnit()](#setUnit)
+    - [getUnit()](#getUnit)
+    - [setFilterDatetime()](#setFilterDatetime)
+    - [getFilterDatetime()](#getFilterDatetime)
 
 # [Installation](#Outline)
 ## Composer Install
@@ -556,6 +560,7 @@ $templete = [
     'string',
     ['2019-01-04 08:00:00','2019-01-04 05:00:00'],
     ['2019-01-04 19:00:00','2019-01-04 19:00:00'],
+    ['2019-01-04 24:00:00','2019-01-05 24:00:00'],
 ];
 
 //TimePeriodHelper::setFilterDatetime(false);
@@ -568,6 +573,7 @@ $result:
 ```php
 $result = [
     ['2019-01-04 02:00:00','2019-01-04 03:00:00'],
+    ['2019-01-05 00:00:00','2019-01-06 00:00:00'],
 ];
 ```
 

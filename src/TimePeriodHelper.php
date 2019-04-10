@@ -10,7 +10,7 @@ namespace marsapp\helper\timeperiod;
  * 3. If it is a day/month/year, it usually includes an end point, for example, January to March is 3 months.
  * 4. When processing, assume that the data format is correct. If necessary, you need to call the verification function to verify the data.
  * 
- * @version 0.2.0
+ * @version 0.2.1
  * @author Mars Hung <tfaredxj@gmail.com>
  * @see https://github.com/marshung24/TimePeriodHelper
  */
@@ -569,7 +569,8 @@ class TimePeriodHelper
     /**
      * Remove invalid time period
      * 
-     * Verify format, size, start/end time, and remove invalid.
+     * 1. Verify format, size, start/end time, and remove invalid.
+     * 2. time carry problem processing, e.g. 2019-01-01 24:00:00 => 2019-01-02 00:00:00
      * 
      * @param array $timePeriods
      * @param bool $exception Whether an exception is returned when an error occurs.(default false)
@@ -606,6 +607,17 @@ class TimePeriodHelper
                     throw new \Exception('Time periods format error !', 400);
                 unset($timePeriods[$k]);
                 continue;
+            }
+            
+            // Time carry
+            $timeLen = strlen($tp[0]);
+            if ($timeLen >= 13) {
+                if (substr($tp[0], 11, 2) == '24') {
+                    $timePeriods[$k][0] = self::extendTime($timePeriods[$k][0], 0);
+                }
+                if (substr($tp[01], 11, 2) == '24') {
+                    $timePeriods[$k][1] = self::extendTime($timePeriods[$k][1], 0);
+                }
             }
         }
         
