@@ -9,7 +9,20 @@ The time period processing library provides functions such as sorting, union, di
 - [Installation](#Installation)
 - [Usage](#Usage)
   - [TimePeriodHelper](#TimePeriodHelper)
-
+    - [sort()](#sort)
+    - [union()](#union)
+    - [diff()](#diff)
+    - [intersect()](#intersect)
+    - [isOverlap()](#isOverlap)
+    - [fill()](#fill)
+    - [gap()](#gap)
+    - [time()](#time)
+    - [cut()](#cut)
+    - [extend()](#extend)
+    - [shorten()](#shorten)
+    - [format()](#format)
+    - [validate()](#validate)
+    - [filter()](#filter)
 
 # [Installation](#Outline)
 ## Composer Install
@@ -302,24 +315,165 @@ $templete = [
 
 TimePeriodHelper::setUnit('hour');
 $resultH = TimePeriodHelper::time($templete);
+// $resultH = 11;
 
 $resultM = TimePeriodHelper::setUnit('minutes')->time($templete);
+// $resultM = 660;
 
 TimePeriodHelper::setUnit('s');
 $resultS = TimePeriodHelper::time($templete);
+// $resultS = 39600;
 ```
 > Unit:  
 > - hour, hours, h  
 > - minute, minutes, m  
 > - second, seconds, s
 
-$result:
-```php
-$resultH = 11;
-$resultM = 660;
-$resultS = 39600;
-```
 
+### cut()
+Cut the time period of the specified length of time
+> You can specify the smallest unit (from setUnit())
+
+```php
+cut(Array $timePeriods, Int $time, $extension = false) : array
+```
+> If you can be sure that the input value is already collated(Executed union())
+
+Example :
+```php
+$templete = [
+    ['2019-01-04 08:00:00','2019-01-04 12:00:00']
+];
+
+$resultM = TimePeriodHelper::setUnit('minutes')->cut($templete, '30', false);
+// $resultM = [
+//     ['2019-01-04 08:00:00','2019-01-04 08:30:00']
+// ];
+
+TimePeriodHelper::setUnit('hour');
+$resultH1 = TimePeriodHelper::cut($templete, '30', false);
+// $resultH1 = [
+//     ['2019-01-04 08:00:00','2019-01-04 12:00:00']
+// ];
+
+$resultH2 = TimePeriodHelper::setUnit('hour')->cut($templete, '30', true);
+// $resultH2 = [
+//     ['2019-01-04 08:00:00','2019-01-05 14:00:00']
+// ];
+```
+> Unit:  
+> - hour, hours, h  
+> - minute, minutes, m  
+> - second, seconds, s
+
+
+### extend()
+Increase the time period of the specified length of time after the last time period
+> You can specify the smallest unit (from setUnit())
+
+```php
+extend(Array $timePeriods, Int $time, $interval = 0) : array
+```
+> If you can be sure that the input value is already collated(Executed union())
+
+Example :
+```php
+$templete = [
+    ['2019-01-04 08:00:00','2019-01-04 12:00:00']
+];
+
+$resultM1 = TimePeriodHelper::setUnit('minutes')->extend($templete, 30, 0);
+// $resultM1 = [
+//     ['2019-01-04 08:00:00','2019-01-04 12:30:00']
+// ];
+
+$resultM2 = TimePeriodHelper::setUnit('minutes')->extend($templete, 30, 40);
+// $resultM2 = [
+//     ['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 12:40:00','2019-01-04 13:10:00']
+// ];
+
+TimePeriodHelper::setUnit('hour');
+$resultH1 = TimePeriodHelper::extend($templete, 2, 0);
+// $resultH1 = [
+//     ['2019-01-04 08:00:00','2019-01-04 14:00:00']
+// ];
+
+$resultH2 = TimePeriodHelper::setUnit('hour')->extend($templete, 2, 1);
+// $resultH2 = [
+//     ['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']
+// ];
+
+```
+> Unit:  
+> - hour, hours, h  
+> - minute, minutes, m  
+> - second, seconds, s
+
+
+### shorten()
+Shorten the specified length of time from behind
+> You can specify the smallest unit (from setUnit())
+
+```php
+shorten(Array $timePeriods, Int $time, $crossperiod = true) : array
+```
+> If you can be sure that the input value is already collated(Executed union())
+
+Example :
+```php
+$templete = [
+    ['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']
+];
+
+TimePeriodHelper::setUnit('minutes');
+$resultM1 = TimePeriodHelper::shorten($templete, 30, true);
+// $resultM1 = [
+//     ['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 14:30:00']
+// ];
+
+$resultH1 = TimePeriodHelper::setUnit('hour')->shorten($templete, 1, true);
+// $resultH1 = [
+//     ['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 14:00:00']
+// ];
+
+$resultH2 = TimePeriodHelper::setUnit('hour')->shorten($templete, 2, true);
+// $resultH2 = [
+//     ['2019-01-04 08:00:00','2019-01-04 12:00:00']
+// ];
+
+
+$resultH3 = TimePeriodHelper::setUnit('hour')->shorten($templete, 5, true);
+// $resultH3 = [
+//     ['2019-01-04 08:00:00','2019-01-04 09:00:00']
+// ];
+
+$resultH4 = TimePeriodHelper::setUnit('hour')->shorten($templete, 10, true);
+// $resultH4 = [];
+
+$resultH5 = TimePeriodHelper::setUnit('hour')->shorten($templete, 1, false);
+// $resultH5 = [
+//     ['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 14:00:00']
+// ];
+
+$resultH6 = TimePeriodHelper::setUnit('hour')->shorten($templete, 2, false);
+// $resultH6 = [
+//     ['2019-01-04 08:00:00','2019-01-04 12:00:00']
+// ];
+
+$resultH7 = TimePeriodHelper::setUnit('hour')->shorten($templete, 5, false);
+// $resultH7 = [
+//     ['2019-01-04 08:00:00','2019-01-04 12:00:00']
+// ];
+
+$resultH8 = TimePeriodHelper::setUnit('hour')->shorten($templete, 10, false);
+// $resultH8 = [
+//     ['2019-01-04 08:00:00','2019-01-04 12:00:00']
+// ];
+```
+> Unit:  
+> - hour, hours, h  
+> - minute, minutes, m  
+> - second, seconds, s
 
 ### format()
 Transform format

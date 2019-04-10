@@ -10,7 +10,7 @@ namespace marsapp\helper\timeperiod;
  * 3. If it is a day/month/year, it usually includes an end point, for example, January to March is 3 months.
  * 4. When processing, assume that the data format is correct. If necessary, you need to call the verification function to verify the data.
  * 
- * @version 0.1.0
+ * @version 0.2.0
  * @author Mars Hung <tfaredxj@gmail.com>
  * @see https://github.com/marshung24/TimePeriodHelper
  */
@@ -384,6 +384,157 @@ class TimePeriodHelper
     }
 
     /**
+     * Cut the time period of the specified length of time
+     *
+     * You can specify the smallest unit (from setUnit())
+     *
+     * @param array $timePeriods            
+     * @param number $time
+     *            Specified length of time
+     * @param string $extension
+     *            If the specified time is long, whether to extend the time period.(default:false)
+     * @return array
+     */
+    public static function cut(Array $timePeriods, $time, $extension = false)
+    {
+        // Subject is empty, do nothing
+        if (empty($timePeriods)) {
+            return [];
+        }
+        
+        // Convert time by unit
+        $time = self::convTimeByUnit($time);
+        
+        $opt = [];
+        $timeLen = 0;
+        foreach ($timePeriods as $k => $tp) {
+            // Calculation time
+            $tlen = strtotime($tp[1]) - strtotime($tp[0]);
+            
+            // Judging the length of time
+            if ($timeLen + $tlen <= $time) {
+                // Within limits
+                $opt[] = $tp;
+                $timeLen = $timeLen + $tlen;
+            } else {
+                // Outside the limits
+                $lastTime = $time - $timeLen;
+                if ($lastTime > 0) {
+                    $tps = $tp[0];
+                    $tpe = self::extendTime($tps, $lastTime);
+                    $opt[] = [$tps, $tpe];
+                }
+                $timeLen = $time;
+                break;
+            }
+        }
+        
+        // Extend the last time period
+        if ($extension && ($timeLen < $time)) {
+            $eTime = $time - $timeLen;
+            $eIdx = sizeof($opt) - 1;
+            
+            $tps = $opt[$eIdx][0];
+            $tpe = self::extendTime($opt[$eIdx][1], $eTime);
+            $opt[$eIdx] = [$tps, $tpe];
+        }
+        
+        return $opt;
+    }
+
+    /**
+     * Increase the time period of the specified length of time after the last time period
+     *
+     * You can specify the smallest unit (from setUnit())
+     *
+     * @param array $timePeriods            
+     * @param number $time
+     *            Specified length of time (default uint:second)
+     * @param number $interval
+     *            Interval with existing time period
+     * @return array
+     */
+    public static function extend(Array $timePeriods, $time, $interval = 0)
+    {
+        // Subject is empty, do nothing
+        if (empty($timePeriods)) {
+            return [];
+        }
+        
+        // Convert time by unit
+        $time = self::convTimeByUnit($time);
+        $interval = self::convTimeByUnit($interval);
+        
+        // last time period index
+        $eIdx = sizeof($timePeriods) - 1;
+        
+        if (! $interval) {
+            // No gap, Directly extend the end time
+            $timePeriods[$eIdx][1] = self::extendTime($timePeriods[$eIdx][1], $time);
+        } else {
+            // Has gap
+            $tps = self::extendTime($timePeriods[$eIdx][1], $interval);
+            $tpe = self::extendTime($tps, $time);
+            if ($tps != $tpe) {
+                $timePeriods[] = [$tps, $tpe];
+            }
+            
+        }
+        
+        return $timePeriods;
+    }
+
+    /**
+     * Shorten the specified length of time from behind
+     *
+     * You can specify the smallest unit (from setUnit())
+     *
+     * @param array $timePeriods            
+     * @param number $time
+     *            Specified length of time (default uint:second)
+     * @param bool $crossperiod
+     *            Whether to shorten across time
+     * @return array
+     */
+    public static function shorten(Array $timePeriods, $time, $crossperiod = true)
+    {
+        // Subject is empty, do nothing
+        if (empty($timePeriods)) {
+            return [];
+        }
+        
+        // Convert time by unit
+        $time = self::convTimeByUnit($time);
+        
+        // last time period index
+        $eIdx = sizeof($timePeriods) - 1;
+        
+        for ($i = $eIdx; $i>=0; $i--) {
+            $tps = $timePeriods[$i][0];
+            $tpe = $timePeriods[$i][1];
+            $tTime = strtotime($tpe) - strtotime($tps);
+            
+            if ($tTime <= $time) {
+                // Not enough, unset this timeperiod
+                unset($timePeriods[$i]);
+                $time -= $tTime;
+            } else {
+                // Enough, shorten end time.
+                $timePeriods[$i][1] = self::extendTime($timePeriods[$i][0], $tTime-$time);
+                $time = 0;
+                break;
+            }
+            
+            // End or No cross-period
+            if ($time <= 0 || ! $crossperiod) {
+                break;
+            }
+        }
+        
+        return $timePeriods;
+    }
+    
+    /**
      * Transform format
      * 
      * @param array $timePeriods
@@ -564,6 +715,7 @@ class TimePeriodHelper
     }
     
     /**
+     * Time format convert
      * 
      * @param string $datetime
      * @param string $unit Time unit, if default,use self::$_options setting
@@ -582,4 +734,39 @@ class TimePeriodHelper
         return $datetime;
     }
     
+    /**
+     * Extend time
+     * 
+     * @param string $datetime
+     * @param number $timeLen 
+     * @return string
+     */
+    protected static function extendTime(String $datetime, $timeLen)
+    {
+        $tout = date('Y-m-d H:i:s', strtotime($datetime) + $timeLen);
+        return substr($tout, 0, strlen($datetime));
+    }
+    
+    /**
+     * Convert time by unit
+     * 
+     * @param number $time
+     * @return number
+     */
+    protected static function convTimeByUnit($time)
+    {
+        // Git time unit
+        $timeUnit = self::getUnit('time');
+        // Convert
+        switch ($timeUnit) {
+            case 'minute':
+                $time = $time * 60;
+                break;
+            case 'hour':
+                $time = $time * 3600;
+                break;
+        }
+        
+        return $time;
+    }
 }

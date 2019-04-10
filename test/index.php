@@ -31,6 +31,15 @@ Test::testGap();
 // Test Time
 Test::testTime();
 
+// Test Cut
+Test::testCut();
+
+// Test Extend
+Test::testExtend();
+
+// Test Shorten
+Test::testShorten();
+
 // Test Format
 Test::testFormat();
 
@@ -39,5 +48,10 @@ Test::testValidate();
 
 // Test Filter
 Test::testFilter();
+
+
+
+
+
 
 
