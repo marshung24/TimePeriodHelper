@@ -6,14 +6,18 @@ The time period processing library provides functions such as sorting, union, di
 [![Latest Stable Version](https://poser.pugx.org/marsapp/timeperiodhelper/v/stable)](https://packagist.org/packages/marsapp/timeperiodhelper) [![Total Downloads](https://poser.pugx.org/marsapp/timeperiodhelper/downloads)](https://packagist.org/packages/marsapp/timeperiodhelper) [![Latest Unstable Version](https://poser.pugx.org/marsapp/timeperiodhelper/v/unstable)](https://packagist.org/packages/marsapp/timeperiodhelper) [![License](https://poser.pugx.org/marsapp/timeperiodhelper/license)](https://packagist.org/packages/marsapp/timeperiodhelper)
 
 # Outline
-- [Installation](#Installation)
-- [Usage](#Usage)
-  - [TimePeriodHelper](#TimePeriodHelper)
+- [Installation](#installation)
+  - [Composer Install](#composer-install)
+  - [Include](#include)
+- [Usage](#usage)
+  - [Note](#note)
+  - [Example](#example)
+  - [Operation Function](#operation-function)
     - [sort()](#sort)
     - [union()](#union)
     - [diff()](#diff)
     - [intersect()](#intersect)
-    - [isOverlap()](#isOverlap)
+    - [isOverlap()](#isoverlap)
     - [fill()](#fill)
     - [gap()](#gap)
     - [time()](#time)
@@ -23,30 +27,29 @@ The time period processing library provides functions such as sorting, union, di
     - [format()](#format)
     - [validate()](#validate)
     - [filter()](#filter)
-    - [setUnit()](#setUnit)
-    - [getUnit()](#getUnit)
-    - [setFilterDatetime()](#setFilterDatetime)
-    - [getFilterDatetime()](#getFilterDatetime)
-    - [setSortOut()](#setSortOut)
-    - [getSortOut()](#getSortOut)
+  - [Options Function](#options-function)
+    - [setUnit()](#setunit)
+    - [getUnit()](#getunit)
+    - [setFilterDatetime()](#setfilterdatetime)
+    - [getFilterDatetime()](#getfilterdatetime)
+    - [setSortOut()](#setsortout)
+    - [getSortOut()](#getsortout)
 
-# [Installation](#Outline)
-## Composer Install
+# [Installation](#outline)
+## [Composer Install](#outline)
 ```
 # composer require marsapp/timeperiodhelper
 ```
 
-## Include
+## [Include](#outline)
 Include composer autoloader before use.
 ```php
 require __PATH__ . "vendor/autoload.php";
 ```
 
-# [Usage](#Outline)
+# [Usage](#outline)
 
-## [TimePeriodHelper](#Outline)
-
-### Note
+## [Note](#outline)
 1. Format: $timePeriods = [[$startDatetime1, $endDatetime1], [$startDatetime2, $endDatetime2], ...];
    - $Datetime = Y-m-d H:i:s ; Y-m-d H:i:00 ; Y-m-d H:00:00 ;
 2. If it is hour/minute/second, the end point is usually not included, for example, 8 o'clock to 9 o'clock is 1 hour.
@@ -59,7 +62,7 @@ require __PATH__ . "vendor/autoload.php";
    > - Good data mastering is a good programmer  
    > - Data should be organized during the validation and processing phases. Then use trusted data as a logical operation
 
-### [Usage:](#Outline)
+## [Example](#outline)
 ```php
 // Namespace use
 use marsapp\helper\timeperiod\TimePeriodHelper;
@@ -76,13 +79,16 @@ $workTimeperiods = [
 $workTimeperiods = TimePeriodHelper::filter($workTimeperiods);
 // Sort out $timeperiods to make sure the content and sorting are correct.
 $workTimeperiods = TimePeriodHelper::union($workTimeperiods);
-// When you achieve the two operations described above, you can turn off Auto sort out (TimePeriodHelper::setSortOut(false)) to improve performance.
+// When you achieve the two operations described above, you can turn off Auto sort out (TimePeriodHelper::setSortOut(false)) to improve performance. (Global)
 TimePeriodHelper::setSortOut(false);
 
-// Maybe you want change time format
-$workTimeperiods = TimePeriodHelper::setUnit('minute')->format($workTimeperiods);
+// Set time unit (Global)
+TimePeriodHelper::setUnit('minute');
 
-// Now:
+// Maybe you want change time format
+$workTimeperiods = TimePeriodHelper::format($workTimeperiods);
+
+// Now value :
 // $workTimeperiods = [ ['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 17:00:00'] ];
 
 // Now you can execute the function you want to execute. Like gap()
@@ -99,7 +105,9 @@ $gapTime = TimePeriodHelper::time($gapTimeperiods);
 > setSortOut(), setUnit() Scope: Global
 > Data should be organized during the validation and processing phases. Then use trusted data as a logical operation.
 
-### [sort()](#Outline)
+## [Operation Function](#outline)
+
+### [sort()](#outline)
 Sort time periods (Order by ASC)
 > 1. When sorting, sort the start time first, if the start time is the same, then sort the end time
 > 2. Sort Priority: Start Time => End Time
@@ -124,29 +132,26 @@ $templete = [
     ['2019-01-04 10:00:00','2019-01-04 18:00:00'],
     ['2019-01-04 11:00:00','2019-01-04 15:00:00']
 ];
+
 $result = TimePeriodHelper::sort($templete);
-```
-
-Sort $result:
-```php
-$result = [
-    ['2019-01-04 07:00:00','2019-01-04 12:00:00'],
-    ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
-    ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
-    ['2019-01-04 09:00:00','2019-01-04 12:00:00'],
-    ['2019-01-04 10:00:00','2019-01-04 16:00:00'],
-    ['2019-01-04 10:00:00','2019-01-04 18:00:00'],
-    ['2019-01-04 11:00:00','2019-01-04 15:00:00'],
-    ['2019-01-04 11:00:00','2019-01-04 18:00:00'],
-    ['2019-01-04 12:00:00','2019-01-04 17:00:00'],
-    ['2019-01-04 12:00:00','2019-01-04 18:00:00'],
-    ['2019-01-04 12:00:00','2019-01-04 18:00:00'],
-    ['2019-01-04 12:00:00','2019-01-04 19:00:00']
-];
+//$result = [
+//    ['2019-01-04 07:00:00','2019-01-04 12:00:00'],
+//    ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
+//    ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
+//    ['2019-01-04 09:00:00','2019-01-04 12:00:00'],
+//    ['2019-01-04 10:00:00','2019-01-04 16:00:00'],
+//    ['2019-01-04 10:00:00','2019-01-04 18:00:00'],
+//    ['2019-01-04 11:00:00','2019-01-04 15:00:00'],
+//    ['2019-01-04 11:00:00','2019-01-04 18:00:00'],
+//    ['2019-01-04 12:00:00','2019-01-04 17:00:00'],
+//    ['2019-01-04 12:00:00','2019-01-04 18:00:00'],
+//    ['2019-01-04 12:00:00','2019-01-04 18:00:00'],
+//    ['2019-01-04 12:00:00','2019-01-04 19:00:00']
+//];
 ```
 
 
-### [union()](#Outline)
+### [union()](#outline)
 Union one or more time periods
 > 1. Sort and merge one or more time periods with contacts
 > 2. TimePeriodHelper::union($timePeriods1, $timePeriods2, $timePeriods3, ......);
@@ -157,7 +162,6 @@ TimePeriodHelper::union(Array $timePeriods1, [Array $timePeriods2, [Array $timeP
 
 Example :
 ```php
-
 $templete1 = [
     ['2019-01-04 13:00:00','2019-01-04 15:00:00'],
     ['2019-01-04 10:00:00','2019-01-04 12:00:00'],
@@ -172,29 +176,24 @@ $templete2 = [
 ];
 // Sort and merge one timeperiods
 $result1 = TimePeriodHelper::union($templete1);
+//$result1 = [
+//    ['2019-01-04 10:00:00','2019-01-04 12:00:00'],
+//    ['2019-01-04 13:00:00','2019-01-04 18:00:00'],
+//    ['2019-01-04 19:00:00','2019-01-04 22:00:00']
+//];
 
 // Sort and merge two timeperiods
 $result2 = TimePeriodHelper::union($templete1, $templete2);
-```
-
-$result:
-```php
-$result1 = [
-    ['2019-01-04 10:00:00','2019-01-04 12:00:00'],
-    ['2019-01-04 13:00:00','2019-01-04 18:00:00'],
-    ['2019-01-04 19:00:00','2019-01-04 22:00:00']
-];
-
-$result2 = [
-    ['2019-01-04 08:00:00','2019-01-04 09:00:00'],
-    ['2019-01-04 10:00:00','2019-01-04 12:00:00'],
-    ['2019-01-04 13:00:00','2019-01-04 18:00:00'],
-    ['2019-01-04 19:00:00','2019-01-04 23:00:00']
-];
+//$result2 = [
+//    ['2019-01-04 08:00:00','2019-01-04 09:00:00'],
+//    ['2019-01-04 10:00:00','2019-01-04 12:00:00'],
+//    ['2019-01-04 13:00:00','2019-01-04 18:00:00'],
+//    ['2019-01-04 19:00:00','2019-01-04 23:00:00']
+//];
 ```
 
 
-### [diff()](#Outline)
+### [diff()](#outline)
 Computes the difference of time periods
 > 1. Compares $timePeriods1 against $timePeriods2 and returns the values in $timePeriods1 that are not present in $timePeriods2.
 > 2. e.g. TimePeriodHelper::diff($timePeriods1, $timePeriods2);
@@ -234,7 +233,7 @@ $result = TimePeriodHelper::diff($templete1, $templete2);
 ```
 
 
-### [intersect()](#Outline)
+### [intersect()](#outline)
 Computes the intersection of time periods
 > 1. e.g. TimePeriodHelper::intersect($timePeriods1, $timePeriods2);
 > 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
@@ -272,7 +271,7 @@ $result = TimePeriodHelper::intersect($templete1, $templete2);
 ```
 
 
-### [isOverlap()](#Outline)
+### [isOverlap()](#outline)
 Time period is overlap
 > Determine if there is overlap between the two time periods
 
@@ -293,7 +292,7 @@ $result = TimePeriodHelper::isOverlap($templete1, $templete2);
 ```
 
 
-### [fill()](#Outline)
+### [fill()](#outline)
 Fill time periods
 > Leaving only the first start time and the last end time
 
@@ -316,7 +315,7 @@ $result = TimePeriodHelper::fill($templete);
 ```
 
 
-### [gap()](#Outline)
+### [gap()](#outline)
 Get gap time periods of multiple sets of time periods
 > 1. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
 
@@ -352,7 +351,7 @@ $result = TimePeriodHelper::gap($templete);
 ```
 
 
-### [time()](#Outline)
+### [time()](#outline)
 Calculation period total time
 > 1. You can specify the smallest unit (from setUnit())
 > 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
@@ -403,7 +402,7 @@ $resultS = TimePeriodHelper::time($templete);
 > - second, seconds, s
 
 
-### [cut()](#Outline)
+### [cut()](#outline)
 Cut the time period of the specified length of time
 > 1. You can specify the smallest unit (from setUnit())
 > 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
@@ -453,7 +452,7 @@ $resultH2 = TimePeriodHelper::setUnit('hour')->cut($templete, '30', true);
 > - second, seconds, s
 
 
-### [extend()](#Outline)
+### [extend()](#outline)
 Increase the time period of the specified length of time after the last time period
 > 1. You can specify the smallest unit (from setUnit())
 > 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
@@ -509,7 +508,7 @@ $resultH2 = TimePeriodHelper::setUnit('hour')->extend($templete, 2, 1);
 > - second, seconds, s
 
 
-### [shorten()](#Outline)
+### [shorten()](#outline)
 Shorten the specified length of time from behind
 > 1. You can specify the smallest unit (from setUnit())
 > 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
@@ -589,7 +588,7 @@ $resultH8 = TimePeriodHelper::setUnit('hour')->shorten($templete, 10, false);
 > - minute, minutes, m  
 > - second, seconds, s
 
-### [format()](#Outline)
+### [format()](#outline)
 Transform format
 ```php
 format(Array $timePeriods, $unit = 'default') : array
@@ -601,22 +600,25 @@ Example :
 $templete = [
     ['2019-01-04 08:11:11','2019-01-04 12:22:22'],
     ['2019-01-04 04:33:33','2019-01-04 05:44:44'],
+    ['2019-01-04 05:55','2019-01-04 06:55'],
+    ['2019-01-04 07','2019-01-04 08'],
 ];
 
+// Set time uint
 TimePeriodHelper::setUnit('minute');
+
+// Convert format
 $result = TimePeriodHelper::format($templete);
+//$result = [
+//    ['2019-01-04 08:11:00','2019-01-04 12:22:00'],
+//    ['2019-01-04 04:33:00','2019-01-04 05:44:00'],
+//    ['2019-01-04 05:55:00','2019-01-04 06:55:00'],
+//    ['2019-01-04 07:00:00','2019-01-04 08:00:00'],
+//];
 ```
 
-$result:
-```php
-$result = [
-    ['2019-01-04 08:11:00','2019-01-04 12:22:00'],
-    ['2019-01-04 04:33:00','2019-01-04 05:44:00'],
-];
-```
 
-
-### [validate()](#Outline)
+### [validate()](#outline)
 Validate time period
 > Verify format, size, start/end time.  
 > Format: Y-m-d H:i:s
@@ -642,15 +644,11 @@ try {
 } catch (\Exception $e) {
     $result = false;
 }
-```
-
-$result:
-```php
-$result = false;
+//$result = false;
 ```
 
 
-### [filter()](#Outline)
+### [filter()](#outline)
 Remove invalid time period
 > Verify format, size, start/end time, and remove invalid.
 
@@ -673,22 +671,22 @@ $templete = [
     ['2019-01-04 24:00:00','2019-01-05 24:00:00'],
 ];
 
+// Set whether need to filter the datetime
 //TimePeriodHelper::setFilterDatetime(false);
+
+// Filter time period
 $result = TimePeriodHelper::filter($templete);
+//$result = [
+//    ['2019-01-04 02:00:00','2019-01-04 03:00:00'],
+//    ['2019-01-05 00:00:00','2019-01-06 00:00:00'],
+//];
 ```
-> If you do not want to filter the datetime format, set it to setFilterDatetime(false).  
-> Maybe the time format is not Y-m-d H:i:s (such as Y-m-d H:i), you need to close it.
+> - If you do not want to filter the datetime format, set it to setFilterDatetime(false).  
+> - Maybe the time format is not Y-m-d H:i:s (such as Y-m-d H:i), you need to close it.
 
-$result:
-```php
-$result = [
-    ['2019-01-04 02:00:00','2019-01-04 03:00:00'],
-    ['2019-01-05 00:00:00','2019-01-06 00:00:00'],
-];
-```
+## [Options Function](#outline)
 
-
-### [setUnit()](#Outline)
+### [setUnit()](#outline)
 Specify the minimum unit of calculation
 > 1. Scope: Global
 > 2. hour,minute,second
@@ -707,16 +705,14 @@ TimePeriodHelper::setUnit('minute', 'format');
 
 // Get unit
 $result1 = TimePeriodHelper::getUnit('time');
+//$result1 = 'hour';
+
 $result2 = TimePeriodHelper::getUnit('format');
+//$result2 = 'minute';
 ```
 
-$result:
-```php
-$result1 = 'hour';
-$result2 = 'minute';
-```
 
-### [getUnit()](#Outline)
+### [getUnit()](#outline)
 Get the unit used by the specified function
 ```php
 getUnit(string $target) : string
@@ -731,14 +727,12 @@ TimePeriodHelper::setUnit('minute', 'format');
 
 // Get unit
 $result1 = TimePeriodHelper::getUnit('time');
+//$result1 = 'hour';
+
 $result2 = TimePeriodHelper::getUnit('format');
+//$result2 = 'minute';
 ```
 
-$result:
-```php
-$result1 = 'hour';
-$result2 = 'minute';
-```
 
 ### setFilterDatetime()
 If neet filter datetime : Set option
@@ -754,19 +748,15 @@ Example :
 ```php
 TimePeriodHelper::setFilterDatetime(false);
 $result1 = TimePeriodHelper::getFilterDatetime();
+//$result1 = false;
 
 TimePeriodHelper::setFilterDatetime(true);
 $result2 = TimePeriodHelper::getFilterDatetime();
+//$result1 = true;
 ```
 
-$result:
-```php
-$result1 = false;
 
-$result1 = true;
-```
-
-### [getFilterDatetime()](#Outline)
+### [getFilterDatetime()](#outline)
 If neet filter datetime : Get option
 ```php
 getFilterDatetime() : bool
@@ -776,19 +766,15 @@ Example :
 ```php
 TimePeriodHelper::setFilterDatetime(false);
 $result1 = TimePeriodHelper::getFilterDatetime();
+//$result1 = false;
 
 TimePeriodHelper::setFilterDatetime(true);
 $result2 = TimePeriodHelper::getFilterDatetime();
+//$result1 = true;
 ```
 
-$result:
-```php
-$result1 = false;
 
-$result1 = true;
-```
-
-### [setSortOut()](#Outline)
+### [setSortOut()](#outline)
 Auto sort out $timePeriods : Set option
 > 1. Before the function is processed, union() will be used to organize $timePeriods format.
 > 2. Scope: Global
@@ -801,19 +787,15 @@ Example :
 ```php
 TimePeriodHelper::setSortOut(false);
 $result1 = TimePeriodHelper::getSortOut();
+//$result1 = false;
 
 TimePeriodHelper::setSortOut(true);
 $result2 = TimePeriodHelper::getSortOut();
+//$result1 = true;
 ```
 
-$result:
-```php
-$result1 = false;
 
-$result1 = true;
-```
-
-### [getSortOut()](#Outline)
+### [getSortOut()](#outline)
 Auto sort out $timePeriods : Get option
 
 ```php
@@ -824,15 +806,10 @@ Example :
 ```php
 TimePeriodHelper::setSortOut(false);
 $result1 = TimePeriodHelper::getSortOut();
+//$result1 = false;
 
 TimePeriodHelper::setSortOut(true);
 $result2 = TimePeriodHelper::getSortOut();
-```
-
-$result:
-```php
-$result1 = false;
-
-$result1 = true;
+//$result1 = true;
 ```
 

@@ -53,9 +53,9 @@ class TimePeriodHelper
     
     
     /**
-     * *********************************************
-     * ************** Public Function **************
-     * *********************************************
+     * ************************************************
+     * ************** Operation Function **************
+     * ************************************************
      */
     
     /**
@@ -699,7 +699,6 @@ class TimePeriodHelper
         }
         
         /* Setting */
-        
         if ($target != 'all') {
             self::$_options['unit'][$target] = $unit;
         } else {
@@ -733,6 +732,7 @@ class TimePeriodHelper
      * 1. Scope: Global
      * 2. If you do not want to filter the datetime format, set it to false.  
      * 3. Maybe the time format is not Y-m-d H:i:s (such as Y-m-d H:i), you need to close it.
+     * 4. Effect function: filter(), validate()
      * 
      * @param bool $bool
      * @return $this
@@ -757,8 +757,8 @@ class TimePeriodHelper
     /**
      * Auto sort out $timePeriods : Set option
      *
-     * 1. Before the function is processed, union() will be used to organize $timePeriods format.
-     * 2. Scope: Global
+     * 1. Scope: Global
+     * 2. Before the function is processed, union() will be used to organize $timePeriods format.
      * 
      * @param bool $bool default true
      * @return $this
@@ -808,7 +808,7 @@ class TimePeriodHelper
      */
     protected static function timeConv(string $datetime, $unit = 'default')
     {
-        $unit = ! isset(self::$_options['unitMap'][$unit]) ? self::$_options['unit']['time'] : self::$_options['unitMap'][$unit];
+        $unit = ! isset(self::$_options['unitMap'][$unit]) ? self::$_options['unit']['format'] : self::$_options['unitMap'][$unit];
         
         // fill format
         $strlen = strlen($datetime);
