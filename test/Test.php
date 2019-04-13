@@ -72,11 +72,13 @@ class Test
         $expected = self::testDiffExpected();
         
         // The same
+        TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::diff($templete1, $templete2);
         $theSame1 = DevTools::theSame($result, $expected, $detail);
         
         // Need Different
-        $result = TimePeriodHelper::diff($templete1, $templete2, false);
+        TimePeriodHelper::setSortOut(false);
+        $result = TimePeriodHelper::diff($templete1, $templete2);
         $theSame2 = DevTools::theSame($result, $expected, $detail);
         
         $theSame = $theSame1 && ! $theSame2;
@@ -96,11 +98,13 @@ class Test
         $expected = self::testIntersectExpected();
         
         // The same
+        TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::intersect($templete1, $templete2);
         $theSame1 = DevTools::theSame($result, $expected, $detail);
         
         // Need Different
-        $result = TimePeriodHelper::intersect($templete1, $templete2, false);
+        TimePeriodHelper::setSortOut(false);
+        $result = TimePeriodHelper::intersect($templete1, $templete2);
         $theSame2 = DevTools::theSame($result, $expected, $detail);
         
         $theSame = $theSame1 && ! $theSame2;
@@ -155,11 +159,13 @@ class Test
         $expected = self::testGapExpected();
         
         // The same
+        TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::gap($templete);
         $theSame1 = DevTools::theSame($result, $expected, $detail);
         
         // Need Different
-        $result = TimePeriodHelper::gap($templete, false);
+        TimePeriodHelper::setSortOut(false);
+        $result = TimePeriodHelper::gap($templete);
         $theSame2 = DevTools::theSame($result, $expected, $detail);
         
         $theSame = $theSame1 && ! $theSame2;
@@ -177,21 +183,27 @@ class Test
         $templete = self::testTimeData();
         $expected = self::testTimeExpected();
         
-        // The same
+        // The same, Auto sorting out $templete
+        TimePeriodHelper::setSortOut(true);
         TimePeriodHelper::setUnit('second');
         $result = TimePeriodHelper::time($templete);
         $theSame1 = DevTools::theSame($result, $expected, $detail);
         
-        // Need Different
-        $result = TimePeriodHelper::time($templete, false);
+        // Need Different, No sorting out $templete
+        TimePeriodHelper::setSortOut(false);
+        $result = TimePeriodHelper::time($templete);
         $theSame2 = DevTools::theSame($result, $expected, $detail);
         
-        // The same
+        // The same, Auto sorting out $templete
+        TimePeriodHelper::setSortOut(true);
         TimePeriodHelper::setUnit('minutes');
         $result = TimePeriodHelper::time($templete);
         $theSame3 = DevTools::theSame($result, floor($expected / 60), $detail);
         
-        // The same
+        // The same, Manually sorting out $templete
+        TimePeriodHelper::setSortOut(false);
+        $templete = TimePeriodHelper::union($templete);
+        
         TimePeriodHelper::setUnit('h');
         $result = TimePeriodHelper::time($templete);
         $theSame4 = DevTools::theSame($result, floor($expected / 3600), $detail);
@@ -212,6 +224,11 @@ class Test
         $expecteds = self::testCutExpected();
         
         $theSame = true;
+        $theSame1 = true;
+        $theSame2 = true;
+        
+        // The same, Auto sorting out $templete
+        TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
@@ -219,8 +236,21 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','cut'], $templete);
-            $theSame = $theSame && DevTools::theSame($result, $expecteds[$k], $detail);
+            $theSame1 = $theSame1 && DevTools::theSame($result, $expecteds[$k], $detail);
         }
+        
+        // Need Different, No sorting out $templete
+        TimePeriodHelper::setSortOut(false);
+        foreach ($templetes as $k => $templete) {
+            // Set time uint
+            TimePeriodHelper::setUnit($templete[3]);
+            unset($templete[3]);
+            
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','cut'], $templete);
+            $theSame2 = $theSame2 && DevTools::theSame($result, $expecteds[$k], $detail);
+        }
+        
+        $theSame = $theSame1 && ! $theSame2;
         
         DevTools::isTheSame($theSame, __FUNCTION__);
     }
@@ -236,6 +266,11 @@ class Test
         $expecteds = self::testExtendExpected();
         
         $theSame = true;
+        $theSame1 = true;
+        $theSame2 = true;
+        
+        // The same, Auto sorting out $templete
+        TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
@@ -243,8 +278,22 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','extend'], $templete);
-            $theSame = $theSame && DevTools::theSame($result, $expecteds[$k], $detail);
+            $theSame1 = $theSame1 && DevTools::theSame($result, $expecteds[$k], $detail);
         }
+        
+        // Need Different, No sorting out $templete
+        TimePeriodHelper::setSortOut(false);
+        foreach ($templetes as $k => $templete) {
+            // Set time uint
+            TimePeriodHelper::setUnit($templete[3]);
+            unset($templete[3]);
+            
+            // The same
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','extend'], $templete);
+            $theSame2 = $theSame2 && DevTools::theSame($result, $expecteds[$k], $detail);
+        }
+        
+        $theSame = $theSame1 && ! $theSame2;
         
         DevTools::isTheSame($theSame, __FUNCTION__);
     }
@@ -260,6 +309,11 @@ class Test
         $expecteds = self::testShortenExpected();
         
         $theSame = true;
+        $theSame1 = true;
+        $theSame2 = true;
+        
+        // The same, Auto sorting out $templete
+        TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
@@ -267,8 +321,22 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','shorten'], $templete);
-            $theSame = $theSame && DevTools::theSame($result, $expecteds[$k], $detail);
+            $theSame1 = $theSame1 && DevTools::theSame($result, $expecteds[$k], $detail);
         }
+        
+        // Need Different, No sorting out $templete
+        TimePeriodHelper::setSortOut(false);
+        foreach ($templetes as $k => $templete) {
+            // Set time uint
+            TimePeriodHelper::setUnit($templete[3]);
+            unset($templete[3]);
+            
+            // The same
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','shorten'], $templete);
+            $theSame2 = $theSame2 && DevTools::theSame($result, $expecteds[$k], $detail);
+        }
+        
+        $theSame = $theSame1 && ! $theSame2;
         
         DevTools::isTheSame($theSame, __FUNCTION__);
     }
@@ -815,15 +883,17 @@ class Test
     public static function testCutData()
     {
         return [
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00']], '30', false, 'second'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00']], '30', false, 'minute'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00']], '30', false, 'hour'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00']], '30', true, 'hour'],
+            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']], '30', false, 'second'],
+            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']], '30', false, 'minute'],
+            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']], '30', false, 'hour'],
+            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']], '30', true, 'hour'],
             
-            [[['2019-01-04 08:00','2019-01-04 12:00']], '30', false, 'second'],
-            [[['2019-01-04 08:00','2019-01-04 12:00']], '30', false, 'minute'],
-            [[['2019-01-04 08:00','2019-01-04 12:00']], '30', false, 'hour'],
-            [[['2019-01-04 08:00','2019-01-04 12:00']], '30', true, 'hour'],
+            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 16:00']], '30', false, 'second'],
+            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 16:00']], '30', false, 'minute'],
+            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 16:00']], '30', false, 'hour'],
+            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 16:00']], '30', true, 'hour'],
+            // Test auto sort out by  union()
+            [[['2019-01-04 09:00:00','2019-01-04 10:00:00'], ['2019-01-04 08:00:00','2019-01-04 09:00:00'], ['2019-01-04 09:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']], '30', false, 'hour'],
         ];
     }
     
@@ -836,13 +906,15 @@ class Test
         return [
             [['2019-01-04 08:00:00','2019-01-04 08:00:30']],
             [['2019-01-04 08:00:00','2019-01-04 08:30:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
-            [['2019-01-04 08:00:00','2019-01-05 14:00:00']],
+            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']],
+            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-05 15:00:00']],
             
-            [['2019-01-04 08:00','2019-01-04 08:00']],
+            [],
             [['2019-01-04 08:00','2019-01-04 08:30']],
-            [['2019-01-04 08:00','2019-01-04 12:00']],
-            [['2019-01-04 08:00','2019-01-05 14:00']],
+            [['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 16:00']],
+            [['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-05 15:00']],
+            // Test auto sort out by  union()
+            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']],
         ];
     }
     
@@ -866,6 +938,8 @@ class Test
             [[['2019-01-04 08:00','2019-01-04 12:00']], '30', 40, 'second'],
             [[['2019-01-04 08:00','2019-01-04 12:00']], '30', 40, 'minute'],
             [[['2019-01-04 08:00','2019-01-04 12:00']], '2', 1, 'hour'],
+            // Test auto sort out by  union()
+            [[['2019-01-04 09:00:00','2019-01-04 10:00:00'], ['2019-01-04 08:00:00','2019-01-04 10:00:00'], ['2019-01-04 09:00:00','2019-01-04 12:00:00']], '30', 0, 'minute'],
         ];
     }
     
@@ -889,6 +963,8 @@ class Test
             [['2019-01-04 08:00','2019-01-04 12:00']],
             [['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 12:40','2019-01-04 13:10']],
             [['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']],
+            // Test auto sort out by  union()
+            [['2019-01-04 08:00:00','2019-01-04 12:30:00']],
         ];
     }
     
@@ -926,6 +1002,8 @@ class Test
             [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '2', false, 'hour'],
             [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '5', false, 'hour'],
             [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '10', false, 'hour'],
+            // Test auto sort out by  union()
+            [[['2019-01-04 09:00:00','2019-01-04 12:00:00'], ['2019-01-04 08:00:00','2019-01-04 10:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '5', true, 'hour'],
         ];
     }
     
@@ -963,6 +1041,8 @@ class Test
             [['2019-01-04 08:00','2019-01-04 12:00']],
             [['2019-01-04 08:00','2019-01-04 12:00']],
             [['2019-01-04 08:00','2019-01-04 12:00']],
+            // Test auto sort out by  union()
+            [['2019-01-04 08:00:00','2019-01-04 09:00:00']],
         ];
     }
     
@@ -975,6 +1055,8 @@ class Test
         return [
             ['2019-01-04 08:11:11','2019-01-04 12:22:22'],
             ['2019-01-04 04:33:33','2019-01-04 05:44:44'],
+            ['2019-01-04 05:55','2019-01-04 06:55'],
+            ['2019-01-04 07','2019-01-04 08'],
         ];
     }
     
@@ -987,6 +1069,8 @@ class Test
         return [
             ['2019-01-04 08:11:11','2019-01-04 12:22:22'],
             ['2019-01-04 04:33:33','2019-01-04 05:44:44'],
+            ['2019-01-04 05:55:00','2019-01-04 06:55:00'],
+            ['2019-01-04 07:00:00','2019-01-04 08:00:00'],
         ];
     }
     
@@ -999,6 +1083,8 @@ class Test
         return [
             ['2019-01-04 08:11:00','2019-01-04 12:22:00'],
             ['2019-01-04 04:33:00','2019-01-04 05:44:00'],
+            ['2019-01-04 05:55:00','2019-01-04 06:55:00'],
+            ['2019-01-04 07:00:00','2019-01-04 08:00:00'],
         ];
     }
     
@@ -1011,6 +1097,8 @@ class Test
         return [
             ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
             ['2019-01-04 04:00:00','2019-01-04 05:00:00'],
+            ['2019-01-04 05:00:00','2019-01-04 06:00:00'],
+            ['2019-01-04 07:00:00','2019-01-04 08:00:00'],
         ];
     }
     

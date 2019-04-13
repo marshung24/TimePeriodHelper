@@ -3,14 +3,19 @@ namespace marsapp\helper\timeperiod;
 
 /**
  * Time Period Helper
- *
+ * 
+ * Note:
  * 1. Format: $timePeriods = [[$startDatetime1, $endDatetime1], [$startDatetime2, $endDatetime2], ...];
  * - $Datetime = Y-m-d H:i:s ; Y-m-d H:i:00 ; Y-m-d H:00:00 ;
  * 2. If it is hour/minute/second, the end point is usually not included, for example, 8 o'clock to 9 o'clock is 1 hour.
  * 3. If it is a day/month/year, it usually includes an end point, for example, January to March is 3 months.
- * 4. When processing, assume that the data format is correct. If necessary, you need to call the verification function to verify the data.
+ * 4. When processing, assume that the $timePeriods format is correct. If necessary, you need to call the verification function to verify the data.
+ * 5. Ensure performance by keeping the $timePeriods format correct:
+ * - a. When getting the raw $timePeriods, sort out it by filter(), union().
+ * - b. Handle $timePeriods using only the functions provided by TimePeriodHelper (Will not break the format, sort)
+ * - c. When you achieve the two operations described above, you can turn off auto sort out (TimePeriodHelper::setSortOut(false)) to improve performance.
  * 
- * @version 0.2.1
+ * @version 0.3.0
  * @author Mars Hung <tfaredxj@gmail.com>
  * @see https://github.com/marshung24/TimePeriodHelper
  */
@@ -42,6 +47,8 @@ class TimePeriodHelper
         'filter' => [
             'isDatetime' => true
         ],
+        // Default sort out $timePeriods
+        'sortOut' => true,
     ];
     
     
@@ -54,8 +61,8 @@ class TimePeriodHelper
     /**
      * Sort time periods (Order by ASC)
      * 
-     * When sorting, sort the start time first, if the start time is the same, then sort the end time
-     * Sort Priority: Start Time => End Time
+     * 1. When sorting, sort the start time first, if the start time is the same, then sort the end time
+     * 2. Sort Priority: Start Time => End Time
      * 
      * @param array $timePeriods
      * @return array
@@ -81,9 +88,8 @@ class TimePeriodHelper
     /**
      * Union one or more time periods
      * 
-     * Sort and merge one or more time periods with contacts
-     * 
-     * TimePeriodHelper::union($timePeriods1, $timePeriods2, $timePeriods3, ......);
+     * 1. Sort and merge one or more time periods with contacts
+     * 2. TimePeriodHelper::union($timePeriods1, $timePeriods2, $timePeriods3, ......);
      * 
      * @param array $timePeriods
      * @return array
@@ -119,16 +125,15 @@ class TimePeriodHelper
     /**
      * Computes the difference of time periods
      * 
-     * Compares $timePeriods1 against $timePeriods2 and returns the values in $timePeriods1 that are not present in $timePeriods2.
-     * 
-     * TimePeriodHelper::diff($timePeriods1, $timePeriods2, $sortOut);
+     * 1. Compares $timePeriods1 against $timePeriods2 and returns the values in $timePeriods1 that are not present in $timePeriods2.
+     * 2. e.g. TimePeriodHelper::diff($timePeriods1, $timePeriods2);
+     * 3. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
      * 
      * @param array $timePeriods1
      * @param array $timePeriods2
-     * @param bool $sortOut Whether the input needs to be rearranged, default true
      * @return array
      */
-    public static function diff(Array $timePeriods1, Array $timePeriods2, $sortOut = true)
+    public static function diff(Array $timePeriods1, Array $timePeriods2)
     {
         /*** Arguments prepare ***/
         // Subject or pattern is empty, do nothing
@@ -137,7 +142,7 @@ class TimePeriodHelper
         }
         
         // Data sorting out
-        if ($sortOut) {
+        if (self::getSortOut()) {
             $timePeriods1 = self::union($timePeriods1);
             $timePeriods2 = self::union($timePeriods2);
         }
@@ -184,12 +189,14 @@ class TimePeriodHelper
     /**
      * Computes the intersection of time periods
      * 
+     * 1. e.g. TimePeriodHelper::intersect($timePeriods1, $timePeriods2);
+     * 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
+     * 
      * @param array $timePeriods1
      * @param array $timePeriods2
-     * @param bool $sortOut Whether the input needs to be rearranged, default true
      * @return array
      */
-    public static function intersect(Array $timePeriods1, Array $timePeriods2, $sortOut = true)
+    public static function intersect(Array $timePeriods1, Array $timePeriods2)
     {
         // Subject or pattern is empty, do nothing
         if (empty($timePeriods1) || empty($timePeriods2)) {
@@ -197,7 +204,7 @@ class TimePeriodHelper
         }
         
         // Data sorting out
-        if ($sortOut) {
+        if (self::getSortOut()) {
             $timePeriods1 = self::union($timePeriods1);
             $timePeriods2 = self::union($timePeriods2);
         }
@@ -241,10 +248,9 @@ class TimePeriodHelper
     /**
      * Time period is overlap
      * 
-     * Determine if there is overlap between the two time periods
-     * 
-     * Only when there is no intersection, no data is needed.
-     * Logic is similar to intersect.
+     * 1. Determine if there is overlap between the two time periods
+     * 2. Only when there is no intersection, no data is needed.
+     * 3. Logic is similar to intersect.
      *  
      * @param array $timePeriods1
      * @param array $timePeriods2
@@ -317,11 +323,12 @@ class TimePeriodHelper
     /**
      * Get gap time periods of multiple sets of time periods
      * 
+     * 1. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
+     * 
      * @param array $timePeriods
-     * @param bool $sortOut Whether the input needs to be rearranged, default true
      * @return array
      */
-    public static function gap(Array $timePeriods, $sortOut = true)
+    public static function gap(Array $timePeriods)
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
@@ -329,7 +336,7 @@ class TimePeriodHelper
         }
         
         // Data sorting out
-        if ($sortOut) {
+        if (self::getSortOut()) {
             $timePeriods = self::union($timePeriods);
         }
         
@@ -345,14 +352,17 @@ class TimePeriodHelper
 
     /**
      * Calculation period total time
-     * 
-     * You can specify the smallest unit (from setUnit())
-     * 
-     * @param array $timePeriods
-     * @param bool $sortOut Whether the input needs to be rearranged, default true
+     *
+     * 1. You can specify the smallest unit (from setUnit())
+     * 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
+     * 3. approximation: chop off
+     *
+     * @param array $timePeriods            
+     * @param int $precision
+     *            Optional decimal places for the decimal point
      * @return number
      */
-    public static function time(Array $timePeriods, $sortOut = true)
+    public static function time(Array $timePeriods, $precision = 0)
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
@@ -360,7 +370,7 @@ class TimePeriodHelper
         }
         
         // Data sorting out
-        if ($sortOut) {
+        if (self::getSortOut()) {
             $timePeriods = self::union($timePeriods);
         }
         
@@ -373,10 +383,20 @@ class TimePeriodHelper
         // Time unit convert
         switch (self::getUnit('time')) {
             case 'minute':
-                $time = floor($time / 60);
+                if ($precision > 0) {
+                    $pow = pow(10, (int)$precision);
+                    $time = ((int) ($time / 60 * $pow)) / $pow;
+                } else {
+                    $time = (int) ($time / 60);
+                }
                 break;
             case 'hour':
-                $time = floor($time / 3600);
+                if ($precision > 0) {
+                    $pow = pow(10, (int)$precision);
+                    $time = ((int) ($time / 3600 * $pow)) / $pow;
+                } else {
+                    $time = (int) ($time / 3600);
+                }
                 break;
         }
         
@@ -386,8 +406,9 @@ class TimePeriodHelper
     /**
      * Cut the time period of the specified length of time
      *
-     * You can specify the smallest unit (from setUnit())
-     *
+     * 1. You can specify the smallest unit (from setUnit())
+     * 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
+     * 
      * @param array $timePeriods            
      * @param number $time
      *            Specified length of time
@@ -400,6 +421,11 @@ class TimePeriodHelper
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
             return [];
+        }
+        
+        // Data sorting out
+        if (self::getSortOut()) {
+            $timePeriods = self::union($timePeriods);
         }
         
         // Convert time by unit
@@ -422,7 +448,9 @@ class TimePeriodHelper
                 if ($lastTime > 0) {
                     $tps = $tp[0];
                     $tpe = self::extendTime($tps, $lastTime);
-                    $opt[] = [$tps, $tpe];
+                    if ($tps != $tpe) {
+                        $opt[] = [$tps, $tpe];
+                    }
                 }
                 $timeLen = $time;
                 break;
@@ -436,7 +464,9 @@ class TimePeriodHelper
             
             $tps = $opt[$eIdx][0];
             $tpe = self::extendTime($opt[$eIdx][1], $eTime);
-            $opt[$eIdx] = [$tps, $tpe];
+            if ($tps != $tpe) {
+                $opt[$eIdx] = [$tps, $tpe];
+            }
         }
         
         return $opt;
@@ -445,8 +475,9 @@ class TimePeriodHelper
     /**
      * Increase the time period of the specified length of time after the last time period
      *
-     * You can specify the smallest unit (from setUnit())
-     *
+     * 1. You can specify the smallest unit (from setUnit())
+     * 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
+     * 
      * @param array $timePeriods            
      * @param number $time
      *            Specified length of time (default uint:second)
@@ -459,6 +490,11 @@ class TimePeriodHelper
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
             return [];
+        }
+        
+        // Data sorting out
+        if (self::getSortOut()) {
+            $timePeriods = self::union($timePeriods);
         }
         
         // Convert time by unit
@@ -487,8 +523,9 @@ class TimePeriodHelper
     /**
      * Shorten the specified length of time from behind
      *
-     * You can specify the smallest unit (from setUnit())
-     *
+     * 1. You can specify the smallest unit (from setUnit())
+     * 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
+     * 
      * @param array $timePeriods            
      * @param number $time
      *            Specified length of time (default uint:second)
@@ -501,6 +538,11 @@ class TimePeriodHelper
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
             return [];
+        }
+        
+        // Data sorting out
+        if (self::getSortOut()) {
+            $timePeriods = self::union($timePeriods);
         }
         
         // Convert time by unit
@@ -602,7 +644,7 @@ class TimePeriodHelper
                 continue;
             }
             // filter time format
-            if (self::$_options['filter']['isDatetime'] && (! self::isDatetime($tp[0]) || ! self::isDatetime($tp[1]))) {
+            if (self::getFilterDatetime() && (! self::isDatetime($tp[0]) || ! self::isDatetime($tp[1]))) {
                 if ($exception)
                     throw new \Exception('Time periods format error !', 400);
                 unset($timePeriods[$k]);
@@ -635,7 +677,8 @@ class TimePeriodHelper
     /**
      * Specify the minimum unit of calculation
      * 
-     * hour,minute,second
+     * 1. Scope: Global
+     * 2. hour,minute,second
      * 
      * @param string $unit
      * @param string $target Specify function,or all functions
@@ -687,6 +730,10 @@ class TimePeriodHelper
     /**
      * If neet filter datetime : Set option
      * 
+     * 1. Scope: Global
+     * 2. If you do not want to filter the datetime format, set it to false.  
+     * 3. Maybe the time format is not Y-m-d H:i:s (such as Y-m-d H:i), you need to close it.
+     * 
      * @param bool $bool
      * @return $this
      */
@@ -705,6 +752,32 @@ class TimePeriodHelper
     public static function getFilterDatetime()
     {
         return self::$_options['filter']['isDatetime'];
+    }
+    
+    /**
+     * Auto sort out $timePeriods : Set option
+     *
+     * 1. Before the function is processed, union() will be used to organize $timePeriods format.
+     * 2. Scope: Global
+     * 
+     * @param bool $bool default true
+     * @return $this
+     */
+    public static function setSortOut($bool = true)
+    {
+        self::$_options['sortOut'] = !!$bool;
+        
+        return new static();
+    }
+    
+    /**
+     * Auto sort out $timePeriods : Get option
+     *
+     * @return bool
+     */
+    public static function getSortOut()
+    {
+        return self::$_options['sortOut'];
     }
     
     /**
@@ -737,6 +810,30 @@ class TimePeriodHelper
     {
         $unit = ! isset(self::$_options['unitMap'][$unit]) ? self::$_options['unit']['time'] : self::$_options['unitMap'][$unit];
         
+        // fill format
+        $strlen = strlen($datetime);
+        switch ($strlen) {
+            case 10:
+                $datetime .= ' ';
+            case 11:
+                $datetime .= '0';
+            case 12:
+                $datetime .= '0';
+            case 13:
+                $datetime .= ':';
+            case 14:
+                $datetime .= '0';
+            case 15:
+                $datetime .= '0';
+            case 16:
+                $datetime .= ':';
+            case 17:
+                $datetime .= '0';
+            case 18:
+                $datetime .= '0';
+        }
+        
+        // replace
         if ($unit == 'minute') {
             $datetime = substr_replace($datetime, "00", 17, 2);
         } elseif ($unit == 'hour') {
