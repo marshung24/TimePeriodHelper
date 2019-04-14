@@ -115,6 +115,11 @@ Sort time periods (Order by ASC)
 ```php
 sort(Array $timePeriods) : array
 ```
+> Parameters
+> - $timePeriods: Time period being processed. array
+> 
+> Return Values
+> - Returns the resulting array.
 
 Example :
 ```php
@@ -159,6 +164,11 @@ Union one or more time periods
 ```php
 TimePeriodHelper::union(Array $timePeriods1, [Array $timePeriods2, [Array $timePeriods3, ......]]) : array
 ```
+> Parameters
+> - $timePeriods: Time period being processed. array
+> 
+> Return Values
+> - Returns the resulting array.
 
 Example :
 ```php
@@ -200,8 +210,15 @@ Computes the difference of time periods
 > 3. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
 
 ```php
-diff(Array $timePeriods1, Array $timePeriods2) : array
+diff(Array $timePeriods1, Array $timePeriods2, $sortOut = 'default') : array
 ```
+> Parameters
+> - $timePeriods1: The time periods to compare from, array
+> - $timePeriods2: An time periods to compare against, array
+> - $sortOut: Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
+> 
+> Return Values
+> - Returns the resulting array.
 
 Example :
 ```php
@@ -213,7 +230,6 @@ $templete2 = [
     ['2019-01-04 07:30:00','2019-01-04 07:40:00'],
 ];
 
-
 /*** Note 5. Ensure performance by keeping the $timePeriods format correct. ***/
 // 1. Set Auto sorting out (Scope: Global. Default, no need to set)
 //TimePeriodHelper::setSortOut(true);
@@ -222,7 +238,6 @@ $templete2 = [
 TimePeriodHelper::setSortOut(false);
 $templete1 = TimePeriodHelper::union($templete1);
 $templete2 = TimePeriodHelper::union($templete2);
-
 
 
 $result = TimePeriodHelper::diff($templete1, $templete2);
@@ -239,8 +254,15 @@ Computes the intersection of time periods
 > 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
 
 ```php
-intersect(Array $timePeriods1, Array $timePeriods2) : array
+intersect(Array $timePeriods1, Array $timePeriods2, $sortOut = 'default') : array
 ```
+> Parameters
+> - $timePeriods1: The time periods to compare from, array
+> - $timePeriods2: An time periods to compare against, array
+> - $sortOut: Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
+> 
+> Return Values
+> - Returns the resulting array.
 
 Example :
 ```php
@@ -252,7 +274,6 @@ $templete2 = [
     ['2019-01-04 07:30:00','2019-01-04 07:40:00'],
 ];
 
-
 /*** Note 5. Ensure performance by keeping the $timePeriods format correct. ***/
 // 1. Set Auto sorting out (Scope: Global. Default, no need to set)
 //TimePeriodHelper::setSortOut(true);
@@ -261,7 +282,6 @@ $templete2 = [
 TimePeriodHelper::setSortOut(false);
 $templete1 = TimePeriodHelper::union($templete1);
 $templete2 = TimePeriodHelper::union($templete2);
-
 
 
 $result = TimePeriodHelper::intersect($templete1, $templete2);
@@ -278,6 +298,12 @@ Time period is overlap
 ```php
 isOverlap(Array $timePeriods1, Array $timePeriods2) : bool
 ```
+> Parameters
+> - $timePeriods1: The time periods to compare from, array
+> - $timePeriods2: An time periods to compare against, array
+> 
+> Return Values
+> - Returns the resulting bool.
 
 Example :
 ```php
@@ -299,6 +325,11 @@ Fill time periods
 ```php
 fill(Array $timePeriods) : array
 ```
+> Parameters
+> - $timePeriods: Time period being processed. array
+> 
+> Return Values
+> - Returns the resulting array.
 
 Example :
 ```php
@@ -320,8 +351,14 @@ Get gap time periods of multiple sets of time periods
 > 1. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
 
 ```php
-gap(Array $timePeriods) : array
+gap(Array $timePeriods, $sortOut = 'default') : array
 ```
+> Parameters
+> - $timePeriods: Time period being processed. array
+> - $sortOut: Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
+> 
+> Return Values
+> - Returns the resulting array.
 
 Example :
 ```php
@@ -332,7 +369,6 @@ $templete = [
     ['2019-01-04 13:00:00','2019-01-04 18:00:00']
 ];
 
-
 /*** Note 5. Ensure performance by keeping the $timePeriods format correct. ***/
 // 1. Set Auto sorting out (Scope: Global. Default, no need to set)
 //TimePeriodHelper::setSortOut(true);
@@ -340,7 +376,6 @@ $templete = [
 // 2. Set Manually sorting out (Scope: Global) (When a lot of logic operations, it is better)
 TimePeriodHelper::setSortOut(false);
 $templete = TimePeriodHelper::union($templete);
-
 
 
 $result = TimePeriodHelper::gap($templete);
@@ -358,8 +393,15 @@ Calculation period total time
 > 3. approximation: chop off
 
 ```php
-time(Array $timePeriods, Int $precision = 0) : array
+time(Array $timePeriods, Int $precision = 0, $sortOut = 'default') : array
 ```
+> Parameters
+> - $timePeriods: Time period being processed. array
+> - $precision: Optional decimal places for the decimal point. int
+> - $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
+> 
+> Return Values
+> - Returns the resulting number.
 
 Example :
 ```php
@@ -370,7 +412,6 @@ $templete = [
     ['2019-01-04 13:00:00','2019-01-04 18:30:30']
 ];
 
-
 /*** Note 5. Ensure performance by keeping the $timePeriods format correct. ***/
 // 1. Set Auto sorting out (Scope: Global. Default, no need to set)
 //TimePeriodHelper::setSortOut(true);
@@ -378,7 +419,6 @@ $templete = [
 // 2. Set Manually sorting out (Scope: Global) (When a lot of logic operations, it is better)
 TimePeriodHelper::setSortOut(false);
 $templete= TimePeriodHelper::union($templete);
-
 
 
 TimePeriodHelper::setUnit('hour');
@@ -408,8 +448,16 @@ Cut the time period of the specified length of time
 > 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
 
 ```php
-cut(Array $timePeriods, Int $time, $extension = false) : array
+cut(Array $timePeriods, Int $time, $extension = false, $sortOut = 'default') : array
 ```
+> Parameters
+> - $timePeriods: Time period being processed. array
+> - $time: Specified length of time
+> - $extension: If the specified time is long, whether to extend the time period.(default:false)
+> - $sortOut: $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
+> 
+> Return Values
+> - Returns the resulting array.
 
 Example :
 ```php
@@ -418,7 +466,6 @@ $templete = [
     ['2019-01-04 08:00:00','2019-01-04 08:25:00']
 ];
 
-
 /*** Note 5. Ensure performance by keeping the $timePeriods format correct. ***/
 // 1. Set Auto sorting out (Scope: Global. Default, no need to set)
 //TimePeriodHelper::setSortOut(true);
@@ -426,7 +473,6 @@ $templete = [
 // 2. Set Manually sorting out (Scope: Global) (When a lot of logic operations, it is better)
 TimePeriodHelper::setSortOut(false);
 $templete = TimePeriodHelper::union($templete);
-
 
 
 $resultM = TimePeriodHelper::setUnit('minutes')->cut($templete, '30', false);
@@ -458,8 +504,17 @@ Increase the time period of the specified length of time after the last time per
 > 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
 
 ```php
-extend(Array $timePeriods, Int $time, $interval = 0) : array
+extend(Array $timePeriods, Int $time, $interval = 0, $sortOut = 'default') : array
 ```
+> Parameters
+> - $timePeriods: Time period being processed. array
+> - $time: Specified length of time
+> - $interval: Interval with existing time period
+> - $sortOut: $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
+> 
+> Return Values
+> - Returns the resulting array.
+> 
 > If you can be sure that the input value is already collated(Executed union())
 
 Example :
@@ -469,7 +524,6 @@ $templete = [
     ['2019-01-04 08:00:00','2019-01-04 08:25:00'],
 ];
 
-
 /*** Note 5. Ensure performance by keeping the $timePeriods format correct. ***/
 // 1. Set Auto sorting out (Scope: Global. Default, no need to set)
 //TimePeriodHelper::setSortOut(true);
@@ -477,7 +531,6 @@ $templete = [
 // 2. Set Manually sorting out (Scope: Global) (When a lot of logic operations, it is better)
 TimePeriodHelper::setSortOut(false);
 $templete = TimePeriodHelper::union($templete);
-
 
 
 $resultM1 = TimePeriodHelper::setUnit('minutes')->extend($templete, 30, 0);
@@ -514,8 +567,17 @@ Shorten the specified length of time from behind
 > 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
 
 ```php
-shorten(Array $timePeriods, Int $time, $crossperiod = true) : array
+shorten(Array $timePeriods, Int $time, $crossperiod = true, $sortOut = 'default') : array
 ```
+> Parameters
+> - $timePeriods: Time period being processed. array
+> - $time: Specified length of time
+> - $crossperiod: Whether to shorten across time
+> - $sortOut: $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
+> 
+> Return Values
+> - Returns the resulting array.
+> 
 > If you can be sure that the input value is already collated(Executed union())
 
 Example :
@@ -526,7 +588,6 @@ $templete = [
     ['2019-01-04 08:00:00','2019-01-04 08:25:00'],
 ];
 
-
 /*** Note 5. Ensure performance by keeping the $timePeriods format correct. ***/
 // 1. Set Auto sorting out (Scope: Global. Default, no need to set)
 //TimePeriodHelper::setSortOut(true);
@@ -534,7 +595,6 @@ $templete = [
 // 2. Set Manually sorting out (Scope: Global) (When a lot of logic operations, it is better)
 TimePeriodHelper::setSortOut(false);
 $templete = TimePeriodHelper::union($templete);
-
 
 
 TimePeriodHelper::setUnit('minutes');
@@ -582,7 +642,6 @@ $resultH8 = TimePeriodHelper::setUnit('hour')->shorten($templete, 10, false);
 //     ['2019-01-04 08:00:00','2019-01-04 12:00:00']
 // ];
 ```
-
 > Unit:  
 > - hour, hours, h  
 > - minute, minutes, m  
@@ -593,6 +652,13 @@ Transform format
 ```php
 format(Array $timePeriods, $unit = 'default') : array
 ```
+> Parameters
+> - $timePeriods: Time period being processed. array
+> - $unit: Time unit, if default,use class options setting
+> 
+> Return Values
+> - Returns the resulting array.
+> 
 > $unit: Time unit, if default,use class options setting
 
 Example :
@@ -626,6 +692,14 @@ Validate time period
 ```php
 validate(Array $timePeriods) : Exception | true
 ```
+> Parameters
+> - $timePeriods: Time period being processed. array
+> 
+> Return Values
+> - Returns the resulting bool.
+> 
+> Exception
+> - If there is an error, an exception will be thrown
 
 Example :
 ```php
@@ -655,8 +729,13 @@ Remove invalid time period
 ```php
 filter(Array $timePeriods, $exception = false) : array
 ```
-> $exception: Whether an exception is returned when an error occurs.(default false)
-> @see setFilterDatetime();
+> Parameters
+> - $timePeriods: Time period being processed. array
+> - $exception: Whether an exception is returned when an error occurs.(default false)
+>   @see setFilterDatetime();
+> 
+> Return Values
+> - Returns the resulting array.
 
 Example :
 ```php
@@ -694,7 +773,15 @@ Specify the minimum unit of calculation
 ```php
 setUnit(string $unit, string $target = 'all') : self
 ```
-> $target: Specify function,or all functions
+> Parameters
+> - $unit: time unit. e.g. hour, minute, second.
+> - $target: Specify function,or all functions
+> 
+> Return Values
+> - self
+> 
+> Exception
+> - If there is an error, an exception will be thrown
 
 Example :
 ```php
@@ -717,6 +804,14 @@ Get the unit used by the specified function
 ```php
 getUnit(string $target) : string
 ```
+> Parameters
+> - $target: Specify function's unit
+> 
+> Return Values
+> - Returns the resulting string.
+> 
+> Exception
+> - If there is an error, an exception will be thrown
 
 Example :
 ```php
@@ -743,6 +838,11 @@ If neet filter datetime : Set option
 ```php
 setFilterDatetime(Bool $bool) : self
 ```
+> Parameters
+> - $bool: If you do not want to filter the datetime format, set it to false. 
+> 
+> Return Values
+> - self
 
 Example :
 ```php
@@ -761,6 +861,8 @@ If neet filter datetime : Get option
 ```php
 getFilterDatetime() : bool
 ```
+> Return Values
+> - Returns the resulting bool.
 
 Example :
 ```php
@@ -782,6 +884,11 @@ Auto sort out $timePeriods : Set option
 ```php
 setSortOut(bool $bool = true) : self
 ```
+> Parameters
+> - $bool: Set auto sort out or not
+> 
+> Return Values
+> - self
 
 Example :
 ```php
@@ -801,6 +908,8 @@ Auto sort out $timePeriods : Get option
 ```php
 getSortOut() : bool
 ```
+> Return Values
+> - Returns the resulting bool.
 
 Example :
 ```php

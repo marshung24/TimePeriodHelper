@@ -15,7 +15,7 @@ namespace marsapp\helper\timeperiod;
  * - b. Handle $timePeriods using only the functions provided by TimePeriodHelper (Will not break the format, sort)
  * - c. When you achieve the two operations described above, you can turn off auto sort out (TimePeriodHelper::setSortOut(false)) to improve performance.
  * 
- * @version 0.3.0
+ * @version 0.4.0
  * @author Mars Hung <tfaredxj@gmail.com>
  * @see https://github.com/marshung24/TimePeriodHelper
  */
@@ -131,9 +131,10 @@ class TimePeriodHelper
      * 
      * @param array $timePeriods1
      * @param array $timePeriods2
+     * @param bool $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
      * @return array
      */
-    public static function diff(Array $timePeriods1, Array $timePeriods2)
+    public static function diff(Array $timePeriods1, Array $timePeriods2, $sortOut = 'default')
     {
         /*** Arguments prepare ***/
         // Subject or pattern is empty, do nothing
@@ -142,7 +143,8 @@ class TimePeriodHelper
         }
         
         // Data sorting out
-        if (self::getSortOut()) {
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        if ($sortOut) {
             $timePeriods1 = self::union($timePeriods1);
             $timePeriods2 = self::union($timePeriods2);
         }
@@ -194,9 +196,10 @@ class TimePeriodHelper
      * 
      * @param array $timePeriods1
      * @param array $timePeriods2
+     * @param bool $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
      * @return array
      */
-    public static function intersect(Array $timePeriods1, Array $timePeriods2)
+    public static function intersect(Array $timePeriods1, Array $timePeriods2, $sortOut = 'default')
     {
         // Subject or pattern is empty, do nothing
         if (empty($timePeriods1) || empty($timePeriods2)) {
@@ -204,7 +207,8 @@ class TimePeriodHelper
         }
         
         // Data sorting out
-        if (self::getSortOut()) {
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        if ($sortOut) {
             $timePeriods1 = self::union($timePeriods1);
             $timePeriods2 = self::union($timePeriods2);
         }
@@ -326,9 +330,10 @@ class TimePeriodHelper
      * 1. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
      * 
      * @param array $timePeriods
+     * @param bool $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
      * @return array
      */
-    public static function gap(Array $timePeriods)
+    public static function gap(Array $timePeriods, $sortOut = 'default')
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
@@ -336,7 +341,8 @@ class TimePeriodHelper
         }
         
         // Data sorting out
-        if (self::getSortOut()) {
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        if ($sortOut) {
             $timePeriods = self::union($timePeriods);
         }
         
@@ -360,9 +366,10 @@ class TimePeriodHelper
      * @param array $timePeriods            
      * @param int $precision
      *            Optional decimal places for the decimal point
+     * @param bool $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
      * @return number
      */
-    public static function time(Array $timePeriods, $precision = 0)
+    public static function time(Array $timePeriods, $precision = 0, $sortOut = 'default')
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
@@ -370,7 +377,8 @@ class TimePeriodHelper
         }
         
         // Data sorting out
-        if (self::getSortOut()) {
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        if ($sortOut) {
             $timePeriods = self::union($timePeriods);
         }
         
@@ -414,9 +422,10 @@ class TimePeriodHelper
      *            Specified length of time
      * @param string $extension
      *            If the specified time is long, whether to extend the time period.(default:false)
+     * @param bool $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
      * @return array
      */
-    public static function cut(Array $timePeriods, $time, $extension = false)
+    public static function cut(Array $timePeriods, $time, $extension = false, $sortOut = 'default')
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
@@ -424,7 +433,8 @@ class TimePeriodHelper
         }
         
         // Data sorting out
-        if (self::getSortOut()) {
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        if ($sortOut) {
             $timePeriods = self::union($timePeriods);
         }
         
@@ -483,9 +493,10 @@ class TimePeriodHelper
      *            Specified length of time (default uint:second)
      * @param number $interval
      *            Interval with existing time period
+     * @param bool $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
      * @return array
      */
-    public static function extend(Array $timePeriods, $time, $interval = 0)
+    public static function extend(Array $timePeriods, $time, $interval = 0, $sortOut = 'default')
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
@@ -493,7 +504,8 @@ class TimePeriodHelper
         }
         
         // Data sorting out
-        if (self::getSortOut()) {
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        if ($sortOut) {
             $timePeriods = self::union($timePeriods);
         }
         
@@ -531,9 +543,10 @@ class TimePeriodHelper
      *            Specified length of time (default uint:second)
      * @param bool $crossperiod
      *            Whether to shorten across time
+     * @param bool $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
      * @return array
      */
-    public static function shorten(Array $timePeriods, $time, $crossperiod = true)
+    public static function shorten(Array $timePeriods, $time, $crossperiod = true, $sortOut = 'default')
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
@@ -541,7 +554,8 @@ class TimePeriodHelper
         }
         
         // Data sorting out
-        if (self::getSortOut()) {
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        if ($sortOut) {
             $timePeriods = self::union($timePeriods);
         }
         
@@ -680,7 +694,7 @@ class TimePeriodHelper
      * 1. Scope: Global
      * 2. hour,minute,second
      * 
-     * @param string $unit
+     * @param string $unit time unit. e.g. hour, minute, second.
      * @param string $target Specify function,or all functions
      * @throws \Exception
      * @return $this

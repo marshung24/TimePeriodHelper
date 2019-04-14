@@ -81,7 +81,15 @@ class Test
         $result = TimePeriodHelper::diff($templete1, $templete2);
         $theSame2 = DevTools::theSame($result, $expected, $detail);
         
-        $theSame = $theSame1 && ! $theSame2;
+        // The same
+        $result = TimePeriodHelper::diff($templete1, $templete2, true);
+        $theSame3 = DevTools::theSame($result, $expected, $detail);
+        
+        // Need Different
+        $result = TimePeriodHelper::diff($templete1, $templete2, false);
+        $theSame4 = DevTools::theSame($result, $expected, $detail);
+        
+        $theSame = $theSame1 && ! $theSame2 && $theSame3 && ! $theSame4;
         
         DevTools::isTheSame($theSame, __FUNCTION__);
     }
@@ -107,7 +115,15 @@ class Test
         $result = TimePeriodHelper::intersect($templete1, $templete2);
         $theSame2 = DevTools::theSame($result, $expected, $detail);
         
-        $theSame = $theSame1 && ! $theSame2;
+        // The same
+        $result = TimePeriodHelper::intersect($templete1, $templete2, true);
+        $theSame3 = DevTools::theSame($result, $expected, $detail);
+        
+        // Need Different
+        $result = TimePeriodHelper::intersect($templete1, $templete2, false);
+        $theSame4 = DevTools::theSame($result, $expected, $detail);
+        
+        $theSame = $theSame1 && ! $theSame2 && $theSame3 && ! $theSame4;
         
         DevTools::isTheSame($theSame, __FUNCTION__);
     }
@@ -168,7 +184,15 @@ class Test
         $result = TimePeriodHelper::gap($templete);
         $theSame2 = DevTools::theSame($result, $expected, $detail);
         
-        $theSame = $theSame1 && ! $theSame2;
+        // The same
+        $result = TimePeriodHelper::gap($templete, true);
+        $theSame3 = DevTools::theSame($result, $expected, $detail);
+        
+        // Need Different
+        $result = TimePeriodHelper::gap($templete, false);
+        $theSame4 = DevTools::theSame($result, $expected, $detail);
+        
+        $theSame = $theSame1 && ! $theSame2 && $theSame3 && ! $theSame4;
         
         DevTools::isTheSame($theSame, __FUNCTION__);
     }
@@ -183,32 +207,47 @@ class Test
         $templete = self::testTimeData();
         $expected = self::testTimeExpected();
         
-        // The same, Auto sorting out $templete
-        TimePeriodHelper::setSortOut(true);
         TimePeriodHelper::setUnit('second');
+        
+        // The same, Auto sorting out $templete - second
+        TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::time($templete);
         $theSame1 = DevTools::theSame($result, $expected, $detail);
         
-        // Need Different, No sorting out $templete
+        // Need Different, No sorting out $templete - second
         TimePeriodHelper::setSortOut(false);
         $result = TimePeriodHelper::time($templete);
         $theSame2 = DevTools::theSame($result, $expected, $detail);
         
-        // The same, Auto sorting out $templete
-        TimePeriodHelper::setSortOut(true);
-        TimePeriodHelper::setUnit('minutes');
-        $result = TimePeriodHelper::time($templete);
-        $theSame3 = DevTools::theSame($result, floor($expected / 60), $detail);
+        // The same, Set sorting out $templete by argument - second
+        $result = TimePeriodHelper::time($templete, 0, true);
+        $theSame3 = DevTools::theSame($result, $expected, $detail);
         
-        // The same, Manually sorting out $templete
+        // Need Different, No sorting out $templete by argument - second
+        $result = TimePeriodHelper::time($templete, 0, false);
+        $theSame4 = DevTools::theSame($result, $expected, $detail);
+        
+        // The same, Auto sorting out $templete - minutes - No precision
+        TimePeriodHelper::setUnit('minutes');
+        TimePeriodHelper::setSortOut(true);
+        $result = TimePeriodHelper::time($templete, 0);
+        $theSame5 = DevTools::theSame($result, floor($expected / 60), $detail);
+        
+        // The same, Auto sorting out $templete - minutes - Has precision
+        TimePeriodHelper::setUnit('minutes');
+        TimePeriodHelper::setSortOut(true);
+        $result = TimePeriodHelper::time($templete, 2);
+        $theSame6 = DevTools::theSame($result, ((int)($expected / 60 * 100)) / 100, $detail);
+        
+        // The same, Manually sorting out $templete - hour
+        TimePeriodHelper::setUnit('h');
         TimePeriodHelper::setSortOut(false);
         $templete = TimePeriodHelper::union($templete);
         
-        TimePeriodHelper::setUnit('h');
         $result = TimePeriodHelper::time($templete);
-        $theSame4 = DevTools::theSame($result, floor($expected / 3600), $detail);
+        $theSame7 = DevTools::theSame($result, floor($expected / 3600), $detail);
         
-        $theSame = $theSame1 && ! $theSame2 && $theSame3 && $theSame4;
+        $theSame = $theSame1 && ! $theSame2 && $theSame3 && ! $theSame4 && $theSame5 && $theSame6 && $theSame7;
         
         DevTools::isTheSame($theSame, __FUNCTION__);
     }
@@ -226,6 +265,8 @@ class Test
         $theSame = true;
         $theSame1 = true;
         $theSame2 = true;
+        $theSame3 = true;
+        $theSame4 = true;
         
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
@@ -236,7 +277,9 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','cut'], $templete);
-            $theSame1 = $theSame1 && DevTools::theSame($result, $expecteds[$k], $detail);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame1 = $theSame1 && $compare;
         }
         
         // Need Different, No sorting out $templete
@@ -247,10 +290,41 @@ class Test
             unset($templete[3]);
             
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','cut'], $templete);
-            $theSame2 = $theSame2 && DevTools::theSame($result, $expecteds[$k], $detail);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame2 = $theSame2 && $compare;
         }
         
-        $theSame = $theSame1 && ! $theSame2;
+        // The same, Auto sorting out $templete by argument
+        foreach ($templetes as $k => $templete) {
+            // Set time uint
+            TimePeriodHelper::setUnit($templete[3]);
+            unset($templete[3]);
+            // Set sort out by argument
+            $templete[3] = true;
+            
+            // The same
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','cut'], $templete);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame3 = $theSame3 && $compare;
+        }
+        
+        // Need Different, No sorting out $templete by argument
+        foreach ($templetes as $k => $templete) {
+            // Set time uint
+            TimePeriodHelper::setUnit($templete[3]);
+            unset($templete[3]);
+            // Set sort out by argument
+            $templete[3] = false;
+            
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','cut'], $templete);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame4 = $theSame4 && $compare;
+        }
+        
+        $theSame = $theSame1 && ! $theSame2 && $theSame3 && ! $theSame4;
         
         DevTools::isTheSame($theSame, __FUNCTION__);
     }
@@ -268,6 +342,8 @@ class Test
         $theSame = true;
         $theSame1 = true;
         $theSame2 = true;
+        $theSame3 = true;
+        $theSame4 = true;
         
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
@@ -278,7 +354,9 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','extend'], $templete);
-            $theSame1 = $theSame1 && DevTools::theSame($result, $expecteds[$k], $detail);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame1 = $theSame1 && $compare;
         }
         
         // Need Different, No sorting out $templete
@@ -290,10 +368,42 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','extend'], $templete);
-            $theSame2 = $theSame2 && DevTools::theSame($result, $expecteds[$k], $detail);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame2 = $theSame2 && $compare;
         }
         
-        $theSame = $theSame1 && ! $theSame2;
+        // The same, Auto sorting out $templete by argument
+        foreach ($templetes as $k => $templete) {
+            // Set time uint
+            TimePeriodHelper::setUnit($templete[3]);
+            unset($templete[3]);
+            // Set sort out by argument
+            $templete[3] = true;
+            
+            // The same
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','extend'], $templete);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame3 = $theSame3 && $compare;
+        }
+        
+        // Need Different, No sorting out $templete by argument
+        foreach ($templetes as $k => $templete) {
+            // Set time uint
+            TimePeriodHelper::setUnit($templete[3]);
+            unset($templete[3]);
+            // Set sort out by argument
+            $templete[3] = false;
+            
+            // The same
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','extend'], $templete);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame4 = $theSame4 && $compare;
+        }
+        
+        $theSame = $theSame1 && ! $theSame2 && $theSame3 && ! $theSame4;
         
         DevTools::isTheSame($theSame, __FUNCTION__);
     }
@@ -311,6 +421,8 @@ class Test
         $theSame = true;
         $theSame1 = true;
         $theSame2 = true;
+        $theSame3 = true;
+        $theSame4 = true;
         
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
@@ -321,7 +433,9 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','shorten'], $templete);
-            $theSame1 = $theSame1 && DevTools::theSame($result, $expecteds[$k], $detail);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame1 = $theSame1 && $compare;
         }
         
         // Need Different, No sorting out $templete
@@ -333,10 +447,42 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','shorten'], $templete);
-            $theSame2 = $theSame2 && DevTools::theSame($result, $expecteds[$k], $detail);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame2 = $theSame2 && $compare;
         }
         
-        $theSame = $theSame1 && ! $theSame2;
+        // The same, Auto sorting out $templetee by argument
+        foreach ($templetes as $k => $templete) {
+            // Set time uint
+            TimePeriodHelper::setUnit($templete[3]);
+            unset($templete[3]);
+            // Set sort out by argument
+            $templete[3] = true;
+            
+            // The same
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','shorten'], $templete);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame3 = $theSame3 && $compare;
+        }
+        
+        // Need Different, No sorting out $templetee by argument
+        foreach ($templetes as $k => $templete) {
+            // Set time uint
+            TimePeriodHelper::setUnit($templete[3]);
+            unset($templete[3]);
+            // Set sort out by argument
+            $templete[3] = false;
+            
+            // The same
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','shorten'], $templete);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame4 = $theSame4 && $compare;
+        }
+        
+        $theSame = $theSame1 && ! $theSame2 && $theSame3 && ! $theSame4;
         
         DevTools::isTheSame($theSame, __FUNCTION__);
     }
@@ -863,7 +1009,7 @@ class Test
             ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
             ['2019-01-04 04:00:00','2019-01-04 05:00:00'],
             ['2019-01-04 07:00:00','2019-01-04 09:00:00'],
-            ['2019-01-04 13:00:00','2019-01-04 18:00:00']
+            ['2019-01-04 13:00:00','2019-01-04 18:00:25']
         ];
     }
     
@@ -873,7 +1019,7 @@ class Test
      */
     public static function testTimeExpected()
     {
-        return 39600;
+        return 39625;
     }
     
     /**
