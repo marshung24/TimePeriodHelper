@@ -22,6 +22,15 @@ Test::testIntersect();
 // Test IsOverlap
 Test::testIsOverlap();
 
+// Test Contact
+Test::testContact();
+
+// Test GreaterThan
+Test::testGreaterThan();
+
+// Test LessThan
+Test::testLessThan();
+
 // Test Fill
 Test::testFill();
 

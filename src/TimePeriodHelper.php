@@ -15,7 +15,7 @@ namespace marsapp\helper\timeperiod;
  * - b. Handle $timePeriods using only the functions provided by TimePeriodHelper (Will not break the format, sort)
  * - c. When you achieve the two operations described above, you can turn off auto sort out (TimePeriodHelper::setSortOut(false)) to improve performance.
  * 
- * @version 0.4.0
+ * @version 0.5.0
  * @author Mars Hung <tfaredxj@gmail.com>
  * @see https://github.com/marshung24/TimePeriodHelper
  */
@@ -153,11 +153,11 @@ class TimePeriodHelper
         foreach ($timePeriods1 as $k1 => $ori) {
             foreach ($timePeriods2 as $ko => $sub) {
                 if ($sub[1] <= $ori[0]) {
-                    // No overlap && Passed: --$sub0--$sub1--$ori0--$ori1--
+                    // No overlap && Passed: --sub0--sub1--ori0--ori1--
                     unset($timePeriods2[$ko]);
                     continue;
                 } elseif ($ori[1] <= $sub[0]) {
-                    // No overlap: --$ori0--$ori1--$sub0--$sub1--
+                    // No overlap: --ori0--ori1--sub0--sub1--
                     continue;
                 } elseif ($sub[0] <= $ori[0] && $ori[1] <= $sub[1]) {
                     // Subtract all: --sub0--ori0--ori1--sub1--
@@ -217,11 +217,11 @@ class TimePeriodHelper
         foreach ($timePeriods1 as $k1 => $ori) {
             foreach ($timePeriods2 as $ko => $sub) {
                 if ($sub[1] <= $ori[0]) {
-                    // No overlap && Passed: --$sub0--$sub1--$ori0--$ori1--
+                    // No overlap && Passed: --sub0--sub1--ori0--ori1--
                     unset($timePeriods2[$ko]);
                     continue;
                 } elseif ($ori[1] <= $sub[0]) {
-                    // No overlap: --$ori0--$ori1--$sub0--$sub1--
+                    // No overlap: --ori0--ori1--sub0--sub1--
                     continue;
                 } elseif ($sub[0] <= $ori[0] && $ori[1] <= $sub[1]) {
                     // Subtract all: --sub0--ori0--ori1--sub1--
@@ -270,11 +270,11 @@ class TimePeriodHelper
         foreach ($timePeriods1 as $k1 => $ori) {
             foreach ($timePeriods2 as $ko => $sub) {
                 if ($sub[1] <= $ori[0]) {
-                    // No overlap && Passed: --$sub0--$sub1--$ori0--$ori1--
+                    // No overlap && Passed: --sub0--sub1--ori0--ori1--
                     unset($timePeriods2[$ko]);
                     continue;
                 } elseif ($ori[1] <= $sub[0]) {
-                    // No overlap: --$ori0--$ori1--$sub0--$sub1--
+                    // No overlap: --ori0--ori1--sub0--sub1--
                     continue;
                 } elseif ($sub[0] <= $ori[0] && $ori[1] <= $sub[1]) {
                     // Subtract all: --sub0--ori0--ori1--sub1--
@@ -296,6 +296,137 @@ class TimePeriodHelper
         }
         
         return false;
+    }
+    
+    /**
+     * Time period in contact with the specified time
+     * 
+     * @param array $timePeriods
+     * @param string $sDateTime
+     * @param string $eDateTime
+     * @param string $sortOut
+     * @return array
+     */
+    public static function contact(Array $timePeriods, $sDateTime, $eDateTime = null, $sortOut = 'default')
+    {
+        // Subject is empty, do nothing
+        if (empty($timePeriods)) {
+            return [];
+        }
+        
+        // Set $eDateTime
+        if (is_null($eDateTime)) {
+            $eDateTime = $sDateTime;
+        }
+        
+        // Data sorting out
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        if ($sortOut) {
+            $timePeriods = self::union($timePeriods);
+            $sDateTime = min($sDateTime, $eDateTime);
+            $eDateTime = max($sDateTime, $eDateTime);
+        }
+        
+        // Get Contact time periods
+        $opt = [];
+        foreach ($timePeriods as $k => $tp) {
+            if ($eDateTime <= $tp[0]) {
+                // No overlap && Passed: --$sDateTime--$eDateTime--$tp0--$tp1--
+                if ($sDateTime == $tp[0]) {
+                    // But 
+                    $opt[] = $tp;
+                }
+            } elseif ($tp[1] <= $sDateTime) {
+                // No overlap: --$tp0--$tp1--$sDateTime--$eDateTime--
+            } else {
+                // Overlap
+                $opt[] = $tp;
+            }
+        }
+        
+        return $opt;
+    }
+    
+    /**
+     * Time period greater than the specified time
+     * 
+     * @param array $timePeriods
+     * @param string $refDatetime
+     * @param string $intactTime
+     * @param string $sortOut
+     * @return array
+     */
+    public static function greaterThan(Array $timePeriods, $refDatetime, $intactTime = true, $sortOut = 'default')
+    {
+        // Subject is empty, do nothing
+        if (empty($timePeriods)) {
+            return [];
+        }
+        
+        // Data sorting out
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        if ($sortOut) {
+            $timePeriods = self::union($timePeriods);
+        }
+        
+        // Get Contact time periods
+        $opt = [];
+        foreach ($timePeriods as $k => $tp) {
+            if ($intactTime) {
+                // Time period is intact
+                if ($tp[0] >= $refDatetime) {
+                    $opt[] = $tp;
+                }
+            } else {
+                // Time period not intact
+                if ($tp[1] > $refDatetime) {
+                    $opt[] = $tp;
+                }
+            }
+        }
+        
+        return $opt;
+    }
+    
+    /**
+     * Time period less than the specified time
+     * 
+     * @param array $timePeriods
+     * @param string $refDatetime
+     * @param string $intactTime
+     * @param string $sortOut
+     * @return array
+     */
+    public static function lessThan(Array $timePeriods, $refDatetime, $intactTime = true, $sortOut = 'default')
+    {
+        // Subject is empty, do nothing
+        if (empty($timePeriods)) {
+            return [];
+        }
+        
+        // Data sorting out
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        if ($sortOut) {
+            $timePeriods = self::union($timePeriods);
+        }
+        
+        // Get Contact time periods
+        $opt = [];
+        foreach ($timePeriods as $k => $tp) {
+            if ($intactTime) {
+                // Time period is intact
+                if ($tp[1] <= $refDatetime) {
+                    $opt[] = $tp;
+                }
+            } else {
+                // Time period not intact
+                if ($tp[0] < $refDatetime) {
+                    $opt[] = $tp;
+                }
+            }
+        }
+        
+        return $opt;
     }
     
     /**

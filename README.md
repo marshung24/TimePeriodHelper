@@ -12,12 +12,16 @@ The time period processing library provides functions such as sorting, union, di
 - [Usage](#usage)
   - [Note](#note)
   - [Example](#example)
+- [API Reference](#api-reference)
   - [Operation Function](#operation-function)
     - [sort()](#sort)
     - [union()](#union)
     - [diff()](#diff)
     - [intersect()](#intersect)
     - [isOverlap()](#isoverlap)
+    - [contact()](#contact)
+    - [greaterThan()](#greaterthan)
+    - [lessThan()](#lessthan)
     - [fill()](#fill)
     - [gap()](#gap)
     - [time()](#time)
@@ -105,6 +109,7 @@ $gapTime = TimePeriodHelper::time($gapTimeperiods);
 > setSortOut(), setUnit() Scope: Global
 > Data should be organized during the validation and processing phases. Then use trusted data as a logical operation.
 
+# [API Reference](#outline)
 ## [Operation Function](#outline)
 
 ### [sort()](#outline)
@@ -315,6 +320,147 @@ $templete2 = [
 ];
 $result = TimePeriodHelper::isOverlap($templete1, $templete2);
 // $result = true;
+```
+
+
+### [contact()](#outline)
+Time period in contact with the specified time
+
+```php
+contact(Array $timePeriods, String $sDateTime, String $eDateTime = null, $sortOut = 'default') : Array
+```
+> Parameters
+> - $timePeriods: The time periods to compare from, array
+> - $sDateTime: Specified time to compare against, string
+> - $eDateTime: Specified time to compare against, string
+> - $sortOut: Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
+> 
+> Return Values
+> - Returns the resulting array.
+
+Example :
+```php
+$templete = [
+    ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
+    ['2019-01-04 13:00:00','2019-01-04 16:00:00'],
+    ['2019-01-04 17:00:00','2019-01-04 19:00:00']
+];
+
+$result = TimePeriodHelper::contact($templete, '2019-01-04 12:00:00');
+// $result = [];
+
+$result = TimePeriodHelper::contact($templete, '2019-01-04 12:00:00', '2019-01-04 13:00:00');
+// $result = [];
+
+$result = TimePeriodHelper::contact($templete, '2019-01-04 12:00:00', '2019-01-04 14:00:00');
+// $result = [['2019-01-04 13:00:00','2019-01-04 16:00:00']];
+
+$result = TimePeriodHelper::contact($templete, '2019-01-04 13:00:00');
+// $result = [['2019-01-04 13:00:00','2019-01-04 16:00:00']];
+
+$result = TimePeriodHelper::contact($templete, '2019-01-04 13:00:00', '2019-01-04 14:00:00');
+// $result = [['2019-01-04 13:00:00','2019-01-04 16:00:00']];
+
+$result = TimePeriodHelper::contact($templete, '2019-01-04 13:30:00');
+// $result = [['2019-01-04 13:00:00','2019-01-04 16:00:00']];
+
+$result = TimePeriodHelper::contact($templete, '2019-01-04 13:30:00', '2019-01-04 18:00:00');
+// $result = [['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']];
+
+$result = TimePeriodHelper::contact($templete, '2019-01-04 13:30:00', '2019-01-04 22:00:00');
+// $result = [['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']];
+```
+
+
+### [greaterThan()](#outline)
+Time period greater than the specified time
+
+```php
+greaterThan(Array $timePeriods, $refDatetime, $intactTime = true, $sortOut = 'default') : Array
+```
+> Parameters
+> - $timePeriods: The time periods to compare from, array
+> - $refDatetime: Specified time to compare against, string
+> - $intactTime: Get only the intact time period, bool
+> - $sortOut: Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
+> 
+> Return Values
+> - Returns the resulting array.
+
+Example :
+```php
+$templete = [
+    ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
+    ['2019-01-04 13:00:00','2019-01-04 16:00:00'],
+    ['2019-01-04 17:00:00','2019-01-04 19:00:00']
+];
+
+$result = TimePeriodHelper::greaterThan($templete, '2019-01-04 13:00:00', false);
+// $result = [['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']];
+
+$result = TimePeriodHelper::greaterThan($templete, '2019-01-04 14:00:00', false);
+// $result = [['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']];
+
+$result = TimePeriodHelper::greaterThan($templete, '2019-01-04 16:00:00', false);
+// $result = [['2019-01-04 17:00:00','2019-01-04 19:00:00']];
+
+$result = TimePeriodHelper::greaterThan($templete, '2019-01-04 13:00:00', true);
+// $result = [['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']];
+
+$result = TimePeriodHelper::greaterThan($templete, '2019-01-04 14:00:00', true);
+// $result = [['2019-01-04 17:00:00','2019-01-04 19:00:00']];
+
+$result = TimePeriodHelper::greaterThan($templete, '2019-01-04 16:00:00', true);
+// $result = [['2019-01-04 17:00:00','2019-01-04 19:00:00']];
+
+$result = TimePeriodHelper::greaterThan($templete, '2019-01-04 14:00:00');
+// $result = [['2019-01-04 17:00:00','2019-01-04 19:00:00']];
+```
+
+
+### [lessThan()](#outline)
+Time period less than the specified time
+
+```php
+lessThan(Array $timePeriods, $refDatetime, $intactTime = true, $sortOut = 'default') : Array
+```
+> Parameters
+> - $timePeriods: The time periods to compare from, array
+> - $refDatetime: Specified time to compare against, string
+> - $intactTime: Get only the intact time period, bool
+> - $sortOut: Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
+> 
+> Return Values
+> - Returns the resulting array.
+
+Example :
+```php
+$templete = [
+    ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
+    ['2019-01-04 13:00:00','2019-01-04 16:00:00'],
+    ['2019-01-04 17:00:00','2019-01-04 19:00:00']
+];
+
+$result = TimePeriodHelper::lessThan($templete, '2019-01-04 13:00:00', false);
+// $result = ['2019-01-04 08:00:00','2019-01-04 12:00:00']];
+
+$result = TimePeriodHelper::lessThan($templete, '2019-01-04 14:00:00', false);
+// $result = [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']];
+
+$result = TimePeriodHelper::lessThan($templete, '2019-01-04 16:00:00', false);
+// $result = [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']];
+
+$result = TimePeriodHelper::lessThan($templete, '2019-01-04 13:00:00', true);
+// $result = ['2019-01-04 08:00:00','2019-01-04 12:00:00']];
+
+$result = TimePeriodHelper::lessThan($templete, '2019-01-04 14:00:00', true);
+// $result = ['2019-01-04 08:00:00','2019-01-04 12:00:00']];
+
+$result = TimePeriodHelper::lessThan($templete, '2019-01-04 16:00:00', true);
+// $result = [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']];
+
+$result = TimePeriodHelper::lessThan($templete, '2019-01-04 14:00:00');
+// $result = ['2019-01-04 08:00:00','2019-01-04 12:00:00']];
 ```
 
 
