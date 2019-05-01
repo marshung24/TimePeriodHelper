@@ -38,6 +38,10 @@ The time period processing library provides functions such as sorting, union, di
     - [getFilterDatetime()](#getfilterdatetime)
     - [setSortOut()](#setsortout)
     - [getSortOut()](#getsortout)
+  - [Tools Function](#tools-function)
+    - [isDatetime()](#isdatetime)
+    - [timeFormatConv()](#timeformatconv)
+    - [time2Second()](#time2second)
 
 # [Installation](#outline)
 ## [Composer Install](#outline)
@@ -1067,4 +1071,115 @@ TimePeriodHelper::setSortOut(true);
 $result2 = TimePeriodHelper::getSortOut();
 //$result1 = true;
 ```
+
+## [Tools Function](#outline)
+
+### [isDatetime()](#outline)
+Check datetime fast.
+> Only check format,no check for reasonableness
+
+```php
+isDatetime(string $datetime) : bool
+```
+> Parameters
+> - $datetime: datetime (format:Y-m-d H:i:s). string
+> 
+> Return Values
+> - Returns the resulting bool.
+
+Example :
+```php
+$result = TimePeriodHelper::isDatetime('2019-01-04 08:00:00');
+// $result = true;
+
+$result = TimePeriodHelper::isDatetime('2019-01-04 88:88:88');
+// $result = true;
+
+$result = TimePeriodHelper::isDatetime('2019-01-04 08:00');
+// $result = false;
+```
+
+### [timeFormatConv()](#outline)
+Time format convert
+> - format:Y-m-d H:i:s
+> - When the length is insufficient, it will add the missing
+
+```php
+ timeFormatConv(string $datetime, $unit = 'default') : string
+```
+> Parameters
+> - $datetime: datetime (format:Y-m-d H:i:s). string
+> - $unit: Time unit, if default,use class options setting
+> 
+> Return Values
+> - Returns the resulting string.
+
+Example :
+```php
+$result = TimePeriodHelper::timeFormatConv('2019-01-04 08:33:33');
+// $result = '2019-01-04 08:33:33';
+
+$result = TimePeriodHelper::timeFormatConv('2019-01-04 08:33:33', 'default');
+// $result = '2019-01-04 08:33:33';
+
+$result = TimePeriodHelper::timeFormatConv('2019-01-04 08:33:33', 'second');
+// $result = '2019-01-04 08:33:33';
+
+$result = TimePeriodHelper::timeFormatConv('2019-01-04 08:33:33', 'minute');
+// $result = '2019-01-04 08:33:00';
+
+$result = TimePeriodHelper::timeFormatConv('2019-01-04 08:33:33', 'hour');
+// $result = '2019-01-04 08:00:00';
+
+$result = TimePeriodHelper::timeFormatConv('2019-01-04 08');
+// $result = '2019-01-04 08:00:00';
+
+$result = TimePeriodHelper::timeFormatConv('2019-01-04 08', 'default');
+// $result = '2019-01-04 08:00:00';
+
+$result = TimePeriodHelper::timeFormatConv('2019-01-04 08', 'default');
+// $result = '2019-01-04 08:00:00';
+
+$result = TimePeriodHelper::timeFormatConv('2019-01-04 08', 'default');
+// $result = '2019-01-04 08:00:00';
+
+$result = TimePeriodHelper::timeFormatConv('2019-01-04 08', 'default');
+// $result = '2019-01-04 08:00:00';
+```
+
+### [time2Second()](#outline)
+Time Conversion frm unit to second
+
+```php
+time2Second($time, $unit = 'default') : number
+```
+> Parameters
+> - $time: time. number
+> - $unit: Time unit, if default,use class options setting
+> 
+> Return Values
+> - Returns the resulting number.
+
+Example :
+```php
+$result = TimePeriodHelper::time2Second(30);
+// $result = 30;
+
+$result = TimePeriodHelper::time2Second(30, 'default');
+// $result = 30;
+
+$result = TimePeriodHelper::time2Second(30, 'second');
+// $result = 30;
+
+$result = TimePeriodHelper::time2Second(30, 'minute');
+// $result = 1800;
+
+$result = TimePeriodHelper::time2Second(30, 'hour');
+// $result = 108000;
+```
+
+
+
+
+
 
