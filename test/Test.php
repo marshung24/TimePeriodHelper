@@ -561,6 +561,7 @@ class Test
         
         DevTools::isTheSame($theSame, __FUNCTION__);
     }
+    
     /**
      * Test Format
      *
@@ -662,6 +663,80 @@ class Test
         $theSame3 = DevTools::theSame($result1, $expected2, $detail);
         
         $theSame = $theSame1 && $theSame2 && ! $theSame3;
+        
+        DevTools::isTheSame($theSame, __FUNCTION__);
+    }
+    
+    /**
+     * Test IsDatetime
+     *
+     * @param string $detail
+     */
+    public static function testIsDatetime($detail = false)
+    {
+        $templetes = self::testIsDatetimeData();
+        $expecteds = self::testIsDatetimeExpected();
+        
+        $theSame = true;
+        
+        // The same, Auto sorting out $templete
+        foreach ($templetes as $k => $templete) {
+            // The same
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','isDatetime'], $templete);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame = $theSame && $compare;
+        }
+        
+        DevTools::isTheSame($theSame, __FUNCTION__);
+    }
+    
+    /**
+     * Test TimeFormatConv
+     *
+     * @param string $detail
+     */
+    public static function testTimeFormatConv($detail = false)
+    {
+        $templetes = self::testTimeFormatConvData();
+        $expecteds = self::testTimeFormatConvExpected();
+        
+        $theSame = true;
+        
+        // The same, default unit: second
+        TimePeriodHelper::setUnit('second');
+        foreach ($templetes as $k => $templete) {
+            // The same
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','timeFormatConv'], $templete);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame = $theSame && $compare;
+        }
+        
+        DevTools::isTheSame($theSame, __FUNCTION__);
+    }
+    
+    /**
+     * Test Time2Second
+     *
+     * @param string $detail
+     */
+    public static function testTime2Second($detail = false)
+    {
+        $templetes = self::testTime2SecondData();
+        $expecteds = self::testTime2SecondExpected();
+        
+        $theSame = true;
+        
+        // The same, default unit: second
+        TimePeriodHelper::setUnit('second');
+        foreach ($templetes as $k => $templete) {
+            // The same
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','time2Second'], $templete);
+            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
+            
+            $theSame = $theSame && $compare;
+        }
         
         DevTools::isTheSame($theSame, __FUNCTION__);
     }
@@ -1529,6 +1604,104 @@ class Test
     {
         return [
             ['2019-01-04 02:00:00','2019-01-04 03:00:00'],
+        ];
+    }
+    
+    /**
+     * Test Data - IsDatetime
+     * @return array
+     */
+    public static function testIsDatetimeData()
+    {
+        return [
+            ['2019-01-04 08:00:00'],
+            ['2019-01-04 88:88:88'],
+            ['2019-01-04 08:00'],
+        ];
+    }
+    
+    /**
+     * Expected Data - IsDatetime
+     * @return array
+     */
+    public static function testIsDatetimeExpected()
+    {
+        return [
+            true,
+            true,
+            false,
+        ];
+    }
+    
+    /**
+     * Test Data - TimeFormatConv
+     * @return array
+     */
+    public static function testTimeFormatConvData()
+    {
+        return [
+            ['2019-01-04 08:33:33'],
+            ['2019-01-04 08:33:33', 'default'],
+            ['2019-01-04 08:33:33', 'second'],
+            ['2019-01-04 08:33:33', 'minute'],
+            ['2019-01-04 08:33:33', 'hour'],
+            // fill
+            ['2019-01-04 08'],
+            ['2019-01-04 08', 'default'],
+            ['2019-01-04 08', 'second'],
+            ['2019-01-04 08', 'minute'],
+            ['2019-01-04 08', 'hour'],
+        ];
+    }
+    
+    /**
+     * Expected Data - TimeFormatConv
+     * @return array
+     */
+    public static function testTimeFormatConvExpected()
+    {
+        return [
+            '2019-01-04 08:33:33',
+            '2019-01-04 08:33:33',
+            '2019-01-04 08:33:33',
+            '2019-01-04 08:33:00',
+            '2019-01-04 08:00:00',
+            // fill
+            '2019-01-04 08:00:00',
+            '2019-01-04 08:00:00',
+            '2019-01-04 08:00:00',
+            '2019-01-04 08:00:00',
+            '2019-01-04 08:00:00',
+        ];
+    }
+    
+    /**
+     * Test Data - Time2Second
+     * @return array
+     */
+    public static function testTime2SecondData()
+    {
+        return [
+            [30],
+            [30, 'default'],
+            [30, 'second'],
+            [30, 'minute'],
+            [30, 'hour'],
+        ];
+    }
+    
+    /**
+     * Expected Data - Time2Second
+     * @return array
+     */
+    public static function testTime2SecondExpected()
+    {
+        return [
+            30,
+            30,
+            30,
+            1800,
+            108000,
         ];
     }
 

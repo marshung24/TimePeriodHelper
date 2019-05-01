@@ -58,8 +58,14 @@ Test::testValidate();
 // Test Filter
 Test::testFilter();
 
+// Test IsDatetime
+Test::testIsDatetime();
 
+// Test TimeFormatConv
+Test::testTimeFormatConv();
 
+// Test Time2Second
+Test::testTime2Second();
 
 
 

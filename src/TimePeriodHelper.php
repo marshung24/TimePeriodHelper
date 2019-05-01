@@ -11,11 +11,11 @@ namespace marsapp\helper\timeperiod;
  * 3. If it is a day/month/year, it usually includes an end point, for example, January to March is 3 months.
  * 4. When processing, assume that the $timePeriods format is correct. If necessary, you need to call the verification function to verify the data.
  * 5. Ensure performance by keeping the $timePeriods format correct:
- * - a. When getting the raw $timePeriods, sort out it by filter(), union().
+ * - a. When getting the raw $timePeriods, sort out it by format(), filter(), union().
  * - b. Handle $timePeriods using only the functions provided by TimePeriodHelper (Will not break the format, sort)
  * - c. When you achieve the two operations described above, you can turn off auto sort out (TimePeriodHelper::setSortOut(false)) to improve performance.
  * 
- * @version 0.5.0
+ * @version 0.5.2
  * @author Mars Hung <tfaredxj@gmail.com>
  * @see https://github.com/marshung24/TimePeriodHelper
  */
@@ -570,7 +570,7 @@ class TimePeriodHelper
         }
         
         // Convert time by unit
-        $time = self::convTimeByUnit($time);
+        $time = self::time2Second($time);
         
         $opt = [];
         $timeLen = 0;
@@ -641,8 +641,8 @@ class TimePeriodHelper
         }
         
         // Convert time by unit
-        $time = self::convTimeByUnit($time);
-        $interval = self::convTimeByUnit($interval);
+        $time = self::time2Second($time);
+        $interval = self::time2Second($interval);
         
         // last time period index
         $eIdx = sizeof($timePeriods) - 1;
@@ -691,7 +691,7 @@ class TimePeriodHelper
         }
         
         // Convert time by unit
-        $time = self::convTimeByUnit($time);
+        $time = self::time2Second($time);
         
         // last time period index
         $eIdx = sizeof($timePeriods) - 1;
@@ -731,8 +731,8 @@ class TimePeriodHelper
     public static function format(Array $timePeriods, $unit = 'default')
     {
         foreach ($timePeriods as $k => & $tp) {
-            $tp[0] = self::timeConv($tp[0], $unit);
-            $tp[1] = self::timeConv($tp[1], $unit);
+            $tp[0] = self::timeFormatConv($tp[0], $unit);
+            $tp[1] = self::timeFormatConv($tp[1], $unit);
         }
         
         return $timePeriods;
@@ -926,9 +926,9 @@ class TimePeriodHelper
     }
     
     /**
-     * **********************************************
-     * ************** Private Function **************
-     * **********************************************
+     * ********************************************
+     * ************** Tools Function **************
+     * ********************************************
      */
     
     /**
@@ -939,19 +939,22 @@ class TimePeriodHelper
      * @param string $datetime
      * @return boolean
      */
-    protected static function isDatetime(string $datetime)
+    public static function isDatetime(string $datetime)
     {
-        return preg_match('|^[0-9]{4}\-[0-9]{2}\-[0-9]{2}\ [0-9]{2}\:[0-9]{2}\:[0-9]{2}$|', $datetime);
+        return (bool)preg_match('|^[0-9]{4}\-[0-9]{2}\-[0-9]{2}\ [0-9]{2}\:[0-9]{2}\:[0-9]{2}$|', $datetime);
     }
     
     /**
      * Time format convert
      * 
+     * format:Y-m-d H:i:s
+     * When the length is insufficient, it will add the missing
+     * 
      * @param string $datetime
      * @param string $unit Time unit, if default,use self::$_options setting
      * @return string
      */
-    protected static function timeConv(string $datetime, $unit = 'default')
+    public static function timeFormatConv(string $datetime, $unit = 'default')
     {
         $unit = ! isset(self::$_options['unitMap'][$unit]) ? self::$_options['unit']['format'] : self::$_options['unitMap'][$unit];
         
@@ -1002,17 +1005,19 @@ class TimePeriodHelper
     }
     
     /**
-     * Convert time by unit
+     * Time Conversion frm unit to second
      * 
      * @param number $time
+     * @param string $unit Time unit, if default,use self::$_options setting
      * @return number
      */
-    protected static function convTimeByUnit($time)
+    public static function time2Second($time, $unit = 'default')
     {
         // Git time unit
-        $timeUnit = self::getUnit('time');
+        $unit = ! isset(self::$_options['unitMap'][$unit]) ? self::getUnit('time') : self::$_options['unitMap'][$unit];
+        
         // Convert
-        switch ($timeUnit) {
+        switch ($unit) {
             case 'minute':
                 $time = $time * 60;
                 break;
