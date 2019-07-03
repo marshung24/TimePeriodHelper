@@ -1,26 +1,18 @@
 <?php
+
 namespace marsapp\helper\test\timeperiod;
 
+use PHPUnit\Framework\TestCase;
 use marsapp\helper\timeperiod\TimePeriodHelper;
-use marsapp\dev\tools\DevTools;
 
 /**
- * Test for TimePeriodHelper
+ * Test for TimePeriodHelper - PHP Unit
  * 
- * Expect to use phpUnit
- * 
- * @author Mars Hung <tfaredxj@gmail.com>
- *
+ * @author Mars.Hung <tfaredexj@gmail.com>
  */
-class Test
+class TimePeriodHelperTest extends TestCase
 {
-
-    /**
-     * Construct
-     */
-    public function __construct()
-    {}
-
+    
     /**
      * *********************************************
      * ************** Public Function **************
@@ -29,319 +21,289 @@ class Test
     
     /**
      * Test Sort
-     *
-     * @param string $detail
      */
-    public static function testSort($detail = false)
+    public function testSort()
     {
-        $templete = self::testSortData();
-        $expected = self::testSortExpected();
+        $templete = self::sortData();
+        $expected = self::sortExpected();
         
         $result = TimePeriodHelper::sort($templete);
         
-        $theSame = DevTools::theSame($result, $expected, $detail);
-        DevTools::isTheSame($theSame, __FUNCTION__);
+        $this->assertEquals($expected, $result);
     }
     
     /**
      * Test Union
-     *
-     * @param string $detail
      */
-    public static function testUnion($detail = false)
+    public function testUnion()
     {
-        $templete1 = self::testUnionData1();
-        $templete2 = self::testUnionData2();
-        $expected = self::testUnionExpected();
+        $templete1 = self::unionData1();
+        $templete2 = self::unionData2();
+        $expected = self::unionExpected();
         
         $result = TimePeriodHelper::union($templete1, $templete2);
         
-        $theSame = DevTools::theSame($result, $expected, $detail);
-        DevTools::isTheSame($theSame, __FUNCTION__);
+        $this->assertEquals($expected, $result);
+
+        // test Empty
+        $result = TimePeriodHelper::union([]);
+        $this->assertEquals([], $result);
     }
     
     /**
      * Test Diff
-     *
-     * @param string $detail
      */
-    public static function testDiff($detail = false)
+    public function testDiff()
     {
-        $templete1 = self::testDiffData1();
-        $templete2 = self::testDiffData2();
-        $expected = self::testDiffExpected();
+        $templete1 = self::diffData1();
+        $templete2 = self::diffData2();
+        $expected = self::diffExpected();
         
         // The same
         TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::diff($templete1, $templete2);
-        $theSame1 = DevTools::theSame($result, $expected, $detail);
+        $this->assertEquals($expected, $result);
         
         // Need Different
         TimePeriodHelper::setSortOut(false);
         $result = TimePeriodHelper::diff($templete1, $templete2);
-        $theSame2 = DevTools::theSame($result, $expected, $detail);
+        $this->assertNotEquals($expected, $result);
         
         // The same
         $result = TimePeriodHelper::diff($templete1, $templete2, true);
-        $theSame3 = DevTools::theSame($result, $expected, $detail);
-        
+        $this->assertEquals($expected, $result);
+
         // Need Different
         $result = TimePeriodHelper::diff($templete1, $templete2, false);
-        $theSame4 = DevTools::theSame($result, $expected, $detail);
-        
-        $theSame = $theSame1 && ! $theSame2 && $theSame3 && ! $theSame4;
-        
-        DevTools::isTheSame($theSame, __FUNCTION__);
+        $this->assertNotEquals($expected, $result);
+
+        $result = TimePeriodHelper::diff([], $templete2);
+        $this->assertNotEquals($expected, $result);
     }
     
     /**
      * Test Intersect
-     *
-     * @param string $detail
      */
-    public static function testIntersect($detail = false)
+    public function testIntersect()
     {
-        $templete1 = self::testIntersectData1();
-        $templete2 = self::testIntersectData2();
-        $expected = self::testIntersectExpected();
+        $templete1 = self::intersectData1();
+        $templete2 = self::intersectData2();
+        $expected = self::intersectExpected();
         
         // The same
         TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::intersect($templete1, $templete2);
-        $theSame1 = DevTools::theSame($result, $expected, $detail);
+        $this->assertEquals($expected, $result);
         
         // Need Different
         TimePeriodHelper::setSortOut(false);
         $result = TimePeriodHelper::intersect($templete1, $templete2);
-        $theSame2 = DevTools::theSame($result, $expected, $detail);
+        $this->assertNotEquals($expected, $result);
         
         // The same
         $result = TimePeriodHelper::intersect($templete1, $templete2, true);
-        $theSame3 = DevTools::theSame($result, $expected, $detail);
+        $this->assertEquals($expected, $result);
         
         // Need Different
         $result = TimePeriodHelper::intersect($templete1, $templete2, false);
-        $theSame4 = DevTools::theSame($result, $expected, $detail);
+        $this->assertNotEquals($expected, $result);
         
-        $theSame = $theSame1 && ! $theSame2 && $theSame3 && ! $theSame4;
-        
-        DevTools::isTheSame($theSame, __FUNCTION__);
+        // Need Different
+        $result = TimePeriodHelper::intersect([], $templete2, false);
+        $this->assertNotEquals($expected, $result);
     }
     
     /**
      * Test IsOverlap
-     *
-     * @param string $detail
      */
-    public static function testIsOverlap($detail = false)
+    public function testIsOverlap()
     {
-        $templete1 = self::testIsOverlapData1();
-        $templete2 = self::testIsOverlapData2();
-        $expected = self::testIsOverlapExpected();
+        $templete1 = self::isOverlapData1();
+        $templete2 = self::isOverlapData2();
+        $expected = self::isOverlapExpected();
         
-        $theSame = true;
+        $result = TimePeriodHelper::isOverlap([], $templete2[0]);
+        $this->assertEquals(false, $result);
+
         foreach ($templete1 as $k1 => $v1) {
             $result = TimePeriodHelper::isOverlap($templete1[$k1], $templete2[$k1]);
-            $theSame = $theSame && DevTools::theSame($result, $expected[$k1], $detail);
+            $this->assertEquals($expected[$k1], $result);
         }
-        
-        DevTools::isTheSame($theSame, __FUNCTION__);
     }
     
     /**
      * Test Contact
-     *
-     * @param string $detail
      */
-    public static function testContact($detail = false)
+    public function testContact()
     {
-        $templetes = self::testContactData();
-        $expecteds = self::testContactExpected();
-        
-        $theSame = true;
+        $templetes = self::contactData();
+        $expecteds = self::contactExpected();
         
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','contact'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame = $theSame && $compare;
+            $this->assertEquals($expecteds[$k], $result);
         }
-        
-        DevTools::isTheSame($theSame, __FUNCTION__);
+
+        // Test Empty input
+        $result = TimePeriodHelper::contact([], '2019-06-11 15:00:00');
+        $this->assertNotEquals(false, $result);
     }
     
     /**
      * Test GreaterThan
-     *
-     * @param string $detail
      */
-    public static function testGreaterThan($detail = false)
+    public function testGreaterThan()
     {
-        $templetes = self::testGreaterThanData();
-        $expecteds = self::testGreaterThanExpected();
-        
-        $theSame = true;
+        $templetes = self::greaterThanData();
+        $expecteds = self::greaterThanExpected();
         
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','greaterThan'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame = $theSame && $compare;
+            $this->assertEquals($expecteds[$k], $result);
         }
         
-        DevTools::isTheSame($theSame, __FUNCTION__);
+        // Test Empty input
+        $result = TimePeriodHelper::greaterThan([], '2019-06-11 15:00:00');
+        $this->assertNotEquals(false, $result);
     }
     
     /**
      * Test LessThan
-     *
-     * @param string $detail
      */
-    public static function testLessThan($detail = false)
+    public function testLessThan()
     {
-        $templetes = self::testLessThanData();
-        $expecteds = self::testLessThanExpected();
-        
-        $theSame = true;
+        $templetes = self::lessThanData();
+        $expecteds = self::lessThanExpected();
         
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','lessThan'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame = $theSame && $compare;
+            $this->assertEquals($expecteds[$k], $result);
         }
         
-        DevTools::isTheSame($theSame, __FUNCTION__);
+        // Test Empty input
+        $result = TimePeriodHelper::lessThan([], '2019-06-11 15:00:00');
+        $this->assertNotEquals(false, $result);
     }
     
     /**
      * Test Fill
-     * 
-     * @param string $detail
      */
-    public static function testFill($detail = false)
+    public function testFill()
     {
-        $templete = self::testFillData();
-        $expected = self::testFillExpected();
+        $templete = self::fillData();
+        $expected = self::fillExpected();
         
         $result = TimePeriodHelper::fill($templete);
-        
-        $theSame = DevTools::theSame($result, $expected, $detail);
-        DevTools::isTheSame($theSame, __FUNCTION__);
+        $this->assertEquals($expected, $result);
     }
     
     /**
      * Test Gap
-     *
-     * @param string $detail
      */
-    public static function testGap($detail = false)
+    public function testGap()
     {
-        $templete = self::testGapData();
-        $expected = self::testGapExpected();
+        $templete = self::gapData();
+        $expected = self::gapExpected();
         
         // The same
         TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::gap($templete);
-        $theSame1 = DevTools::theSame($result, $expected, $detail);
+        $this->assertEquals($expected, $result);
         
         // Need Different
         TimePeriodHelper::setSortOut(false);
         $result = TimePeriodHelper::gap($templete);
-        $theSame2 = DevTools::theSame($result, $expected, $detail);
+        $this->assertNotEquals($expected, $result);
         
         // The same
         $result = TimePeriodHelper::gap($templete, true);
-        $theSame3 = DevTools::theSame($result, $expected, $detail);
+        $this->assertEquals($expected, $result);
         
         // Need Different
         $result = TimePeriodHelper::gap($templete, false);
-        $theSame4 = DevTools::theSame($result, $expected, $detail);
-        
-        $theSame = $theSame1 && ! $theSame2 && $theSame3 && ! $theSame4;
-        
-        DevTools::isTheSame($theSame, __FUNCTION__);
+        $this->assertNotEquals($expected, $result);
+
+        // Test Empty input
+        $result = TimePeriodHelper::gap([]);
+        $this->assertEquals([], $result);
     }
     
     /**
      * Test Time
-     *
-     * @param string $detail
      */
-    public static function testTime($detail = false)
+    public function testTime()
     {
-        $templete = self::testTimeData();
-        $expected = self::testTimeExpected();
+        $templete = self::timeData();
+        $expected = self::timeExpected();
         
         TimePeriodHelper::setUnit('second');
         
         // The same, Auto sorting out $templete - second
         TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::time($templete);
-        $theSame1 = DevTools::theSame($result, $expected, $detail);
+        $this->assertEquals($expected, $result);
         
         // Need Different, No sorting out $templete - second
         TimePeriodHelper::setSortOut(false);
         $result = TimePeriodHelper::time($templete);
-        $theSame2 = DevTools::theSame($result, $expected, $detail);
+        $this->assertNotEquals($expected, $result);
         
         // The same, Set sorting out $templete by argument - second
         $result = TimePeriodHelper::time($templete, 0, true);
-        $theSame3 = DevTools::theSame($result, $expected, $detail);
+        $this->assertEquals($expected, $result);
         
         // Need Different, No sorting out $templete by argument - second
         $result = TimePeriodHelper::time($templete, 0, false);
-        $theSame4 = DevTools::theSame($result, $expected, $detail);
+        $this->assertNotEquals($expected, $result);
         
         // The same, Auto sorting out $templete - minutes - No precision
         TimePeriodHelper::setUnit('minutes');
         TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::time($templete, 0);
-        $theSame5 = DevTools::theSame($result, floor($expected / 60), $detail);
+        $this->assertEquals(floor($expected / 60), $result);
         
         // The same, Auto sorting out $templete - minutes - Has precision
         TimePeriodHelper::setUnit('minutes');
         TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::time($templete, 2);
-        $theSame6 = DevTools::theSame($result, ((int)($expected / 60 * 100)) / 100, $detail);
+        $this->assertEquals(((int)($expected / 60 * 100)) / 100, $result);
         
         // The same, Manually sorting out $templete - hour
         TimePeriodHelper::setUnit('h');
         TimePeriodHelper::setSortOut(false);
         $templete = TimePeriodHelper::union($templete);
-        
         $result = TimePeriodHelper::time($templete);
-        $theSame7 = DevTools::theSame($result, floor($expected / 3600), $detail);
+        $this->assertEquals(floor($expected / 3600), $result);
         
-        $theSame = $theSame1 && ! $theSame2 && $theSame3 && ! $theSame4 && $theSame5 && $theSame6 && $theSame7;
+        // The same, Auto sorting out $templete - hour - Has precision
+        TimePeriodHelper::setUnit('hour');
+        TimePeriodHelper::setSortOut(true);
+        $result = TimePeriodHelper::time($templete, 2);
+        $this->assertEquals(((int)($expected / 3600 * 100)) / 100, $result);
         
-        DevTools::isTheSame($theSame, __FUNCTION__);
+        // Test Empty input
+        $result = TimePeriodHelper::time([]);
+        $this->assertEquals(0, $result);
     }
     
     /**
      * Test Cut
-     *
-     * @param string $detail
      */
-    public static function testCut($detail = false)
+    public function testCut()
     {
-        $templetes = self::testCutData();
-        $expecteds = self::testCutExpected();
-        
-        $theSame = true;
-        $theSame1 = true;
-        $theSame2 = true;
-        $theSame3 = true;
-        $theSame4 = true;
+        $templetes = self::cutData();
+        $expecteds = self::cutExpected();
+        $templetesNS = self::cutNotSortData();
+        $expectedsNS = self::cutNotSortExpected();
         
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
@@ -352,22 +314,18 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','cut'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame1 = $theSame1 && $compare;
+            $this->assertEquals($expecteds[$k], $result);
         }
         
         // Need Different, No sorting out $templete
         TimePeriodHelper::setSortOut(false);
-        foreach ($templetes as $k => $templete) {
+        foreach ($templetesNS  as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
             unset($templete[3]);
             
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','cut'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame2 = $theSame2 && $compare;
+            $this->assertNotEquals($expectedsNS[$k], $result);
         }
         
         // The same, Auto sorting out $templete by argument
@@ -380,13 +338,11 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','cut'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame3 = $theSame3 && $compare;
+            $this->assertEquals($expecteds[$k], $result);
         }
         
         // Need Different, No sorting out $templete by argument
-        foreach ($templetes as $k => $templete) {
+        foreach ($templetesNS as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
             unset($templete[3]);
@@ -394,31 +350,24 @@ class Test
             $templete[3] = false;
             
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','cut'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame4 = $theSame4 && $compare;
+            $this->assertNotEquals($expectedsNS[$k], $result);
         }
         
-        $theSame = $theSame1 && ! $theSame2 && $theSame3 && ! $theSame4;
+        // Test Empty input
+        $result = TimePeriodHelper::cut([], 0);
+        $this->assertEquals([], $result);
         
-        DevTools::isTheSame($theSame, __FUNCTION__);
     }
     
     /**
      * Test Extend
-     *
-     * @param string $detail
      */
-    public static function testExtend($detail = false)
+    public function testExtend()
     {
-        $templetes = self::testExtendData();
-        $expecteds = self::testExtendExpected();
-        
-        $theSame = true;
-        $theSame1 = true;
-        $theSame2 = true;
-        $theSame3 = true;
-        $theSame4 = true;
+        $templetes = self::extendData();
+        $expecteds = self::extendExpected();
+        $templetesNS = self::extendNotSortData();
+        $expectedsNS = self::extendNotSortExpected();
         
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
@@ -429,23 +378,19 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','extend'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame1 = $theSame1 && $compare;
+            $this->assertEquals($expecteds[$k], $result);
         }
         
         // Need Different, No sorting out $templete
         TimePeriodHelper::setSortOut(false);
-        foreach ($templetes as $k => $templete) {
+        foreach ($templetesNS as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
             unset($templete[3]);
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','extend'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame2 = $theSame2 && $compare;
+            $this->assertNotEquals($expectedsNS[$k], $result);
         }
         
         // The same, Auto sorting out $templete by argument
@@ -458,13 +403,11 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','extend'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame3 = $theSame3 && $compare;
+            $this->assertEquals($expecteds[$k], $result);
         }
         
         // Need Different, No sorting out $templete by argument
-        foreach ($templetes as $k => $templete) {
+        foreach ($templetesNS as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
             unset($templete[3]);
@@ -473,31 +416,24 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','extend'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame4 = $theSame4 && $compare;
+            $this->assertNotEquals($expectedsNS[$k], $result);
         }
         
-        $theSame = $theSame1 && ! $theSame2 && $theSame3 && ! $theSame4;
-        
-        DevTools::isTheSame($theSame, __FUNCTION__);
+        // Test Empty input
+        $result = TimePeriodHelper::extend([], 0);
+        $this->assertEquals([], $result);
     }
     
     /**
      * Test Shorten
-     *
-     * @param string $detail
      */
-    public static function testShorten($detail = false)
+    public function testShorten()
     {
-        $templetes = self::testShortenData();
-        $expecteds = self::testShortenExpected();
+        $templetes = self::shortenData();
+        $expecteds = self::shortenExpected();
+        $templetesNS = self::shortenNotSortData();
+        $expectedsNS = self::shortenNotSortExpected();
         
-        $theSame = true;
-        $theSame1 = true;
-        $theSame2 = true;
-        $theSame3 = true;
-        $theSame4 = true;
         
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
@@ -508,23 +444,19 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','shorten'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame1 = $theSame1 && $compare;
+            $this->assertEquals($expecteds[$k], $result);
         }
         
         // Need Different, No sorting out $templete
         TimePeriodHelper::setSortOut(false);
-        foreach ($templetes as $k => $templete) {
+        foreach ($templetesNS as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
             unset($templete[3]);
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','shorten'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame2 = $theSame2 && $compare;
+            $this->assertNotEquals($expectedsNS[$k], $result);
         }
         
         // The same, Auto sorting out $templetee by argument
@@ -537,13 +469,11 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','shorten'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame3 = $theSame3 && $compare;
+            $this->assertEquals($expecteds[$k], $result);
         }
         
         // Need Different, No sorting out $templetee by argument
-        foreach ($templetes as $k => $templete) {
+        foreach ($templetesNS as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
             unset($templete[3]);
@@ -552,195 +482,233 @@ class Test
             
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','shorten'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame4 = $theSame4 && $compare;
+            $this->assertNotEquals($expectedsNS[$k], $result);
         }
         
-        $theSame = $theSame1 && ! $theSame2 && $theSame3 && ! $theSame4;
         
-        DevTools::isTheSame($theSame, __FUNCTION__);
+        // Test Empty input
+        $result = TimePeriodHelper::shorten([], 0);
+        $this->assertEquals([], $result);
     }
     
     /**
      * Test Format
-     *
-     * @param string $detail
      */
-    public static function testFormat($detail = false)
+    public function testFormat()
     {
-        $templete = self::testFormatData();
-        $expectedS = self::testFormatExpectedS();
-        $expectedM = self::testFormatExpectedM();
-        $expectedH = self::testFormatExpectedH();
+        $templete = self::formatData();
+        $expectedS = self::formatExpectedS();
+        $expectedM = self::formatExpectedM();
+        $expectedH = self::formatExpectedH();
         
         // The same
         TimePeriodHelper::setUnit('s');
         $result = TimePeriodHelper::format($templete);
-        $theSame1 = DevTools::theSame($result, $expectedS, $detail);
+        $this->assertEquals($expectedS, $result);
         
         // The same
         TimePeriodHelper::setUnit('minute');
         $result = TimePeriodHelper::format($templete);
-        $theSame2 = DevTools::theSame($result, $expectedM, $detail);
+        $this->assertEquals($expectedM, $result);
         
         // The same
         TimePeriodHelper::setUnit('hours');
         $result = TimePeriodHelper::format($templete);
-        $theSame3 = DevTools::theSame($result, $expectedH, $detail);
+        $this->assertEquals($expectedH, $result);
         
         // The same
         $result = TimePeriodHelper::format($templete);
-        $theSame4 = DevTools::theSame($result, $expectedH, $detail);
+        $this->assertEquals($expectedH, $result);
         
         // The same
         $result = TimePeriodHelper::format($templete, 'second');
-        $theSame5 = DevTools::theSame($result, $expectedS, $detail);
+        $this->assertEquals($expectedS, $result);
         
         // Need Different
         $result = TimePeriodHelper::format($templete);
-        $theSame6 = DevTools::theSame($result, $expectedS, $detail);
-        
-        $theSame = $theSame1 && $theSame2 && $theSame3 && $theSame4 && $theSame5 && ! $theSame6;
-        
-        DevTools::isTheSame($theSame, __FUNCTION__);
+        $this->assertNotEquals($expectedS, $result);
     }
     
     /**
      * Test Validate
-     *
-     * @param string $detail
      */
-    public static function testValidate($detail = false)
+    public function testValidate()
     {
-        $templete1 = self::testValidateData1();
-        $templete2 = self::testValidateData2();
-        $expected1 = self::testValidateExpected1();
-        $expected2 = self::testValidateExpected2();
-        
-        // The same
-        try {
-            $result1 = TimePeriodHelper::validate($templete1);
-        } catch (\Exception $e) {
-            $result1 = false;
+        $templete = self::validateData();
+        $expected = self::validateExpected();
+
+        foreach ($templete as $k => $tp) {
+            try {
+                $result = TimePeriodHelper::validate($tp);
+            } catch (\Exception $e) {
+                $result = false;
+            }
+            $this->assertEquals($expected[$k], $result);
         }
-        $theSame1 = DevTools::theSame($result1, $expected1, $detail);
-        
-        // The same
-        try {
-            $result2 = TimePeriodHelper::validate($templete2);
-        } catch (\Exception $e) {
-            $result2 = false;
-        }
-        $theSame2 = DevTools::theSame($result2, $expected2, $detail);
-        
-        $theSame = $theSame1 && $theSame2;
-        
-        DevTools::isTheSame($theSame, __FUNCTION__);
     }
     
     /**
      * Test Filter
-     *
-     * @param string $detail
      */
-    public static function testFilter($detail = false)
+    public function testFilter()
     {
-        $templete1 = self::testFilterData1();
-        $templete2 = self::testFilterData2();
-        $expected1 = self::testFilterExpected1();
-        $expected2 = self::testFilterExpected2();
+        $templete1 = self::filterData1();
+        $templete2 = self::filterData2();
+        $expected1 = self::filterExpected1();
+        $expected2 = self::filterExpected2();
         
+        // not array
+        $result0 = TimePeriodHelper::filter('');
+        $this->assertEquals([], $result0);
+
         // The same
         $result1 = TimePeriodHelper::filter($templete1);
-        $theSame1 = DevTools::theSame($result1, $expected1, $detail);
+        $this->assertEquals($expected1, $result1);
         
         // The same
         $result2 = TimePeriodHelper::filter($templete2);
-        $theSame2 = DevTools::theSame($result2, $expected2, $detail);
+        $this->assertEquals($expected2, $result2);
         
         // Need Different
-        $theSame3 = DevTools::theSame($result1, $expected2, $detail);
-        
-        $theSame = $theSame1 && $theSame2 && ! $theSame3;
-        
-        DevTools::isTheSame($theSame, __FUNCTION__);
+        $this->assertNotEquals($expected2, $result1);
     }
     
     /**
      * Test IsDatetime
-     *
-     * @param string $detail
      */
-    public static function testIsDatetime($detail = false)
+    public function testIsDatetime()
     {
-        $templetes = self::testIsDatetimeData();
-        $expecteds = self::testIsDatetimeExpected();
-        
-        $theSame = true;
+        $templetes = self::isDatetimeData();
+        $expecteds = self::isDatetimeExpected();
         
         // The same, Auto sorting out $templete
         foreach ($templetes as $k => $templete) {
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','isDatetime'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame = $theSame && $compare;
+            $this->assertEquals($expecteds[$k], $result);
         }
-        
-        DevTools::isTheSame($theSame, __FUNCTION__);
     }
     
     /**
      * Test TimeFormatConv
-     *
-     * @param string $detail
      */
-    public static function testTimeFormatConv($detail = false)
+    public function testTimeFormatConv()
     {
-        $templetes = self::testTimeFormatConvData();
-        $expecteds = self::testTimeFormatConvExpected();
-        
-        $theSame = true;
+        $templetes = self::timeFormatConvData();
+        $expecteds = self::timeFormatConvExpected();
         
         // The same, default unit: second
         TimePeriodHelper::setUnit('second');
         foreach ($templetes as $k => $templete) {
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','timeFormatConv'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame = $theSame && $compare;
+            $this->assertEquals($expecteds[$k], $result);
         }
-        
-        DevTools::isTheSame($theSame, __FUNCTION__);
     }
     
     /**
      * Test Time2Second
-     *
-     * @param string $detail
      */
-    public static function testTime2Second($detail = false)
+    public function testTime2Second()
     {
-        $templetes = self::testTime2SecondData();
-        $expecteds = self::testTime2SecondExpected();
-        
-        $theSame = true;
+        $templetes = self::time2SecondData();
+        $expecteds = self::time2SecondExpected();
         
         // The same, default unit: second
         TimePeriodHelper::setUnit('second');
         foreach ($templetes as $k => $templete) {
             // The same
             $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','time2Second'], $templete);
-            $compare = DevTools::theSame($result, $expecteds[$k], $detail);
-            
-            $theSame = $theSame && $compare;
+            $this->assertEquals($expecteds[$k], $result);
         }
-        
-        DevTools::isTheSame($theSame, __FUNCTION__);
     }
     
+    /**
+     * Test Set/Get Unit
+     */
+    public function testSetGetUnit()
+    {
+        // check return type && set all target unit:hour
+        $result = TimePeriodHelper::setUnit('hour');
+        $this->assertInstanceOf(TimePeriodHelper::class, $result);
+
+        $unitTime = TimePeriodHelper::getUnit('time');
+        $unitFormat = TimePeriodHelper::getUnit('format');
+        $this->assertEquals('hour', $unitTime);
+        $this->assertEquals('hour', $unitFormat);
+
+
+        // set time unit: mintue, format unit: second
+        TimePeriodHelper::setUnit('minute', 'time')->setUnit('second', 'format');
+        $unitTime = TimePeriodHelper::getUnit('time');
+        $unitFormat = TimePeriodHelper::getUnit('format');
+        $this->assertEquals('minute', $unitTime);
+        $this->assertEquals('second', $unitFormat);
+
+
+        // invalid unit for set unit
+        try {
+            $result = true;
+            TimePeriodHelper::setUnit('notThisUnit');
+        } catch (\Exception $e) {
+            $result = false;
+        }
+        $this->assertEquals(false, $result);
+
+
+        // invalid target for set unit
+        try {
+            $result = true;
+            TimePeriodHelper::setUnit('hour', 'notThisTarget');
+        } catch (\Exception $e) {
+            $result = false;
+        }
+        $this->assertEquals(false, $result);
+
+
+        // invalid target for get unit
+        try {
+            $result = true;
+            TimePeriodHelper::getUnit('notThisTarget');
+        } catch (\Exception $e) {
+            $result = false;
+        }
+        $this->assertEquals(false, $result);
+    }
+    
+    /**
+     * Test Set/Get FilterDatetime
+     */
+    public function testSetGetFilterDatetime()
+    {
+        // check return type
+        $result = TimePeriodHelper::setFilterDatetime(true);
+        $this->assertInstanceOf(TimePeriodHelper::class, $result);
+
+        // check is set
+        $result = TimePeriodHelper::getFilterDatetime();
+        $this->assertEquals(true, $result);
+        $result = TimePeriodHelper::setFilterDatetime(false)->getFilterDatetime();
+        $this->assertEquals(false, $result);
+    }
+    
+    /**
+     * Test Set/Get SortOut
+     */
+    public function testSetGetSortOut()
+    {
+        // check return type
+        $result = TimePeriodHelper::setSortOut(true);
+        $this->assertInstanceOf(TimePeriodHelper::class, $result);
+
+        // check is set
+        $result = TimePeriodHelper::getSortOut();
+        $this->assertEquals(true, $result);
+        $result = TimePeriodHelper::setSortOut(false)->getSortOut();
+        $this->assertEquals(false, $result);
+    }
+    
+
     
     /**
      * ****************************************************
@@ -752,7 +720,7 @@ class Test
      * Test Data - Sort
      * @return array
      */
-    public static function testSortData()
+    protected static function sortData()
     {
         return [
             ['2019-01-04 12:00:00','2019-01-04 18:00:00'],
@@ -774,7 +742,7 @@ class Test
      * Expected Data - Sort
      * @return array
      */
-    public static function testSortExpected()
+    protected static function sortExpected()
     {
         return [
             ['2019-01-04 07:00:00','2019-01-04 12:00:00'],
@@ -796,7 +764,7 @@ class Test
      * Test Data - Union
      * @return array
      */
-    public static function testUnionData1()
+    protected static function unionData1()
     {
         return [
             ['2019-01-04 13:00:00','2019-01-04 15:00:00'],
@@ -810,7 +778,7 @@ class Test
      * Test Data - Union
      * @return array
      */
-    public static function testUnionData2()
+    protected static function unionData2()
     {
         return [
             ['2019-01-04 08:00:00','2019-01-04 09:00:00'],
@@ -823,7 +791,7 @@ class Test
      * Expected Data - Union
      * @return array
      */
-    public static function testUnionExpected()
+    protected static function unionExpected()
     {
         return [
             ['2019-01-04 08:00:00','2019-01-04 09:00:00'],
@@ -837,7 +805,7 @@ class Test
      * Test Data - Diff
      * @return array
      */
-    public static function testDiffData1()
+    protected static function diffData1()
     {
         return [
             // 1
@@ -871,7 +839,7 @@ class Test
      * Test Data - Diff
      * @return array
      */
-    public static function testDiffData2()
+    protected static function diffData2()
     {
         return [
             // 1
@@ -904,7 +872,7 @@ class Test
      * Expected Data - Diff
      * @return array
      */
-    public static function testDiffExpected()
+    protected static function diffExpected()
     {
         return [
             // 1
@@ -936,7 +904,7 @@ class Test
      * Test Data - Intersect
      * @return array
      */
-    public static function testIntersectData1()
+    protected static function intersectData1()
     {
         return [
             // 1
@@ -969,7 +937,7 @@ class Test
      * Test Data - Intersect
      * @return array
      */
-    public static function testIntersectData2()
+    protected static function intersectData2()
     {
         return [
             // 1
@@ -1002,7 +970,7 @@ class Test
      * Expected Data - Intersect
      * @return array
      */
-    public static function testIntersectExpected()
+    protected static function intersectExpected()
     {
         return [
             // 3
@@ -1030,7 +998,7 @@ class Test
      * Test Data - IsOverlap
      * @return array
      */
-    public static function testIsOverlapData1()
+    protected static function isOverlapData1()
     {
         return [
             // 1
@@ -1062,7 +1030,7 @@ class Test
      * Test Data - IsOverlap
      * @return array
      */
-    public static function testIsOverlapData2()
+    protected static function isOverlapData2()
     {
         return [
             // 1
@@ -1094,7 +1062,7 @@ class Test
      * Expected Data - IsOverlap
      * @return array
      */
-    public static function testIsOverlapExpected()
+    protected static function isOverlapExpected()
     {
         return [false,false,false,false,true,true,true,true,true,true,true];
     }
@@ -1103,7 +1071,7 @@ class Test
      * Test Data - Contact
      * @return array
      */
-    public static function testContactData()
+    protected static function contactData()
     {
         return [
             [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 12:00:00'],
@@ -1121,7 +1089,7 @@ class Test
      * Expected Data - Contact
      * @return array
      */
-    public static function testContactExpected()
+    protected static function contactExpected()
     {
         return [
             [],
@@ -1139,7 +1107,7 @@ class Test
      * Test Data - GreaterThan
      * @return array
      */
-    public static function testGreaterThanData()
+    protected static function greaterThanData()
     {
         return [
             [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 13:00:00', false],
@@ -1157,7 +1125,7 @@ class Test
      * Expected Data - GreaterThan
      * @return array
      */
-    public static function testGreaterThanExpected()
+    protected static function greaterThanExpected()
     {
         return [
             [['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']],
@@ -1175,7 +1143,7 @@ class Test
      * Test Data - LessThan
      * @return array
      */
-    public static function testLessThanData()
+    protected static function lessThanData()
     {
         return [
             [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 13:00:00', false],
@@ -1193,7 +1161,7 @@ class Test
      * Expected Data - LessThan
      * @return array
      */
-    public static function testLessThanExpected()
+    protected static function lessThanExpected()
     {
         return [
             [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
@@ -1211,7 +1179,7 @@ class Test
      * Test Data - Fill
      * @return array
      */
-    public static function testFillData()
+    protected static function fillData()
     {
         return [
             ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
@@ -1224,7 +1192,7 @@ class Test
      * Expected Data - Fill
      * @return array
      */
-    public static function testFillExpected()
+    protected static function fillExpected()
     {
         return [
             ['2019-01-04 08:00:00','2019-01-04 19:00:00'],
@@ -1235,7 +1203,7 @@ class Test
      * Test Data - Gap
      * @return array
      */
-    public static function testGapData()
+    protected static function gapData()
     {
         return [
             ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
@@ -1249,7 +1217,7 @@ class Test
      * Expected Data - Gap
      * @return array
      */
-    public static function testGapExpected()
+    protected static function gapExpected()
     {
         return [
             ['2019-01-04 05:00:00','2019-01-04 07:00:00'],
@@ -1261,7 +1229,7 @@ class Test
      * Test Data - Time
      * @return array
      */
-    public static function testTimeData()
+    protected static function timeData()
     {
         return [
             ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
@@ -1275,7 +1243,7 @@ class Test
      * Expected Data - Time
      * @return array
      */
-    public static function testTimeExpected()
+    protected static function timeExpected()
     {
         return 39625;
     }
@@ -1284,7 +1252,7 @@ class Test
      * Test Data - Cut
      * @return array
      */
-    public static function testCutData()
+    protected static function cutData()
     {
         return [
             [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']], '30', false, 'second'],
@@ -1305,7 +1273,7 @@ class Test
      * Expected Data - Cut
      * @return array
      */
-    public static function testCutExpected()
+    protected static function cutExpected()
     {
         return [
             [['2019-01-04 08:00:00','2019-01-04 08:00:30']],
@@ -1323,10 +1291,34 @@ class Test
     }
     
     /**
+     * Test Data - Cut no sortout
+     * @return array
+     */
+    protected static function cutNotSortData()
+    {
+        return [
+            // Test auto sort out by  union()
+            [[['2019-01-04 09:00:00','2019-01-04 10:00:00'], ['2019-01-04 08:00:00','2019-01-04 09:00:00'], ['2019-01-04 09:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']], '30', false, 'hour'],
+        ];
+    }
+    
+    /**
+     * Expected Data - Cut no sortout
+     * @return array
+     */
+    protected static function cutNotSortExpected()
+    {
+        return [
+            // Test auto sort out by  union()
+            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']],
+        ];
+    }
+    
+    /**
      * Test Data - Extend
      * @return array
      */
-    public static function testExtendData()
+    protected static function extendData()
     {
         return [
             [[['2019-01-04 08:00:00','2019-01-04 12:00:00']], '30', 0, 'second'],
@@ -1351,7 +1343,7 @@ class Test
      * Expected Data - Extend
      * @return array
      */
-    public static function testExtendExpected()
+    protected static function extendExpected()
     {
         return [
             [['2019-01-04 08:00:00','2019-01-04 12:00:30']],
@@ -1373,10 +1365,34 @@ class Test
     }
     
     /**
+     * Test Data - Extend
+     * @return array
+     */
+    protected static function extendNotSortData()
+    {
+        return [
+            // Test auto sort out by  union()
+            [[['2019-01-04 09:00:00','2019-01-04 10:00:00'], ['2019-01-04 08:00:00','2019-01-04 10:00:00'], ['2019-01-04 09:00:00','2019-01-04 12:00:00']], '30', 0, 'minute'],
+        ];
+    }
+    
+    /**
+     * Expected Data - Extend
+     * @return array
+     */
+    protected static function extendNotSortExpected()
+    {
+        return [
+            // Test auto sort out by  union()
+            [['2019-01-04 08:00:00','2019-01-04 12:30:00']],
+        ];
+    }
+    
+    /**
      * Test Data - Shorten
      * @return array
      */
-    public static function testShortenData()
+    protected static function shortenData()
     {
         return [
             [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '30', true, 'second'],
@@ -1415,7 +1431,7 @@ class Test
      * Expected Data - Shorten
      * @return array
      */
-    public static function testShortenExpected()
+    protected static function shortenExpected()
     {
         return [
             [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 14:59:30']],
@@ -1451,10 +1467,34 @@ class Test
     }
     
     /**
+     * Test Data - Shorten
+     * @return array
+     */
+    protected static function shortenNotSortData()
+    {
+        return [
+            // Test auto sort out by  union()
+            [[['2019-01-04 09:00:00','2019-01-04 12:00:00'], ['2019-01-04 08:00:00','2019-01-04 10:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '5', true, 'hour'],
+        ];
+    }
+    
+    /**
+     * Expected Data - Shorten
+     * @return array
+     */
+    protected static function shortenNotSortExpected()
+    {
+        return [
+            // Test auto sort out by  union()
+            [['2019-01-04 08:00:00','2019-01-04 09:00:00']],
+        ];
+    }
+    
+    /**
      * Test Data - Format
      * @return array
      */
-    public static function testFormatData()
+    protected static function formatData()
     {
         return [
             ['2019-01-04 08:11:11','2019-01-04 12:22:22'],
@@ -1468,7 +1508,7 @@ class Test
      * Expected Data - Format
      * @return array
      */
-    public static function testFormatExpectedS()
+    protected static function formatExpectedS()
     {
         return [
             ['2019-01-04 08:11:11','2019-01-04 12:22:22'],
@@ -1482,7 +1522,7 @@ class Test
      * Expected Data - Format
      * @return array
      */
-    public static function testFormatExpectedM()
+    protected static function formatExpectedM()
     {
         return [
             ['2019-01-04 08:11:00','2019-01-04 12:22:00'],
@@ -1496,7 +1536,7 @@ class Test
      * Expected Data - Format
      * @return array
      */
-    public static function testFormatExpectedH()
+    protected static function formatExpectedH()
     {
         return [
             ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
@@ -1510,28 +1550,25 @@ class Test
      * Test Data - Validate
      * @return array
      */
-    public static function testValidateData1()
+    protected static function validateData()
     {
         return [
-            ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 04:00:00','2019-01-04 05:00:00'],
-        ];
-    }
-    
-    /**
-     * Test Data - Validate
-     * @return array
-     */
-    public static function testValidateData2()
-    {
-        return [
-            ['2019-01-04 02:00:00','2019-01-04 03:00:00'],
-            ['2019-01-04 08:00:00','2019-01-04 12:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 04:00:00'],
-            ['2019-01-04 04:00','2019-01-04 05:00:00'],
+            // pass
+            [['2019-01-04 02:00:00','2019-01-04 03:00:00']],
+            // target not array
             'string',
-            ['2019-01-04 08:00:00','2019-01-04 05:00:00'],
-            ['2019-01-04 19:00:00','2019-01-04 19:00:00'],
+            // // content not array
+            ['string'],
+            // size error
+            [['2019-01-04 08:00:00','2019-01-04 12:00:00','2019-01-04 12:00:00']],
+            // size error
+            [['2019-01-04 04:00:00']],
+            // time format error
+            [['2019-01-04 04:00','2019-01-04 05:00:00']],
+            // sort error
+            [['2019-01-04 08:00:00','2019-01-04 05:00:00']],
+            // error the same time
+            [['2019-01-04 19:00:00','2019-01-04 19:00:00']],
         ];
     }
     
@@ -1539,25 +1576,33 @@ class Test
      * Expected Data - FormValidateat
      * @return array
      */
-    public static function testValidateExpected1()
+    protected static function validateExpected()
     {
-        return true;
-    }
-    
-    /**
-     * Expected Data - FormValidateat
-     * @return array
-     */
-    public static function testValidateExpected2()
-    {
-        return false;
+        return [
+            // pass
+            true,
+            // target not array
+            false,
+            // content not array
+            false,
+            // size error
+            false,
+            // size error
+            false,
+            // time format error
+            false,
+            // sort error
+            false,
+            // error the same time
+            false,
+        ];
     }
     
     /**
      * Test Data - Filter
      * @return array
      */
-    public static function testFilterData1()
+    protected static function filterData1()
     {
         return [
             ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
@@ -1570,7 +1615,7 @@ class Test
      * Test Data - Filter
      * @return array
      */
-    public static function testFilterData2()
+    protected static function filterData2()
     {
         return [
             ['2019-01-04 02:00:00','2019-01-04 03:00:00'],
@@ -1587,7 +1632,7 @@ class Test
      * Expected Data - Filter
      * @return array
      */
-    public static function testFilterExpected1()
+    protected static function filterExpected1()
     {
         return [
             ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
@@ -1600,7 +1645,7 @@ class Test
      * Expected Data - Filter
      * @return array
      */
-    public static function testFilterExpected2()
+    protected static function filterExpected2()
     {
         return [
             ['2019-01-04 02:00:00','2019-01-04 03:00:00'],
@@ -1611,7 +1656,7 @@ class Test
      * Test Data - IsDatetime
      * @return array
      */
-    public static function testIsDatetimeData()
+    protected static function isDatetimeData()
     {
         return [
             ['2019-01-04 08:00:00'],
@@ -1624,7 +1669,7 @@ class Test
      * Expected Data - IsDatetime
      * @return array
      */
-    public static function testIsDatetimeExpected()
+    protected static function isDatetimeExpected()
     {
         return [
             true,
@@ -1637,7 +1682,7 @@ class Test
      * Test Data - TimeFormatConv
      * @return array
      */
-    public static function testTimeFormatConvData()
+    protected static function timeFormatConvData()
     {
         return [
             ['2019-01-04 08:33:33'],
@@ -1646,6 +1691,7 @@ class Test
             ['2019-01-04 08:33:33', 'minute'],
             ['2019-01-04 08:33:33', 'hour'],
             // fill
+            ['2019-01-04'],
             ['2019-01-04 08'],
             ['2019-01-04 08', 'default'],
             ['2019-01-04 08', 'second'],
@@ -1658,7 +1704,7 @@ class Test
      * Expected Data - TimeFormatConv
      * @return array
      */
-    public static function testTimeFormatConvExpected()
+    protected static function timeFormatConvExpected()
     {
         return [
             '2019-01-04 08:33:33',
@@ -1667,6 +1713,7 @@ class Test
             '2019-01-04 08:33:00',
             '2019-01-04 08:00:00',
             // fill
+            '2019-01-04 00:00:00',
             '2019-01-04 08:00:00',
             '2019-01-04 08:00:00',
             '2019-01-04 08:00:00',
@@ -1679,7 +1726,7 @@ class Test
      * Test Data - Time2Second
      * @return array
      */
-    public static function testTime2SecondData()
+    protected static function time2SecondData()
     {
         return [
             [30],
@@ -1694,7 +1741,7 @@ class Test
      * Expected Data - Time2Second
      * @return array
      */
-    public static function testTime2SecondExpected()
+    protected static function time2SecondExpected()
     {
         return [
             30,

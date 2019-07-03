@@ -11,7 +11,10 @@
         }
     ],
     "autoload": {
-        "psr-4": { "marsapp\\helper\\timeperiod\\": "src", "marsapp\\helper\\test\\timeperiod\\": "test"}
+        "psr-4": { "marsapp\\helper\\timeperiod\\": "src"}
+    },
+    "autoload-dev": {
+        "psr-4": { "marsapp\\helper\\test\\timeperiod\\": "test"}
     },
     "minimum-stability": "stable",
     "require-dev": {

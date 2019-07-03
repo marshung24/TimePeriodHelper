@@ -328,7 +328,7 @@ $result = TimePeriodHelper::isOverlap($templete1, $templete2);
 
 
 ### [contact()](#outline)
-Time period in contact with the specified time
+The time period is in contact with the specified time (time period)
 
 ```php
 contact(Array $timePeriods, String $sDateTime, String $eDateTime = null, $sortOut = 'default') : Array

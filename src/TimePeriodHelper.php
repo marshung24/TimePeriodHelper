@@ -299,7 +299,7 @@ class TimePeriodHelper
     }
     
     /**
-     * Time period in contact with the specified time
+     * The time period is in contact with the specified time (time period)
      * 
      * @param array $timePeriods
      * @param string $sDateTime
@@ -802,7 +802,7 @@ class TimePeriodHelper
                 if (substr($tp[0], 11, 2) == '24') {
                     $timePeriods[$k][0] = self::extendTime($timePeriods[$k][0], 0);
                 }
-                if (substr($tp[01], 11, 2) == '24') {
+                if (substr($tp[1], 11, 2) == '24') {
                     $timePeriods[$k][1] = self::extendTime($timePeriods[$k][1], 0);
                 }
             }
