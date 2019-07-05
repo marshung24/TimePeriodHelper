@@ -1,4 +1,5 @@
 <?php
+
 namespace marsapp\helper\timeperiod;
 
 /**
@@ -50,14 +51,14 @@ class TimePeriodHelper
         // Default sort out $timePeriods
         'sortOut' => true,
     ];
-    
-    
+
+
     /**
      * ************************************************
      * ************** Operation Function **************
      * ************************************************
      */
-    
+
     /**
      * Sort time periods (Order by ASC)
      * 
@@ -67,7 +68,7 @@ class TimePeriodHelper
      * @param array $timePeriods
      * @return array
      */
-    public static function sort(Array $timePeriods)
+    public static function sort(array $timePeriods)
     {
         // Closure in PHP 7.0.X loop maybe die
         usort($timePeriods, function ($a, $b) {
@@ -78,13 +79,13 @@ class TimePeriodHelper
                 // Compare Start time
                 $r = $a[0] < $b[0] ? -1 : 1;
             }
-            
+
             return $r;
         });
-        
+
         return $timePeriods;
     }
-    
+
     /**
      * Union one or more time periods
      * 
@@ -97,15 +98,15 @@ class TimePeriodHelper
     public static function union()
     {
         $opt = [];
-        
+
         // Combine and sort
         $merge = call_user_func_array('array_merge', func_get_args());
         $merge = self::sort($merge);
-        
+
         if (empty($merge)) {
             return $opt;
         }
-        
+
         $tmp = array_shift($merge);
         foreach ($merge as $k => $tp) {
             if ($tp[0] > $tmp[1]) {
@@ -118,10 +119,10 @@ class TimePeriodHelper
             }
         }
         $opt[] = $tmp;
-        
+
         return $opt;
     }
-    
+
     /**
      * Computes the difference of time periods
      * 
@@ -134,21 +135,21 @@ class TimePeriodHelper
      * @param bool $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
      * @return array
      */
-    public static function diff(Array $timePeriods1, Array $timePeriods2, $sortOut = 'default')
+    public static function diff(array $timePeriods1, array $timePeriods2, $sortOut = 'default')
     {
         /*** Arguments prepare ***/
         // Subject or pattern is empty, do nothing
         if (empty($timePeriods1) || empty($timePeriods2)) {
             return $timePeriods1;
         }
-        
+
         // Data sorting out
-        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : !!$sortOut;
         if ($sortOut) {
             $timePeriods1 = self::union($timePeriods1);
             $timePeriods2 = self::union($timePeriods2);
         }
-        
+
         $opt = [];
         foreach ($timePeriods1 as $k1 => $ori) {
             foreach ($timePeriods2 as $ko => $sub) {
@@ -165,29 +166,29 @@ class TimePeriodHelper
                     break;
                 } elseif ($ori[0] < $sub[0] && $sub[1] < $ori[1]) {
                     // Delete internal: --ori0--sub0--sub1--ori1--
-                    $opt[]= [$ori[0], $sub[0]];
+                    $opt[] = [$ori[0], $sub[0]];
                     $ori = [$sub[1], $ori[1]];
-              //} elseif ($sub[0] <= $ori[0] && $sub[1] <= $ori[1]) { // Complete condition
+                    //} elseif ($sub[0] <= $ori[0] && $sub[1] <= $ori[1]) { // Complete condition
                 } elseif ($sub[0] <= $ori[0]) { // Equivalent condition
                     // Delete overlap: --sub0--ori0--sub1--ori1--
                     $ori = [$sub[1], $ori[1]];
-              //} elseif ($ori[0] <= $sub[0] && $ori[1] <= $sub[1]) { // Complete condition
-              //} elseif ($ori[1] <= $sub[1]) { // Equivalent condition
+                    //} elseif ($ori[0] <= $sub[0] && $ori[1] <= $sub[1]) { // Complete condition
+                    //} elseif ($ori[1] <= $sub[1]) { // Equivalent condition
                 } else { // Equivalent condition
                     // Delete overlap: --ori0--sub0--ori1--sub1--
                     $ori = [$ori[0], $sub[0]];
                 }
             }
-            
+
             // All No overlap
-            if (! empty($ori)) {
+            if (!empty($ori)) {
                 $opt[] = $ori;
             }
         }
-        
+
         return $opt;
     }
-    
+
     /**
      * Computes the intersection of time periods
      * 
@@ -199,20 +200,20 @@ class TimePeriodHelper
      * @param bool $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
      * @return array
      */
-    public static function intersect(Array $timePeriods1, Array $timePeriods2, $sortOut = 'default')
+    public static function intersect(array $timePeriods1, array $timePeriods2, $sortOut = 'default')
     {
         // Subject or pattern is empty, do nothing
         if (empty($timePeriods1) || empty($timePeriods2)) {
             return [];
         }
-        
+
         // Data sorting out
-        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : !!$sortOut;
         if ($sortOut) {
             $timePeriods1 = self::union($timePeriods1);
             $timePeriods2 = self::union($timePeriods2);
         }
-        
+
         $opt = [];
         foreach ($timePeriods1 as $k1 => $ori) {
             foreach ($timePeriods2 as $ko => $sub) {
@@ -231,13 +232,13 @@ class TimePeriodHelper
                     // Delete internal: --ori0--sub0--sub1--ori1--
                     $opt[] = [$sub[0], $sub[1]];
                     $ori = [$sub[1], $ori[1]];
-              //} elseif ($sub[0] <= $ori[0] && $sub[1] <= $ori[1]) { // Complete condition
+                    //} elseif ($sub[0] <= $ori[0] && $sub[1] <= $ori[1]) { // Complete condition
                 } elseif ($sub[0] <= $ori[0]) { // Equivalent condition
                     // Delete overlap: --sub0--ori0--sub1--ori1--
                     $opt[] = [$ori[0], $sub[1]];
                     $ori = [$sub[1], $ori[1]];
-              //} elseif ($ori[0] <= $sub[0] && $ori[1] <= $sub[1]) { // Complete condition
-              //} elseif ($ori[1] <= $sub[1]) { // Equivalent condition
+                    //} elseif ($ori[0] <= $sub[0] && $ori[1] <= $sub[1]) { // Complete condition
+                    //} elseif ($ori[1] <= $sub[1]) { // Equivalent condition
                 } else { // Equivalent condition
                     // Delete overlap: --ori0--sub0--ori1--sub1--
                     $opt[] = [$sub[0], $ori[1]];
@@ -245,10 +246,10 @@ class TimePeriodHelper
                 }
             }
         }
-        
+
         return $opt;
     }
-    
+
     /**
      * Time period is overlap
      * 
@@ -260,13 +261,13 @@ class TimePeriodHelper
      * @param array $timePeriods2
      * @return bool
      */
-    public static function isOverlap(Array $timePeriods1, Array $timePeriods2)
+    public static function isOverlap(array $timePeriods1, array $timePeriods2)
     {
         // Subject or pattern is empty, do nothing
         if (empty($timePeriods1) || empty($timePeriods2)) {
             return false;
         }
-        
+
         foreach ($timePeriods1 as $k1 => $ori) {
             foreach ($timePeriods2 as $ko => $sub) {
                 if ($sub[1] <= $ori[0]) {
@@ -282,22 +283,22 @@ class TimePeriodHelper
                 } elseif ($ori[0] < $sub[0] && $sub[1] < $ori[1]) {
                     // Delete internal: --ori0--sub0--sub1--ori1--
                     return true;
-              //} elseif ($sub[0] <= $ori[0] && $sub[1] <= $ori[1]) { // Complete condition
+                    //} elseif ($sub[0] <= $ori[0] && $sub[1] <= $ori[1]) { // Complete condition
                 } elseif ($sub[0] <= $ori[0]) { // Equivalent condition
                     // Delete overlap: --sub0--ori0--sub1--ori1--
                     return true;
-              //} elseif ($ori[0] <= $sub[0] && $ori[1] <= $sub[1]) { // Complete condition
-              //} elseif ($ori[1] <= $sub[1]) { // Equivalent condition
+                    //} elseif ($ori[0] <= $sub[0] && $ori[1] <= $sub[1]) { // Complete condition
+                    //} elseif ($ori[1] <= $sub[1]) { // Equivalent condition
                 } else { // Equivalent condition
                     // Delete overlap: --ori0--sub0--ori1--sub1--
                     return true;
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * The time period is in contact with the specified time (time period)
      * 
@@ -307,26 +308,26 @@ class TimePeriodHelper
      * @param string $sortOut
      * @return array
      */
-    public static function contact(Array $timePeriods, $sDateTime, $eDateTime = null, $sortOut = 'default')
+    public static function contact(array $timePeriods, $sDateTime, $eDateTime = null, $sortOut = 'default')
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
             return [];
         }
-        
+
         // Set $eDateTime
         if (is_null($eDateTime)) {
             $eDateTime = $sDateTime;
         }
-        
+
         // Data sorting out
-        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : !!$sortOut;
         if ($sortOut) {
             $timePeriods = self::union($timePeriods);
             $sDateTime = min($sDateTime, $eDateTime);
             $eDateTime = max($sDateTime, $eDateTime);
         }
-        
+
         // Get Contact time periods
         $opt = [];
         foreach ($timePeriods as $k => $tp) {
@@ -343,10 +344,10 @@ class TimePeriodHelper
                 $opt[] = $tp;
             }
         }
-        
+
         return $opt;
     }
-    
+
     /**
      * Time period greater than the specified time
      * 
@@ -356,19 +357,19 @@ class TimePeriodHelper
      * @param string $sortOut
      * @return array
      */
-    public static function greaterThan(Array $timePeriods, $refDatetime, $intactTime = true, $sortOut = 'default')
+    public static function greaterThan(array $timePeriods, $refDatetime, $intactTime = true, $sortOut = 'default')
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
             return [];
         }
-        
+
         // Data sorting out
-        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : !!$sortOut;
         if ($sortOut) {
             $timePeriods = self::union($timePeriods);
         }
-        
+
         // Get Contact time periods
         $opt = [];
         foreach ($timePeriods as $k => $tp) {
@@ -384,10 +385,10 @@ class TimePeriodHelper
                 }
             }
         }
-        
+
         return $opt;
     }
-    
+
     /**
      * Time period less than the specified time
      * 
@@ -397,19 +398,19 @@ class TimePeriodHelper
      * @param string $sortOut
      * @return array
      */
-    public static function lessThan(Array $timePeriods, $refDatetime, $intactTime = true, $sortOut = 'default')
+    public static function lessThan(array $timePeriods, $refDatetime, $intactTime = true, $sortOut = 'default')
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
             return [];
         }
-        
+
         // Data sorting out
-        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : !!$sortOut;
         if ($sortOut) {
             $timePeriods = self::union($timePeriods);
         }
-        
+
         // Get Contact time periods
         $opt = [];
         foreach ($timePeriods as $k => $tp) {
@@ -425,10 +426,10 @@ class TimePeriodHelper
                 }
             }
         }
-        
+
         return $opt;
     }
-    
+
     /**
      * Fill time periods
      * 
@@ -437,10 +438,10 @@ class TimePeriodHelper
      * @param array $timePeriods
      * @return array
      */
-    public static function fill(Array $timePeriods)
+    public static function fill(array $timePeriods)
     {
         $opt = [];
-        
+
         if (isset($timePeriods[0][0])) {
             $tmp = array_shift($timePeriods);
             $start = $tmp[0];
@@ -449,9 +450,9 @@ class TimePeriodHelper
                 $start = min($start, $tp[0]);
                 $end = max($end, $tp[1]);
             }
-            $opt = [[$start,$end]];
+            $opt = [[$start, $end]];
         }
-        
+
         return $opt;
     }
 
@@ -464,26 +465,26 @@ class TimePeriodHelper
      * @param bool $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
      * @return array
      */
-    public static function gap(Array $timePeriods, $sortOut = 'default')
+    public static function gap(array $timePeriods, $sortOut = 'default')
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
             return [];
         }
-        
+
         // Data sorting out
-        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : !!$sortOut;
         if ($sortOut) {
             $timePeriods = self::union($timePeriods);
         }
-        
+
         $opt = [];
         foreach ($timePeriods as $k => $tp) {
-            if (isset($timePeriods[$k+1])) {
-                $opt[] = [$tp[1], $timePeriods[$k+1][0]];
+            if (isset($timePeriods[$k + 1])) {
+                $opt[] = [$tp[1], $timePeriods[$k + 1][0]];
             }
         }
-        
+
         return $opt;
     }
 
@@ -500,30 +501,30 @@ class TimePeriodHelper
      * @param bool $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
      * @return number
      */
-    public static function time(Array $timePeriods, $precision = 0, $sortOut = 'default')
+    public static function time(array $timePeriods, $precision = 0, $sortOut = 'default')
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
             return 0;
         }
-        
+
         // Data sorting out
-        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : !!$sortOut;
         if ($sortOut) {
             $timePeriods = self::union($timePeriods);
         }
-        
+
         // Calculate time
         $time = 0;
         foreach ($timePeriods as $k => $tp) {
             $time += strtotime($tp[1]) - strtotime($tp[0]);
         }
-        
+
         // Time unit convert
         switch (self::getUnit('time')) {
             case 'minute':
                 if ($precision > 0) {
-                    $pow = pow(10, (int)$precision);
+                    $pow = pow(10, (int) $precision);
                     $time = ((int) ($time / 60 * $pow)) / $pow;
                 } else {
                     $time = (int) ($time / 60);
@@ -531,14 +532,14 @@ class TimePeriodHelper
                 break;
             case 'hour':
                 if ($precision > 0) {
-                    $pow = pow(10, (int)$precision);
+                    $pow = pow(10, (int) $precision);
                     $time = ((int) ($time / 3600 * $pow)) / $pow;
                 } else {
                     $time = (int) ($time / 3600);
                 }
                 break;
         }
-        
+
         return $time;
     }
 
@@ -556,28 +557,28 @@ class TimePeriodHelper
      * @param bool $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
      * @return array
      */
-    public static function cut(Array $timePeriods, $time, $extension = false, $sortOut = 'default')
+    public static function cut(array $timePeriods, $time, $extension = false, $sortOut = 'default')
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
             return [];
         }
-        
+
         // Data sorting out
-        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : !!$sortOut;
         if ($sortOut) {
             $timePeriods = self::union($timePeriods);
         }
-        
+
         // Convert time by unit
         $time = self::time2Second($time);
-        
+
         $opt = [];
         $timeLen = 0;
         foreach ($timePeriods as $k => $tp) {
             // Calculation time
             $tlen = strtotime($tp[1]) - strtotime($tp[0]);
-            
+
             // Judging the length of time
             if ($timeLen + $tlen <= $time) {
                 // Within limits
@@ -597,19 +598,19 @@ class TimePeriodHelper
                 break;
             }
         }
-        
+
         // Extend the last time period
         if ($extension && ($timeLen < $time)) {
             $eTime = $time - $timeLen;
             $eIdx = sizeof($opt) - 1;
-            
+
             $tps = $opt[$eIdx][0];
             $tpe = self::extendTime($opt[$eIdx][1], $eTime);
             if ($tps != $tpe) {
                 $opt[$eIdx] = [$tps, $tpe];
             }
         }
-        
+
         return $opt;
     }
 
@@ -627,27 +628,27 @@ class TimePeriodHelper
      * @param bool $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
      * @return array
      */
-    public static function extend(Array $timePeriods, $time, $interval = 0, $sortOut = 'default')
+    public static function extend(array $timePeriods, $time, $interval = 0, $sortOut = 'default')
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
             return [];
         }
-        
+
         // Data sorting out
-        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : !!$sortOut;
         if ($sortOut) {
             $timePeriods = self::union($timePeriods);
         }
-        
+
         // Convert time by unit
         $time = self::time2Second($time);
         $interval = self::time2Second($interval);
-        
+
         // last time period index
         $eIdx = sizeof($timePeriods) - 1;
-        
-        if (! $interval) {
+
+        if (!$interval) {
             // No gap, Directly extend the end time
             $timePeriods[$eIdx][1] = self::extendTime($timePeriods[$eIdx][1], $time);
         } else {
@@ -657,9 +658,8 @@ class TimePeriodHelper
             if ($tps != $tpe) {
                 $timePeriods[] = [$tps, $tpe];
             }
-            
         }
-        
+
         return $timePeriods;
     }
 
@@ -677,50 +677,50 @@ class TimePeriodHelper
      * @param bool $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
      * @return array
      */
-    public static function shorten(Array $timePeriods, $time, $crossperiod = true, $sortOut = 'default')
+    public static function shorten(array $timePeriods, $time, $crossperiod = true, $sortOut = 'default')
     {
         // Subject is empty, do nothing
         if (empty($timePeriods)) {
             return [];
         }
-        
+
         // Data sorting out
-        $sortOut = $sortOut === 'default' ? self::getSortOut() : ! ! $sortOut;
+        $sortOut = $sortOut === 'default' ? self::getSortOut() : !!$sortOut;
         if ($sortOut) {
             $timePeriods = self::union($timePeriods);
         }
-        
+
         // Convert time by unit
         $time = self::time2Second($time);
-        
+
         // last time period index
         $eIdx = sizeof($timePeriods) - 1;
-        
-        for ($i = $eIdx; $i>=0; $i--) {
+
+        for ($i = $eIdx; $i >= 0; $i--) {
             $tps = $timePeriods[$i][0];
             $tpe = $timePeriods[$i][1];
             $tTime = strtotime($tpe) - strtotime($tps);
-            
+
             if ($tTime <= $time) {
                 // Not enough, unset this timeperiod
                 unset($timePeriods[$i]);
                 $time -= $tTime;
             } else {
                 // Enough, shorten end time.
-                $timePeriods[$i][1] = self::extendTime($timePeriods[$i][0], $tTime-$time);
+                $timePeriods[$i][1] = self::extendTime($timePeriods[$i][0], $tTime - $time);
                 $time = 0;
                 break;
             }
-            
+
             // End or No cross-period
-            if ($time <= 0 || ! $crossperiod) {
+            if ($time <= 0 || !$crossperiod) {
                 break;
             }
         }
-        
+
         return $timePeriods;
     }
-    
+
     /**
      * Transform format
      * 
@@ -728,16 +728,16 @@ class TimePeriodHelper
      * @param string $unit Time unit, if default,use class options setting
      * @return array
      */
-    public static function format(Array $timePeriods, $unit = 'default')
+    public static function format(array $timePeriods, $unit = 'default')
     {
-        foreach ($timePeriods as $k => & $tp) {
+        foreach ($timePeriods as $k => &$tp) {
             $tp[0] = self::timeFormatConv($tp[0], $unit);
             $tp[1] = self::timeFormatConv($tp[1], $unit);
         }
-        
+
         return $timePeriods;
     }
-    
+
     /**
      * Validate time period
      * 
@@ -752,7 +752,7 @@ class TimePeriodHelper
         self::filter($timePeriods, true);
         return true;
     }
-    
+
     /**
      * Remove invalid time period
      * 
@@ -767,15 +767,15 @@ class TimePeriodHelper
     public static function filter($timePeriods, $exception = false)
     {
         // If not array, return.
-        if (! is_array($timePeriods)) {
+        if (!is_array($timePeriods)) {
             if ($exception)
                 throw new \Exception('Time periods format error !', 400);
             return [];
         }
-        
+
         foreach ($timePeriods as $k => $tp) {
             // filter format, number
-            if (! is_array($tp) || sizeof($tp) != 2) {
+            if (!is_array($tp) || sizeof($tp) != 2) {
                 if ($exception)
                     throw new \Exception('Time periods format error !', 400);
                 unset($timePeriods[$k]);
@@ -789,13 +789,13 @@ class TimePeriodHelper
                 continue;
             }
             // filter time format
-            if (self::getFilterDatetime() && (! self::isDatetime($tp[0]) || ! self::isDatetime($tp[1]))) {
+            if (self::getFilterDatetime() && (!self::isDatetime($tp[0]) || !self::isDatetime($tp[1]))) {
                 if ($exception)
                     throw new \Exception('Time periods format error !', 400);
                 unset($timePeriods[$k]);
                 continue;
             }
-            
+
             // Time carry
             $timeLen = strlen($tp[0]);
             if ($timeLen >= 13) {
@@ -807,18 +807,18 @@ class TimePeriodHelper
                 }
             }
         }
-        
+
         return $timePeriods;
     }
-    
-    
+
+
     /**
      * **********************************************
      * ************** Options Function **************
      * **********************************************
      */
-    
-    
+
+
     /**
      * Specify the minimum unit of calculation
      * 
@@ -833,28 +833,28 @@ class TimePeriodHelper
     public static function setUnit(string $unit, string $target = 'all')
     {
         /*** Arguments prepare ***/
-        if (! isset(self::$_options['unitMap'][$unit])) {
+        if (!isset(self::$_options['unitMap'][$unit])) {
             throw new \Exception('Error Unit: ' . $unit, 400);
         }
         // conv unit
         $unit = self::$_options['unitMap'][$unit];
-        
-        if ($target != 'all' && ! isset(self::$_options['unit'][$target])) {
+
+        if ($target != 'all' && !isset(self::$_options['unit'][$target])) {
             throw new \Exception('Error Target: ' . $target, 400);
         }
-        
+
         /* Setting */
         if ($target != 'all') {
             self::$_options['unit'][$target] = $unit;
         } else {
-            foreach (self::$_options['unit'] as $tar => & $value) {
+            foreach (self::$_options['unit'] as $tar => &$value) {
                 $value = $unit;
             }
         }
-        
+
         return new static();
     }
-    
+
     /**
      * Get the unit used by the specified function
      * 
@@ -870,7 +870,7 @@ class TimePeriodHelper
             throw new \Exception('Error Target: ' . $target, 400);
         }
     }
-    
+
     /**
      * If neet filter datetime : Set option
      * 
@@ -885,10 +885,10 @@ class TimePeriodHelper
     public static function setFilterDatetime($bool)
     {
         self::$_options['filter']['isDatetime'] = !!$bool;
-        
+
         return new static();
     }
-    
+
     /**
      * If neet filter datetime : Get option
      * 
@@ -898,7 +898,7 @@ class TimePeriodHelper
     {
         return self::$_options['filter']['isDatetime'];
     }
-    
+
     /**
      * Auto sort out $timePeriods : Set option
      *
@@ -911,10 +911,10 @@ class TimePeriodHelper
     public static function setSortOut($bool = true)
     {
         self::$_options['sortOut'] = !!$bool;
-        
+
         return new static();
     }
-    
+
     /**
      * Auto sort out $timePeriods : Get option
      *
@@ -924,13 +924,13 @@ class TimePeriodHelper
     {
         return self::$_options['sortOut'];
     }
-    
+
     /**
      * ********************************************
      * ************** Tools Function **************
      * ********************************************
      */
-    
+
     /**
      * Check datetime fast
      * 
@@ -941,9 +941,9 @@ class TimePeriodHelper
      */
     public static function isDatetime(string $datetime)
     {
-        return (bool)preg_match('|^[0-9]{4}\-[0-9]{2}\-[0-9]{2}\ [0-9]{2}\:[0-9]{2}\:[0-9]{2}$|', $datetime);
+        return (bool) preg_match('|^[0-9]{4}\-[0-9]{2}\-[0-9]{2}\ [0-9]{2}\:[0-9]{2}\:[0-9]{2}$|', $datetime);
     }
-    
+
     /**
      * Time format convert
      * 
@@ -956,8 +956,8 @@ class TimePeriodHelper
      */
     public static function timeFormatConv(string $datetime, $unit = 'default')
     {
-        $unit = ! isset(self::$_options['unitMap'][$unit]) ? self::$_options['unit']['format'] : self::$_options['unitMap'][$unit];
-        
+        $unit = !isset(self::$_options['unitMap'][$unit]) ? self::$_options['unit']['format'] : self::$_options['unitMap'][$unit];
+
         // fill format
         $strlen = strlen($datetime);
         switch ($strlen) {
@@ -980,17 +980,17 @@ class TimePeriodHelper
             case 18:
                 $datetime .= '0';
         }
-        
+
         // replace
         if ($unit == 'minute') {
             $datetime = substr_replace($datetime, "00", 17, 2);
         } elseif ($unit == 'hour') {
             $datetime = substr_replace($datetime, "00:00", 14, 5);
         }
-        
+
         return $datetime;
     }
-    
+
     /**
      * Extend time
      * 
@@ -1003,7 +1003,7 @@ class TimePeriodHelper
         $tout = date('Y-m-d H:i:s', strtotime($datetime) + $timeLen);
         return substr($tout, 0, strlen($datetime));
     }
-    
+
     /**
      * Time Conversion frm unit to second
      * 
@@ -1014,8 +1014,8 @@ class TimePeriodHelper
     public static function time2Second($time, $unit = 'default')
     {
         // Git time unit
-        $unit = ! isset(self::$_options['unitMap'][$unit]) ? self::getUnit('time') : self::$_options['unitMap'][$unit];
-        
+        $unit = !isset(self::$_options['unitMap'][$unit]) ? self::getUnit('time') : self::$_options['unitMap'][$unit];
+
         // Convert
         switch ($unit) {
             case 'minute':
@@ -1025,7 +1025,7 @@ class TimePeriodHelper
                 $time = $time * 3600;
                 break;
         }
-        
+
         return $time;
     }
 }

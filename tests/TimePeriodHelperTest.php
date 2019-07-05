@@ -12,13 +12,13 @@ use marsapp\helper\timeperiod\TimePeriodHelper;
  */
 class TimePeriodHelperTest extends TestCase
 {
-    
+
     /**
      * *********************************************
      * ************** Public Function **************
      * *********************************************
      */
-    
+
     /**
      * Test Sort
      */
@@ -26,12 +26,12 @@ class TimePeriodHelperTest extends TestCase
     {
         $templete = self::sortData();
         $expected = self::sortExpected();
-        
+
         $result = TimePeriodHelper::sort($templete);
-        
+
         $this->assertEquals($expected, $result);
     }
-    
+
     /**
      * Test Union
      */
@@ -40,16 +40,16 @@ class TimePeriodHelperTest extends TestCase
         $templete1 = self::unionData1();
         $templete2 = self::unionData2();
         $expected = self::unionExpected();
-        
+
         $result = TimePeriodHelper::union($templete1, $templete2);
-        
+
         $this->assertEquals($expected, $result);
 
         // test Empty
         $result = TimePeriodHelper::union([]);
         $this->assertEquals([], $result);
     }
-    
+
     /**
      * Test Diff
      */
@@ -58,17 +58,17 @@ class TimePeriodHelperTest extends TestCase
         $templete1 = self::diffData1();
         $templete2 = self::diffData2();
         $expected = self::diffExpected();
-        
+
         // The same
         TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::diff($templete1, $templete2);
         $this->assertEquals($expected, $result);
-        
+
         // Need Different
         TimePeriodHelper::setSortOut(false);
         $result = TimePeriodHelper::diff($templete1, $templete2);
         $this->assertNotEquals($expected, $result);
-        
+
         // The same
         $result = TimePeriodHelper::diff($templete1, $templete2, true);
         $this->assertEquals($expected, $result);
@@ -80,7 +80,7 @@ class TimePeriodHelperTest extends TestCase
         $result = TimePeriodHelper::diff([], $templete2);
         $this->assertNotEquals($expected, $result);
     }
-    
+
     /**
      * Test Intersect
      */
@@ -89,30 +89,30 @@ class TimePeriodHelperTest extends TestCase
         $templete1 = self::intersectData1();
         $templete2 = self::intersectData2();
         $expected = self::intersectExpected();
-        
+
         // The same
         TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::intersect($templete1, $templete2);
         $this->assertEquals($expected, $result);
-        
+
         // Need Different
         TimePeriodHelper::setSortOut(false);
         $result = TimePeriodHelper::intersect($templete1, $templete2);
         $this->assertNotEquals($expected, $result);
-        
+
         // The same
         $result = TimePeriodHelper::intersect($templete1, $templete2, true);
         $this->assertEquals($expected, $result);
-        
+
         // Need Different
         $result = TimePeriodHelper::intersect($templete1, $templete2, false);
         $this->assertNotEquals($expected, $result);
-        
+
         // Need Different
         $result = TimePeriodHelper::intersect([], $templete2, false);
         $this->assertNotEquals($expected, $result);
     }
-    
+
     /**
      * Test IsOverlap
      */
@@ -121,7 +121,7 @@ class TimePeriodHelperTest extends TestCase
         $templete1 = self::isOverlapData1();
         $templete2 = self::isOverlapData2();
         $expected = self::isOverlapExpected();
-        
+
         $result = TimePeriodHelper::isOverlap([], $templete2[0]);
         $this->assertEquals(false, $result);
 
@@ -130,7 +130,7 @@ class TimePeriodHelperTest extends TestCase
             $this->assertEquals($expected[$k1], $result);
         }
     }
-    
+
     /**
      * Test Contact
      */
@@ -138,12 +138,12 @@ class TimePeriodHelperTest extends TestCase
     {
         $templetes = self::contactData();
         $expecteds = self::contactExpected();
-        
+
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','contact'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'contact'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
 
@@ -151,7 +151,7 @@ class TimePeriodHelperTest extends TestCase
         $result = TimePeriodHelper::contact([], '2019-06-11 15:00:00');
         $this->assertNotEquals(false, $result);
     }
-    
+
     /**
      * Test GreaterThan
      */
@@ -159,20 +159,20 @@ class TimePeriodHelperTest extends TestCase
     {
         $templetes = self::greaterThanData();
         $expecteds = self::greaterThanExpected();
-        
+
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','greaterThan'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'greaterThan'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
-        
+
         // Test Empty input
         $result = TimePeriodHelper::greaterThan([], '2019-06-11 15:00:00');
         $this->assertNotEquals(false, $result);
     }
-    
+
     /**
      * Test LessThan
      */
@@ -180,20 +180,20 @@ class TimePeriodHelperTest extends TestCase
     {
         $templetes = self::lessThanData();
         $expecteds = self::lessThanExpected();
-        
+
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','lessThan'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'lessThan'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
-        
+
         // Test Empty input
         $result = TimePeriodHelper::lessThan([], '2019-06-11 15:00:00');
         $this->assertNotEquals(false, $result);
     }
-    
+
     /**
      * Test Fill
      */
@@ -201,11 +201,11 @@ class TimePeriodHelperTest extends TestCase
     {
         $templete = self::fillData();
         $expected = self::fillExpected();
-        
+
         $result = TimePeriodHelper::fill($templete);
         $this->assertEquals($expected, $result);
     }
-    
+
     /**
      * Test Gap
      */
@@ -213,21 +213,21 @@ class TimePeriodHelperTest extends TestCase
     {
         $templete = self::gapData();
         $expected = self::gapExpected();
-        
+
         // The same
         TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::gap($templete);
         $this->assertEquals($expected, $result);
-        
+
         // Need Different
         TimePeriodHelper::setSortOut(false);
         $result = TimePeriodHelper::gap($templete);
         $this->assertNotEquals($expected, $result);
-        
+
         // The same
         $result = TimePeriodHelper::gap($templete, true);
         $this->assertEquals($expected, $result);
-        
+
         // Need Different
         $result = TimePeriodHelper::gap($templete, false);
         $this->assertNotEquals($expected, $result);
@@ -236,7 +236,7 @@ class TimePeriodHelperTest extends TestCase
         $result = TimePeriodHelper::gap([]);
         $this->assertEquals([], $result);
     }
-    
+
     /**
      * Test Time
      */
@@ -244,57 +244,57 @@ class TimePeriodHelperTest extends TestCase
     {
         $templete = self::timeData();
         $expected = self::timeExpected();
-        
+
         TimePeriodHelper::setUnit('second');
-        
+
         // The same, Auto sorting out $templete - second
         TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::time($templete);
         $this->assertEquals($expected, $result);
-        
+
         // Need Different, No sorting out $templete - second
         TimePeriodHelper::setSortOut(false);
         $result = TimePeriodHelper::time($templete);
         $this->assertNotEquals($expected, $result);
-        
+
         // The same, Set sorting out $templete by argument - second
         $result = TimePeriodHelper::time($templete, 0, true);
         $this->assertEquals($expected, $result);
-        
+
         // Need Different, No sorting out $templete by argument - second
         $result = TimePeriodHelper::time($templete, 0, false);
         $this->assertNotEquals($expected, $result);
-        
+
         // The same, Auto sorting out $templete - minutes - No precision
         TimePeriodHelper::setUnit('minutes');
         TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::time($templete, 0);
         $this->assertEquals(floor($expected / 60), $result);
-        
+
         // The same, Auto sorting out $templete - minutes - Has precision
         TimePeriodHelper::setUnit('minutes');
         TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::time($templete, 2);
-        $this->assertEquals(((int)($expected / 60 * 100)) / 100, $result);
-        
+        $this->assertEquals(((int) ($expected / 60 * 100)) / 100, $result);
+
         // The same, Manually sorting out $templete - hour
         TimePeriodHelper::setUnit('h');
         TimePeriodHelper::setSortOut(false);
         $templete = TimePeriodHelper::union($templete);
         $result = TimePeriodHelper::time($templete);
         $this->assertEquals(floor($expected / 3600), $result);
-        
+
         // The same, Auto sorting out $templete - hour - Has precision
         TimePeriodHelper::setUnit('hour');
         TimePeriodHelper::setSortOut(true);
         $result = TimePeriodHelper::time($templete, 2);
-        $this->assertEquals(((int)($expected / 3600 * 100)) / 100, $result);
-        
+        $this->assertEquals(((int) ($expected / 3600 * 100)) / 100, $result);
+
         // Test Empty input
         $result = TimePeriodHelper::time([]);
         $this->assertEquals(0, $result);
     }
-    
+
     /**
      * Test Cut
      */
@@ -304,30 +304,30 @@ class TimePeriodHelperTest extends TestCase
         $expecteds = self::cutExpected();
         $templetesNS = self::cutNotSortData();
         $expectedsNS = self::cutNotSortExpected();
-        
+
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
             unset($templete[3]);
-            
+
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','cut'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'cut'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
-        
+
         // Need Different, No sorting out $templete
         TimePeriodHelper::setSortOut(false);
         foreach ($templetesNS  as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
             unset($templete[3]);
-            
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','cut'], $templete);
+
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'cut'], $templete);
             $this->assertNotEquals($expectedsNS[$k], $result);
         }
-        
+
         // The same, Auto sorting out $templete by argument
         foreach ($templetes as $k => $templete) {
             // Set time uint
@@ -335,12 +335,12 @@ class TimePeriodHelperTest extends TestCase
             unset($templete[3]);
             // Set sort out by argument
             $templete[3] = true;
-            
+
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','cut'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'cut'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
-        
+
         // Need Different, No sorting out $templete by argument
         foreach ($templetesNS as $k => $templete) {
             // Set time uint
@@ -348,17 +348,16 @@ class TimePeriodHelperTest extends TestCase
             unset($templete[3]);
             // Set sort out by argument
             $templete[3] = false;
-            
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','cut'], $templete);
+
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'cut'], $templete);
             $this->assertNotEquals($expectedsNS[$k], $result);
         }
-        
+
         // Test Empty input
         $result = TimePeriodHelper::cut([], 0);
         $this->assertEquals([], $result);
-        
     }
-    
+
     /**
      * Test Extend
      */
@@ -368,31 +367,31 @@ class TimePeriodHelperTest extends TestCase
         $expecteds = self::extendExpected();
         $templetesNS = self::extendNotSortData();
         $expectedsNS = self::extendNotSortExpected();
-        
+
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
             unset($templete[3]);
-            
+
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','extend'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'extend'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
-        
+
         // Need Different, No sorting out $templete
         TimePeriodHelper::setSortOut(false);
         foreach ($templetesNS as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
             unset($templete[3]);
-            
+
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','extend'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'extend'], $templete);
             $this->assertNotEquals($expectedsNS[$k], $result);
         }
-        
+
         // The same, Auto sorting out $templete by argument
         foreach ($templetes as $k => $templete) {
             // Set time uint
@@ -400,12 +399,12 @@ class TimePeriodHelperTest extends TestCase
             unset($templete[3]);
             // Set sort out by argument
             $templete[3] = true;
-            
+
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','extend'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'extend'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
-        
+
         // Need Different, No sorting out $templete by argument
         foreach ($templetesNS as $k => $templete) {
             // Set time uint
@@ -413,17 +412,17 @@ class TimePeriodHelperTest extends TestCase
             unset($templete[3]);
             // Set sort out by argument
             $templete[3] = false;
-            
+
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','extend'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'extend'], $templete);
             $this->assertNotEquals($expectedsNS[$k], $result);
         }
-        
+
         // Test Empty input
         $result = TimePeriodHelper::extend([], 0);
         $this->assertEquals([], $result);
     }
-    
+
     /**
      * Test Shorten
      */
@@ -433,32 +432,32 @@ class TimePeriodHelperTest extends TestCase
         $expecteds = self::shortenExpected();
         $templetesNS = self::shortenNotSortData();
         $expectedsNS = self::shortenNotSortExpected();
-        
-        
+
+
         // The same, Auto sorting out $templete
         TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
             unset($templete[3]);
-            
+
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','shorten'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'shorten'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
-        
+
         // Need Different, No sorting out $templete
         TimePeriodHelper::setSortOut(false);
         foreach ($templetesNS as $k => $templete) {
             // Set time uint
             TimePeriodHelper::setUnit($templete[3]);
             unset($templete[3]);
-            
+
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','shorten'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'shorten'], $templete);
             $this->assertNotEquals($expectedsNS[$k], $result);
         }
-        
+
         // The same, Auto sorting out $templetee by argument
         foreach ($templetes as $k => $templete) {
             // Set time uint
@@ -466,12 +465,12 @@ class TimePeriodHelperTest extends TestCase
             unset($templete[3]);
             // Set sort out by argument
             $templete[3] = true;
-            
+
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','shorten'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'shorten'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
-        
+
         // Need Different, No sorting out $templetee by argument
         foreach ($templetesNS as $k => $templete) {
             // Set time uint
@@ -479,18 +478,18 @@ class TimePeriodHelperTest extends TestCase
             unset($templete[3]);
             // Set sort out by argument
             $templete[3] = false;
-            
+
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','shorten'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'shorten'], $templete);
             $this->assertNotEquals($expectedsNS[$k], $result);
         }
-        
-        
+
+
         // Test Empty input
         $result = TimePeriodHelper::shorten([], 0);
         $this->assertEquals([], $result);
     }
-    
+
     /**
      * Test Format
      */
@@ -500,35 +499,35 @@ class TimePeriodHelperTest extends TestCase
         $expectedS = self::formatExpectedS();
         $expectedM = self::formatExpectedM();
         $expectedH = self::formatExpectedH();
-        
+
         // The same
         TimePeriodHelper::setUnit('s');
         $result = TimePeriodHelper::format($templete);
         $this->assertEquals($expectedS, $result);
-        
+
         // The same
         TimePeriodHelper::setUnit('minute');
         $result = TimePeriodHelper::format($templete);
         $this->assertEquals($expectedM, $result);
-        
+
         // The same
         TimePeriodHelper::setUnit('hours');
         $result = TimePeriodHelper::format($templete);
         $this->assertEquals($expectedH, $result);
-        
+
         // The same
         $result = TimePeriodHelper::format($templete);
         $this->assertEquals($expectedH, $result);
-        
+
         // The same
         $result = TimePeriodHelper::format($templete, 'second');
         $this->assertEquals($expectedS, $result);
-        
+
         // Need Different
         $result = TimePeriodHelper::format($templete);
         $this->assertNotEquals($expectedS, $result);
     }
-    
+
     /**
      * Test Validate
      */
@@ -546,7 +545,7 @@ class TimePeriodHelperTest extends TestCase
             $this->assertEquals($expected[$k], $result);
         }
     }
-    
+
     /**
      * Test Filter
      */
@@ -556,7 +555,7 @@ class TimePeriodHelperTest extends TestCase
         $templete2 = self::filterData2();
         $expected1 = self::filterExpected1();
         $expected2 = self::filterExpected2();
-        
+
         // not array
         $result0 = TimePeriodHelper::filter('');
         $this->assertEquals([], $result0);
@@ -564,15 +563,15 @@ class TimePeriodHelperTest extends TestCase
         // The same
         $result1 = TimePeriodHelper::filter($templete1);
         $this->assertEquals($expected1, $result1);
-        
+
         // The same
         $result2 = TimePeriodHelper::filter($templete2);
         $this->assertEquals($expected2, $result2);
-        
+
         // Need Different
         $this->assertNotEquals($expected2, $result1);
     }
-    
+
     /**
      * Test IsDatetime
      */
@@ -580,15 +579,15 @@ class TimePeriodHelperTest extends TestCase
     {
         $templetes = self::isDatetimeData();
         $expecteds = self::isDatetimeExpected();
-        
+
         // The same, Auto sorting out $templete
         foreach ($templetes as $k => $templete) {
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','isDatetime'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'isDatetime'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
     }
-    
+
     /**
      * Test TimeFormatConv
      */
@@ -596,16 +595,16 @@ class TimePeriodHelperTest extends TestCase
     {
         $templetes = self::timeFormatConvData();
         $expecteds = self::timeFormatConvExpected();
-        
+
         // The same, default unit: second
         TimePeriodHelper::setUnit('second');
         foreach ($templetes as $k => $templete) {
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','timeFormatConv'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'timeFormatConv'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
     }
-    
+
     /**
      * Test Time2Second
      */
@@ -613,16 +612,16 @@ class TimePeriodHelperTest extends TestCase
     {
         $templetes = self::time2SecondData();
         $expecteds = self::time2SecondExpected();
-        
+
         // The same, default unit: second
         TimePeriodHelper::setUnit('second');
         foreach ($templetes as $k => $templete) {
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper','time2Second'], $templete);
+            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'time2Second'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
     }
-    
+
     /**
      * Test Set/Get Unit
      */
@@ -675,7 +674,7 @@ class TimePeriodHelperTest extends TestCase
         }
         $this->assertEquals(false, $result);
     }
-    
+
     /**
      * Test Set/Get FilterDatetime
      */
@@ -691,7 +690,7 @@ class TimePeriodHelperTest extends TestCase
         $result = TimePeriodHelper::setFilterDatetime(false)->getFilterDatetime();
         $this->assertEquals(false, $result);
     }
-    
+
     /**
      * Test Set/Get SortOut
      */
@@ -707,15 +706,15 @@ class TimePeriodHelperTest extends TestCase
         $result = TimePeriodHelper::setSortOut(false)->getSortOut();
         $this->assertEquals(false, $result);
     }
-    
 
-    
+
+
     /**
      * ****************************************************
      * ************** Data Templete Function **************
      * ****************************************************
      */
-    
+
     /**
      * Test Data - Sort
      * @return array
@@ -723,21 +722,21 @@ class TimePeriodHelperTest extends TestCase
     protected static function sortData()
     {
         return [
-            ['2019-01-04 12:00:00','2019-01-04 18:00:00'],
-            ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 12:00:00','2019-01-04 18:00:00'],
-            ['2019-01-04 12:00:00','2019-01-04 17:00:00'],
-            ['2019-01-04 12:00:00','2019-01-04 19:00:00'],
-            ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 09:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 07:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 10:00:00','2019-01-04 16:00:00'],
-            ['2019-01-04 11:00:00','2019-01-04 18:00:00'],
-            ['2019-01-04 10:00:00','2019-01-04 18:00:00'],
-            ['2019-01-04 11:00:00','2019-01-04 15:00:00']
+            ['2019-01-04 12:00:00', '2019-01-04 18:00:00'],
+            ['2019-01-04 08:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 12:00:00', '2019-01-04 18:00:00'],
+            ['2019-01-04 12:00:00', '2019-01-04 17:00:00'],
+            ['2019-01-04 12:00:00', '2019-01-04 19:00:00'],
+            ['2019-01-04 08:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 09:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 07:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 10:00:00', '2019-01-04 16:00:00'],
+            ['2019-01-04 11:00:00', '2019-01-04 18:00:00'],
+            ['2019-01-04 10:00:00', '2019-01-04 18:00:00'],
+            ['2019-01-04 11:00:00', '2019-01-04 15:00:00']
         ];
     }
-    
+
     /**
      * Expected Data - Sort
      * @return array
@@ -745,21 +744,21 @@ class TimePeriodHelperTest extends TestCase
     protected static function sortExpected()
     {
         return [
-            ['2019-01-04 07:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 09:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 10:00:00','2019-01-04 16:00:00'],
-            ['2019-01-04 10:00:00','2019-01-04 18:00:00'],
-            ['2019-01-04 11:00:00','2019-01-04 15:00:00'],
-            ['2019-01-04 11:00:00','2019-01-04 18:00:00'],
-            ['2019-01-04 12:00:00','2019-01-04 17:00:00'],
-            ['2019-01-04 12:00:00','2019-01-04 18:00:00'],
-            ['2019-01-04 12:00:00','2019-01-04 18:00:00'],
-            ['2019-01-04 12:00:00','2019-01-04 19:00:00']
+            ['2019-01-04 07:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 08:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 08:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 09:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 10:00:00', '2019-01-04 16:00:00'],
+            ['2019-01-04 10:00:00', '2019-01-04 18:00:00'],
+            ['2019-01-04 11:00:00', '2019-01-04 15:00:00'],
+            ['2019-01-04 11:00:00', '2019-01-04 18:00:00'],
+            ['2019-01-04 12:00:00', '2019-01-04 17:00:00'],
+            ['2019-01-04 12:00:00', '2019-01-04 18:00:00'],
+            ['2019-01-04 12:00:00', '2019-01-04 18:00:00'],
+            ['2019-01-04 12:00:00', '2019-01-04 19:00:00']
         ];
     }
-    
+
     /**
      * Test Data - Union
      * @return array
@@ -767,13 +766,13 @@ class TimePeriodHelperTest extends TestCase
     protected static function unionData1()
     {
         return [
-            ['2019-01-04 13:00:00','2019-01-04 15:00:00'],
-            ['2019-01-04 10:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 19:00:00','2019-01-04 22:00:00'],
-            ['2019-01-04 15:00:00','2019-01-04 18:00:00']
+            ['2019-01-04 13:00:00', '2019-01-04 15:00:00'],
+            ['2019-01-04 10:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 19:00:00', '2019-01-04 22:00:00'],
+            ['2019-01-04 15:00:00', '2019-01-04 18:00:00']
         ];
     }
-    
+
     /**
      * Test Data - Union
      * @return array
@@ -781,12 +780,12 @@ class TimePeriodHelperTest extends TestCase
     protected static function unionData2()
     {
         return [
-            ['2019-01-04 08:00:00','2019-01-04 09:00:00'],
-            ['2019-01-04 14:00:00','2019-01-04 16:00:00'],
-            ['2019-01-04 21:00:00','2019-01-04 23:00:00']
+            ['2019-01-04 08:00:00', '2019-01-04 09:00:00'],
+            ['2019-01-04 14:00:00', '2019-01-04 16:00:00'],
+            ['2019-01-04 21:00:00', '2019-01-04 23:00:00']
         ];
     }
-    
+
     /**
      * Expected Data - Union
      * @return array
@@ -794,13 +793,13 @@ class TimePeriodHelperTest extends TestCase
     protected static function unionExpected()
     {
         return [
-            ['2019-01-04 08:00:00','2019-01-04 09:00:00'],
-            ['2019-01-04 10:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 13:00:00','2019-01-04 18:00:00'],
-            ['2019-01-04 19:00:00','2019-01-04 23:00:00']
+            ['2019-01-04 08:00:00', '2019-01-04 09:00:00'],
+            ['2019-01-04 10:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 13:00:00', '2019-01-04 18:00:00'],
+            ['2019-01-04 19:00:00', '2019-01-04 23:00:00']
         ];
     }
-    
+
     /**
      * Test Data - Diff
      * @return array
@@ -809,32 +808,32 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // 1
-            ['2019-01-01 01:00:00','2019-01-01 02:00:00'],
-            ['2019-01-02 01:00:00','2019-01-02 02:00:00'],
+            ['2019-01-01 01:00:00', '2019-01-01 02:00:00'],
+            ['2019-01-02 01:00:00', '2019-01-02 02:00:00'],
             // 2
-            ['2019-01-03 01:00:00','2019-01-03 02:00:00'],
-            ['2019-01-04 01:00:00','2019-01-04 02:00:00'],
+            ['2019-01-03 01:00:00', '2019-01-03 02:00:00'],
+            ['2019-01-04 01:00:00', '2019-01-04 02:00:00'],
             // 3
-            ['2019-01-04 03:00:00','2019-01-04 04:00:00'],
-            ['2019-01-04 05:00:00','2019-01-04 06:00:00'],
+            ['2019-01-04 03:00:00', '2019-01-04 04:00:00'],
+            ['2019-01-04 05:00:00', '2019-01-04 06:00:00'],
             // 4
-            ['2019-01-04 07:00:00','2019-01-04 08:00:00'],
+            ['2019-01-04 07:00:00', '2019-01-04 08:00:00'],
             // 5
-            ['2019-01-04 09:00:00','2019-01-04 10:00:00'],
-            ['2019-01-04 11:00:00','2019-01-04 12:00:00'],
+            ['2019-01-04 09:00:00', '2019-01-04 10:00:00'],
+            ['2019-01-04 11:00:00', '2019-01-04 12:00:00'],
             // 6
-            ['2019-01-04 13:00:00','2019-01-04 14:00:00'],
-            ['2019-01-04 15:00:00','2019-01-04 16:00:00'],
+            ['2019-01-04 13:00:00', '2019-01-04 14:00:00'],
+            ['2019-01-04 15:00:00', '2019-01-04 16:00:00'],
             // Multiple processing
-            ['2019-01-04 17:00:00','2019-01-04 20:00:00'],
+            ['2019-01-04 17:00:00', '2019-01-04 20:00:00'],
             // Multiple processing - cross time
-            ['2019-01-04 21:00:00','2019-01-04 21:40:00'],
-            ['2019-01-04 21:20:00','2019-01-04 22:00:00'],
-            ['2019-01-04 22:30:00','2019-01-04 23:00:00'],
-            
+            ['2019-01-04 21:00:00', '2019-01-04 21:40:00'],
+            ['2019-01-04 21:20:00', '2019-01-04 22:00:00'],
+            ['2019-01-04 22:30:00', '2019-01-04 23:00:00'],
+
         ];
     }
-    
+
     /**
      * Test Data - Diff
      * @return array
@@ -843,31 +842,31 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // 1
-            ['2019-01-01 00:30:00','2019-01-01 00:59:59'],
-            ['2019-01-02 00:30:00','2019-01-02 01:00:00'],
+            ['2019-01-01 00:30:00', '2019-01-01 00:59:59'],
+            ['2019-01-02 00:30:00', '2019-01-02 01:00:00'],
             // 2
-            ['2019-01-03 02:00:00','2019-01-03 02:30:00'],
-            ['2019-01-04 02:00:01','2019-01-04 02:30:00'],
+            ['2019-01-03 02:00:00', '2019-01-03 02:30:00'],
+            ['2019-01-04 02:00:01', '2019-01-04 02:30:00'],
             // 3
-            ['2019-01-04 03:00:00','2019-01-04 04:00:00'],
-            ['2019-01-04 04:50:00','2019-01-04 06:00:01'],
+            ['2019-01-04 03:00:00', '2019-01-04 04:00:00'],
+            ['2019-01-04 04:50:00', '2019-01-04 06:00:01'],
             // 4
-            ['2019-01-04 07:30:00','2019-01-04 07:40:00'],
+            ['2019-01-04 07:30:00', '2019-01-04 07:40:00'],
             // 5
-            ['2019-01-04 09:30:00','2019-01-04 10:00:00'],
-            ['2019-01-04 11:30:00','2019-01-04 12:00:01'],
+            ['2019-01-04 09:30:00', '2019-01-04 10:00:00'],
+            ['2019-01-04 11:30:00', '2019-01-04 12:00:01'],
             // 6
-            ['2019-01-04 13:00:00','2019-01-04 13:30:00'],
-            ['2019-01-04 14:50:00','2019-01-04 15:30:00'],
+            ['2019-01-04 13:00:00', '2019-01-04 13:30:00'],
+            ['2019-01-04 14:50:00', '2019-01-04 15:30:00'],
             // Multiple processing
-            ['2019-01-04 17:30:00','2019-01-04 18:00:00'],
-            ['2019-01-04 18:30:00','2019-01-04 19:00:00'],
-            ['2019-01-04 19:30:00','2019-01-04 20:30:00'],
+            ['2019-01-04 17:30:00', '2019-01-04 18:00:00'],
+            ['2019-01-04 18:30:00', '2019-01-04 19:00:00'],
+            ['2019-01-04 19:30:00', '2019-01-04 20:30:00'],
             // Multiple processing - cross time
-            ['2019-01-04 21:30:00','2019-01-04 22:50:00'],
+            ['2019-01-04 21:30:00', '2019-01-04 22:50:00'],
         ];
     }
-    
+
     /**
      * Expected Data - Diff
      * @return array
@@ -876,30 +875,30 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // 1
-            ['2019-01-01 01:00:00','2019-01-01 02:00:00'],
-            ['2019-01-02 01:00:00','2019-01-02 02:00:00'],
+            ['2019-01-01 01:00:00', '2019-01-01 02:00:00'],
+            ['2019-01-02 01:00:00', '2019-01-02 02:00:00'],
             // 2
-            ['2019-01-03 01:00:00','2019-01-03 02:00:00'],
-            ['2019-01-04 01:00:00','2019-01-04 02:00:00'],
+            ['2019-01-03 01:00:00', '2019-01-03 02:00:00'],
+            ['2019-01-04 01:00:00', '2019-01-04 02:00:00'],
             // 4
-            ['2019-01-04 07:00:00','2019-01-04 07:30:00'],
-            ['2019-01-04 07:40:00','2019-01-04 08:00:00'],
+            ['2019-01-04 07:00:00', '2019-01-04 07:30:00'],
+            ['2019-01-04 07:40:00', '2019-01-04 08:00:00'],
             // 5
-            ['2019-01-04 09:00:00','2019-01-04 09:30:00'],
-            ['2019-01-04 11:00:00','2019-01-04 11:30:00'],
+            ['2019-01-04 09:00:00', '2019-01-04 09:30:00'],
+            ['2019-01-04 11:00:00', '2019-01-04 11:30:00'],
             // 6
-            ['2019-01-04 13:30:00','2019-01-04 14:00:00'],
-            ['2019-01-04 15:30:00','2019-01-04 16:00:00'],
+            ['2019-01-04 13:30:00', '2019-01-04 14:00:00'],
+            ['2019-01-04 15:30:00', '2019-01-04 16:00:00'],
             // Multiple processing
-            ['2019-01-04 17:00:00','2019-01-04 17:30:00'],
-            ['2019-01-04 18:00:00','2019-01-04 18:30:00'],
-            ['2019-01-04 19:00:00','2019-01-04 19:30:00'],
+            ['2019-01-04 17:00:00', '2019-01-04 17:30:00'],
+            ['2019-01-04 18:00:00', '2019-01-04 18:30:00'],
+            ['2019-01-04 19:00:00', '2019-01-04 19:30:00'],
             // Multiple processing - cross time
-            ['2019-01-04 21:00:00','2019-01-04 21:30:00'],
-            ['2019-01-04 22:50:00','2019-01-04 23:00:00'],
+            ['2019-01-04 21:00:00', '2019-01-04 21:30:00'],
+            ['2019-01-04 22:50:00', '2019-01-04 23:00:00'],
         ];
     }
-    
+
     /**
      * Test Data - Intersect
      * @return array
@@ -908,31 +907,31 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // 1
-            ['2019-01-01 01:00:00','2019-01-01 02:00:00'],
-            ['2019-01-02 01:00:00','2019-01-02 02:00:00'],
+            ['2019-01-01 01:00:00', '2019-01-01 02:00:00'],
+            ['2019-01-02 01:00:00', '2019-01-02 02:00:00'],
             // 2
-            ['2019-01-03 01:00:00','2019-01-03 02:00:00'],
-            ['2019-01-04 01:00:00','2019-01-04 02:00:00'],
+            ['2019-01-03 01:00:00', '2019-01-03 02:00:00'],
+            ['2019-01-04 01:00:00', '2019-01-04 02:00:00'],
             // 3
-            ['2019-01-04 03:00:00','2019-01-04 04:00:00'],
-            ['2019-01-04 05:00:00','2019-01-04 06:00:00'],
+            ['2019-01-04 03:00:00', '2019-01-04 04:00:00'],
+            ['2019-01-04 05:00:00', '2019-01-04 06:00:00'],
             // 4
-            ['2019-01-04 07:00:00','2019-01-04 08:00:00'],
+            ['2019-01-04 07:00:00', '2019-01-04 08:00:00'],
             // 5
-            ['2019-01-04 09:00:00','2019-01-04 10:00:00'],
-            ['2019-01-04 11:00:00','2019-01-04 12:00:00'],
+            ['2019-01-04 09:00:00', '2019-01-04 10:00:00'],
+            ['2019-01-04 11:00:00', '2019-01-04 12:00:00'],
             // 6
-            ['2019-01-04 13:00:00','2019-01-04 14:00:00'],
-            ['2019-01-04 15:00:00','2019-01-04 16:00:00'],
+            ['2019-01-04 13:00:00', '2019-01-04 14:00:00'],
+            ['2019-01-04 15:00:00', '2019-01-04 16:00:00'],
             // Multiple processing
-            ['2019-01-04 17:00:00','2019-01-04 20:00:00'],
+            ['2019-01-04 17:00:00', '2019-01-04 20:00:00'],
             // Multiple processing - cross time
-            ['2019-01-04 21:00:00','2019-01-04 21:40:00'],
-            ['2019-01-04 21:20:00','2019-01-04 22:00:00'],
-            ['2019-01-04 22:30:00','2019-01-04 23:00:00'],
+            ['2019-01-04 21:00:00', '2019-01-04 21:40:00'],
+            ['2019-01-04 21:20:00', '2019-01-04 22:00:00'],
+            ['2019-01-04 22:30:00', '2019-01-04 23:00:00'],
         ];
     }
-    
+
     /**
      * Test Data - Intersect
      * @return array
@@ -941,31 +940,31 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // 1
-            ['2019-01-01 00:30:00','2019-01-01 00:59:59'],
-            ['2019-01-02 00:30:00','2019-01-02 01:00:00'],
+            ['2019-01-01 00:30:00', '2019-01-01 00:59:59'],
+            ['2019-01-02 00:30:00', '2019-01-02 01:00:00'],
             // 2
-            ['2019-01-03 02:00:00','2019-01-03 02:30:00'],
-            ['2019-01-04 02:00:01','2019-01-04 02:30:00'],
+            ['2019-01-03 02:00:00', '2019-01-03 02:30:00'],
+            ['2019-01-04 02:00:01', '2019-01-04 02:30:00'],
             // 3
-            ['2019-01-04 03:00:00','2019-01-04 04:00:00'],
-            ['2019-01-04 04:50:00','2019-01-04 06:00:01'],
+            ['2019-01-04 03:00:00', '2019-01-04 04:00:00'],
+            ['2019-01-04 04:50:00', '2019-01-04 06:00:01'],
             // 4
-            ['2019-01-04 07:30:00','2019-01-04 07:40:00'],
+            ['2019-01-04 07:30:00', '2019-01-04 07:40:00'],
             // 5
-            ['2019-01-04 09:30:00','2019-01-04 10:00:00'],
-            ['2019-01-04 11:30:00','2019-01-04 12:00:01'],
+            ['2019-01-04 09:30:00', '2019-01-04 10:00:00'],
+            ['2019-01-04 11:30:00', '2019-01-04 12:00:01'],
             // 6
-            ['2019-01-04 13:00:00','2019-01-04 13:30:00'],
-            ['2019-01-04 14:50:00','2019-01-04 15:30:00'],
+            ['2019-01-04 13:00:00', '2019-01-04 13:30:00'],
+            ['2019-01-04 14:50:00', '2019-01-04 15:30:00'],
             // Multiple processing
-            ['2019-01-04 17:30:00','2019-01-04 18:00:00'],
-            ['2019-01-04 18:30:00','2019-01-04 19:00:00'],
-            ['2019-01-04 19:30:00','2019-01-04 20:30:00'],
+            ['2019-01-04 17:30:00', '2019-01-04 18:00:00'],
+            ['2019-01-04 18:30:00', '2019-01-04 19:00:00'],
+            ['2019-01-04 19:30:00', '2019-01-04 20:30:00'],
             // Multiple processing - cross time
-            ['2019-01-04 21:30:00','2019-01-04 22:50:00'],
+            ['2019-01-04 21:30:00', '2019-01-04 22:50:00'],
         ];
     }
-    
+
     /**
      * Expected Data - Intersect
      * @return array
@@ -974,26 +973,26 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // 3
-            ['2019-01-04 03:00:00','2019-01-04 04:00:00'],
-            ['2019-01-04 05:00:00','2019-01-04 06:00:00'],
+            ['2019-01-04 03:00:00', '2019-01-04 04:00:00'],
+            ['2019-01-04 05:00:00', '2019-01-04 06:00:00'],
             // 4
-            ['2019-01-04 07:30:00','2019-01-04 07:40:00'],
+            ['2019-01-04 07:30:00', '2019-01-04 07:40:00'],
             // 5
-            ['2019-01-04 09:30:00','2019-01-04 10:00:00'],
-            ['2019-01-04 11:30:00','2019-01-04 12:00:00'],
+            ['2019-01-04 09:30:00', '2019-01-04 10:00:00'],
+            ['2019-01-04 11:30:00', '2019-01-04 12:00:00'],
             // 6
-            ['2019-01-04 13:00:00','2019-01-04 13:30:00'],
-            ['2019-01-04 15:00:00','2019-01-04 15:30:00'],
+            ['2019-01-04 13:00:00', '2019-01-04 13:30:00'],
+            ['2019-01-04 15:00:00', '2019-01-04 15:30:00'],
             // Multiple processing
-            ['2019-01-04 17:30:00','2019-01-04 18:00:00'],
-            ['2019-01-04 18:30:00','2019-01-04 19:00:00'],
-            ['2019-01-04 19:30:00','2019-01-04 20:00:00'],
+            ['2019-01-04 17:30:00', '2019-01-04 18:00:00'],
+            ['2019-01-04 18:30:00', '2019-01-04 19:00:00'],
+            ['2019-01-04 19:30:00', '2019-01-04 20:00:00'],
             // Multiple processing - cross time
-            ['2019-01-04 21:30:00','2019-01-04 22:00:00'],
-            ['2019-01-04 22:30:00','2019-01-04 22:50:00'],
+            ['2019-01-04 21:30:00', '2019-01-04 22:00:00'],
+            ['2019-01-04 22:30:00', '2019-01-04 22:50:00'],
         ];
     }
-    
+
     /**
      * Test Data - IsOverlap
      * @return array
@@ -1002,30 +1001,30 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // 1
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
             // 2
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
             // 3
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
             // 4
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
             // 5
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
             // 6
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
             // 7
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
             // 8
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
             // 9
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
             // 10
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
             // 11
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
         ];
     }
-    
+
     /**
      * Test Data - IsOverlap
      * @return array
@@ -1034,39 +1033,39 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // 1
-            [['2019-01-04 07:00:00','2019-01-04 08:00:00']],
+            [['2019-01-04 07:00:00', '2019-01-04 08:00:00']],
             // 2
-            [['2019-01-04 07:00:00','2019-01-04 07:59:59']],
+            [['2019-01-04 07:00:00', '2019-01-04 07:59:59']],
             // 3
-            [['2019-01-04 12:00:00','2019-01-04 13:00:00']],
+            [['2019-01-04 12:00:00', '2019-01-04 13:00:00']],
             // 4
-            [['2019-01-04 12:00:01','2019-01-04 13:00:00']],
+            [['2019-01-04 12:00:01', '2019-01-04 13:00:00']],
             // 5
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
             // 6
-            [['2019-01-04 07:00:00','2019-01-04 13:00:00']],
+            [['2019-01-04 07:00:00', '2019-01-04 13:00:00']],
             // 7
-            [['2019-01-04 09:00:00','2019-01-04 11:00:00']],
+            [['2019-01-04 09:00:00', '2019-01-04 11:00:00']],
             // 8
-            [['2019-01-04 07:00:00','2019-01-04 10:00:00']],
+            [['2019-01-04 07:00:00', '2019-01-04 10:00:00']],
             // 9
-            [['2019-01-04 07:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 07:00:00', '2019-01-04 12:00:00']],
             // 10
-            [['2019-01-04 08:00:00','2019-01-04 13:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 13:00:00']],
             // 11
-            [['2019-01-04 09:00:00','2019-01-04 13:00:00']],
+            [['2019-01-04 09:00:00', '2019-01-04 13:00:00']],
         ];
     }
-    
+
     /**
      * Expected Data - IsOverlap
      * @return array
      */
     protected static function isOverlapExpected()
     {
-        return [false,false,false,false,true,true,true,true,true,true,true];
+        return [false, false, false, false, true, true, true, true, true, true, true];
     }
-    
+
     /**
      * Test Data - Contact
      * @return array
@@ -1074,17 +1073,17 @@ class TimePeriodHelperTest extends TestCase
     protected static function contactData()
     {
         return [
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 12:00:00'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 12:00:00', '2019-01-04 13:00:00'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 12:00:00', '2019-01-04 14:00:00'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 13:00:00'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 13:00:00', '2019-01-04 14:00:00'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 13:30:00'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 13:30:00', '2019-01-04 18:00:00'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 13:30:00', '2019-01-04 22:00:00'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 12:00:00'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 12:00:00', '2019-01-04 13:00:00'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 12:00:00', '2019-01-04 14:00:00'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 13:00:00'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 13:00:00', '2019-01-04 14:00:00'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 13:30:00'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 13:30:00', '2019-01-04 18:00:00'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 13:30:00', '2019-01-04 22:00:00'],
         ];
     }
-    
+
     /**
      * Expected Data - Contact
      * @return array
@@ -1094,15 +1093,15 @@ class TimePeriodHelperTest extends TestCase
         return [
             [],
             [],
-            [['2019-01-04 13:00:00','2019-01-04 16:00:00']],
-            [['2019-01-04 13:00:00','2019-01-04 16:00:00']],
-            [['2019-01-04 13:00:00','2019-01-04 16:00:00']],
-            [['2019-01-04 13:00:00','2019-01-04 16:00:00']],
-            [['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']],
-            [['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']],
+            [['2019-01-04 13:00:00', '2019-01-04 16:00:00']],
+            [['2019-01-04 13:00:00', '2019-01-04 16:00:00']],
+            [['2019-01-04 13:00:00', '2019-01-04 16:00:00']],
+            [['2019-01-04 13:00:00', '2019-01-04 16:00:00']],
+            [['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']],
+            [['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']],
         ];
     }
-    
+
     /**
      * Test Data - GreaterThan
      * @return array
@@ -1110,17 +1109,17 @@ class TimePeriodHelperTest extends TestCase
     protected static function greaterThanData()
     {
         return [
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 13:00:00', false],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 14:00:00', false],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 16:00:00', false],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 13:00:00', true],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 14:00:00', true],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 16:00:00', true],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 13:00:00', false],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 14:00:00', false],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 16:00:00', false],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 13:00:00', true],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 14:00:00', true],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 16:00:00', true],
             // default value test
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 14:00:00'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 14:00:00'],
         ];
     }
-    
+
     /**
      * Expected Data - GreaterThan
      * @return array
@@ -1128,17 +1127,17 @@ class TimePeriodHelperTest extends TestCase
     protected static function greaterThanExpected()
     {
         return [
-            [['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']],
-            [['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']],
-            [['2019-01-04 17:00:00','2019-01-04 19:00:00']],
-            [['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']],
-            [['2019-01-04 17:00:00','2019-01-04 19:00:00']],
-            [['2019-01-04 17:00:00','2019-01-04 19:00:00']],
+            [['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']],
+            [['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']],
+            [['2019-01-04 17:00:00', '2019-01-04 19:00:00']],
+            [['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']],
+            [['2019-01-04 17:00:00', '2019-01-04 19:00:00']],
+            [['2019-01-04 17:00:00', '2019-01-04 19:00:00']],
             // default value test
-            [['2019-01-04 17:00:00','2019-01-04 19:00:00']],
+            [['2019-01-04 17:00:00', '2019-01-04 19:00:00']],
         ];
     }
-    
+
     /**
      * Test Data - LessThan
      * @return array
@@ -1146,17 +1145,17 @@ class TimePeriodHelperTest extends TestCase
     protected static function lessThanData()
     {
         return [
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 13:00:00', false],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 14:00:00', false],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 16:00:00', false],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 13:00:00', true],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 14:00:00', true],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 16:00:00', true],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 13:00:00', false],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 14:00:00', false],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 16:00:00', false],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 13:00:00', true],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 14:00:00', true],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 16:00:00', true],
             // default value test
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00'], ['2019-01-04 17:00:00','2019-01-04 19:00:00']], '2019-01-04 14:00:00'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00'], ['2019-01-04 17:00:00', '2019-01-04 19:00:00']], '2019-01-04 14:00:00'],
         ];
     }
-    
+
     /**
      * Expected Data - LessThan
      * @return array
@@ -1164,17 +1163,17 @@ class TimePeriodHelperTest extends TestCase
     protected static function lessThanExpected()
     {
         return [
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']],
             // default value test
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
         ];
     }
-    
+
     /**
      * Test Data - Fill
      * @return array
@@ -1182,12 +1181,12 @@ class TimePeriodHelperTest extends TestCase
     protected static function fillData()
     {
         return [
-            ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 10:00:00','2019-01-04 19:00:00'],
-            ['2019-01-04 12:00:00','2019-01-04 18:00:00']
+            ['2019-01-04 08:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 10:00:00', '2019-01-04 19:00:00'],
+            ['2019-01-04 12:00:00', '2019-01-04 18:00:00']
         ];
     }
-    
+
     /**
      * Expected Data - Fill
      * @return array
@@ -1195,10 +1194,10 @@ class TimePeriodHelperTest extends TestCase
     protected static function fillExpected()
     {
         return [
-            ['2019-01-04 08:00:00','2019-01-04 19:00:00'],
+            ['2019-01-04 08:00:00', '2019-01-04 19:00:00'],
         ];
     }
-    
+
     /**
      * Test Data - Gap
      * @return array
@@ -1206,13 +1205,13 @@ class TimePeriodHelperTest extends TestCase
     protected static function gapData()
     {
         return [
-            ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 04:00:00','2019-01-04 05:00:00'],
-            ['2019-01-04 07:00:00','2019-01-04 09:00:00'],
-            ['2019-01-04 13:00:00','2019-01-04 18:00:00']
+            ['2019-01-04 08:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 04:00:00', '2019-01-04 05:00:00'],
+            ['2019-01-04 07:00:00', '2019-01-04 09:00:00'],
+            ['2019-01-04 13:00:00', '2019-01-04 18:00:00']
         ];
     }
-    
+
     /**
      * Expected Data - Gap
      * @return array
@@ -1220,11 +1219,11 @@ class TimePeriodHelperTest extends TestCase
     protected static function gapExpected()
     {
         return [
-            ['2019-01-04 05:00:00','2019-01-04 07:00:00'],
-            ['2019-01-04 12:00:00','2019-01-04 13:00:00'],
+            ['2019-01-04 05:00:00', '2019-01-04 07:00:00'],
+            ['2019-01-04 12:00:00', '2019-01-04 13:00:00'],
         ];
     }
-    
+
     /**
      * Test Data - Time
      * @return array
@@ -1232,13 +1231,13 @@ class TimePeriodHelperTest extends TestCase
     protected static function timeData()
     {
         return [
-            ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 04:00:00','2019-01-04 05:00:00'],
-            ['2019-01-04 07:00:00','2019-01-04 09:00:00'],
-            ['2019-01-04 13:00:00','2019-01-04 18:00:25']
+            ['2019-01-04 08:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 04:00:00', '2019-01-04 05:00:00'],
+            ['2019-01-04 07:00:00', '2019-01-04 09:00:00'],
+            ['2019-01-04 13:00:00', '2019-01-04 18:00:25']
         ];
     }
-    
+
     /**
      * Expected Data - Time
      * @return array
@@ -1247,7 +1246,7 @@ class TimePeriodHelperTest extends TestCase
     {
         return 39625;
     }
-    
+
     /**
      * Test Data - Cut
      * @return array
@@ -1255,20 +1254,20 @@ class TimePeriodHelperTest extends TestCase
     protected static function cutData()
     {
         return [
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']], '30', false, 'second'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']], '30', false, 'minute'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']], '30', false, 'hour'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']], '30', true, 'hour'],
-            
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 16:00']], '30', false, 'second'],
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 16:00']], '30', false, 'minute'],
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 16:00']], '30', false, 'hour'],
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 16:00']], '30', true, 'hour'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']], '30', false, 'second'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']], '30', false, 'minute'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']], '30', false, 'hour'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']], '30', true, 'hour'],
+
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 16:00']], '30', false, 'second'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 16:00']], '30', false, 'minute'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 16:00']], '30', false, 'hour'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 16:00']], '30', true, 'hour'],
             // Test auto sort out by  union()
-            [[['2019-01-04 09:00:00','2019-01-04 10:00:00'], ['2019-01-04 08:00:00','2019-01-04 09:00:00'], ['2019-01-04 09:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']], '30', false, 'hour'],
+            [[['2019-01-04 09:00:00', '2019-01-04 10:00:00'], ['2019-01-04 08:00:00', '2019-01-04 09:00:00'], ['2019-01-04 09:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']], '30', false, 'hour'],
         ];
     }
-    
+
     /**
      * Expected Data - Cut
      * @return array
@@ -1276,20 +1275,20 @@ class TimePeriodHelperTest extends TestCase
     protected static function cutExpected()
     {
         return [
-            [['2019-01-04 08:00:00','2019-01-04 08:00:30']],
-            [['2019-01-04 08:00:00','2019-01-04 08:30:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-05 15:00:00']],
-            
+            [['2019-01-04 08:00:00', '2019-01-04 08:00:30']],
+            [['2019-01-04 08:00:00', '2019-01-04 08:30:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-05 15:00:00']],
+
             [],
-            [['2019-01-04 08:00','2019-01-04 08:30']],
-            [['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 16:00']],
-            [['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-05 15:00']],
+            [['2019-01-04 08:00', '2019-01-04 08:30']],
+            [['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 16:00']],
+            [['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-05 15:00']],
             // Test auto sort out by  union()
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']],
         ];
     }
-    
+
     /**
      * Test Data - Cut no sortout
      * @return array
@@ -1298,10 +1297,10 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // Test auto sort out by  union()
-            [[['2019-01-04 09:00:00','2019-01-04 10:00:00'], ['2019-01-04 08:00:00','2019-01-04 09:00:00'], ['2019-01-04 09:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']], '30', false, 'hour'],
+            [[['2019-01-04 09:00:00', '2019-01-04 10:00:00'], ['2019-01-04 08:00:00', '2019-01-04 09:00:00'], ['2019-01-04 09:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']], '30', false, 'hour'],
         ];
     }
-    
+
     /**
      * Expected Data - Cut no sortout
      * @return array
@@ -1310,10 +1309,10 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // Test auto sort out by  union()
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 16:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']],
         ];
     }
-    
+
     /**
      * Test Data - Extend
      * @return array
@@ -1321,24 +1320,24 @@ class TimePeriodHelperTest extends TestCase
     protected static function extendData()
     {
         return [
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00']], '30', 0, 'second'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00']], '30', 0, 'minute'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00']], '2', 0, 'hour'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00']], '30', 40, 'second'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00']], '30', 40, 'minute'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00']], '2', 1, 'hour'],
-            
-            [[['2019-01-04 08:00','2019-01-04 12:00']], '30', 0, 'second'],
-            [[['2019-01-04 08:00','2019-01-04 12:00']], '30', 0, 'minute'],
-            [[['2019-01-04 08:00','2019-01-04 12:00']], '2', 0, 'hour'],
-            [[['2019-01-04 08:00','2019-01-04 12:00']], '30', 40, 'second'],
-            [[['2019-01-04 08:00','2019-01-04 12:00']], '30', 40, 'minute'],
-            [[['2019-01-04 08:00','2019-01-04 12:00']], '2', 1, 'hour'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00']], '30', 0, 'second'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00']], '30', 0, 'minute'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00']], '2', 0, 'hour'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00']], '30', 40, 'second'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00']], '30', 40, 'minute'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00']], '2', 1, 'hour'],
+
+            [[['2019-01-04 08:00', '2019-01-04 12:00']], '30', 0, 'second'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00']], '30', 0, 'minute'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00']], '2', 0, 'hour'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00']], '30', 40, 'second'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00']], '30', 40, 'minute'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00']], '2', 1, 'hour'],
             // Test auto sort out by  union()
-            [[['2019-01-04 09:00:00','2019-01-04 10:00:00'], ['2019-01-04 08:00:00','2019-01-04 10:00:00'], ['2019-01-04 09:00:00','2019-01-04 12:00:00']], '30', 0, 'minute'],
+            [[['2019-01-04 09:00:00', '2019-01-04 10:00:00'], ['2019-01-04 08:00:00', '2019-01-04 10:00:00'], ['2019-01-04 09:00:00', '2019-01-04 12:00:00']], '30', 0, 'minute'],
         ];
     }
-    
+
     /**
      * Expected Data - Extend
      * @return array
@@ -1346,24 +1345,24 @@ class TimePeriodHelperTest extends TestCase
     protected static function extendExpected()
     {
         return [
-            [['2019-01-04 08:00:00','2019-01-04 12:00:30']],
-            [['2019-01-04 08:00:00','2019-01-04 12:30:00']],
-            [['2019-01-04 08:00:00','2019-01-04 14:00:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 12:00:40','2019-01-04 12:01:10']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 12:40:00','2019-01-04 13:10:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']],
-            
-            [['2019-01-04 08:00','2019-01-04 12:00']],
-            [['2019-01-04 08:00','2019-01-04 12:30']],
-            [['2019-01-04 08:00','2019-01-04 14:00']],
-            [['2019-01-04 08:00','2019-01-04 12:00']],
-            [['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 12:40','2019-01-04 13:10']],
-            [['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:30']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:30:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 14:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 12:00:40', '2019-01-04 12:01:10']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 12:40:00', '2019-01-04 13:10:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']],
+
+            [['2019-01-04 08:00', '2019-01-04 12:00']],
+            [['2019-01-04 08:00', '2019-01-04 12:30']],
+            [['2019-01-04 08:00', '2019-01-04 14:00']],
+            [['2019-01-04 08:00', '2019-01-04 12:00']],
+            [['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 12:40', '2019-01-04 13:10']],
+            [['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 15:00']],
             // Test auto sort out by  union()
-            [['2019-01-04 08:00:00','2019-01-04 12:30:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:30:00']],
         ];
     }
-    
+
     /**
      * Test Data - Extend
      * @return array
@@ -1372,10 +1371,10 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // Test auto sort out by  union()
-            [[['2019-01-04 09:00:00','2019-01-04 10:00:00'], ['2019-01-04 08:00:00','2019-01-04 10:00:00'], ['2019-01-04 09:00:00','2019-01-04 12:00:00']], '30', 0, 'minute'],
+            [[['2019-01-04 09:00:00', '2019-01-04 10:00:00'], ['2019-01-04 08:00:00', '2019-01-04 10:00:00'], ['2019-01-04 09:00:00', '2019-01-04 12:00:00']], '30', 0, 'minute'],
         ];
     }
-    
+
     /**
      * Expected Data - Extend
      * @return array
@@ -1384,10 +1383,10 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // Test auto sort out by  union()
-            [['2019-01-04 08:00:00','2019-01-04 12:30:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:30:00']],
         ];
     }
-    
+
     /**
      * Test Data - Shorten
      * @return array
@@ -1395,38 +1394,38 @@ class TimePeriodHelperTest extends TestCase
     protected static function shortenData()
     {
         return [
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '30', true, 'second'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '30', true, 'minute'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '1', true, 'hour'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '2', true, 'hour'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '5', true, 'hour'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '10', true, 'hour'],
-            
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '30', false, 'second'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '30', false, 'minute'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '1', false, 'hour'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '2', false, 'hour'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '5', false, 'hour'],
-            [[['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '10', false, 'hour'],
-            
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '30', true, 'second'],
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '30', true, 'minute'],
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '1', true, 'hour'],
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '2', true, 'hour'],
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '5', true, 'hour'],
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '10', true, 'hour'],
-            
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '30', false, 'second'],
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '30', false, 'minute'],
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '1', false, 'hour'],
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '2', false, 'hour'],
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '5', false, 'hour'],
-            [[['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 15:00']], '10', false, 'hour'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']], '30', true, 'second'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']], '30', true, 'minute'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']], '1', true, 'hour'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']], '2', true, 'hour'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']], '5', true, 'hour'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']], '10', true, 'hour'],
+
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']], '30', false, 'second'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']], '30', false, 'minute'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']], '1', false, 'hour'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']], '2', false, 'hour'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']], '5', false, 'hour'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']], '10', false, 'hour'],
+
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 15:00']], '30', true, 'second'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 15:00']], '30', true, 'minute'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 15:00']], '1', true, 'hour'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 15:00']], '2', true, 'hour'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 15:00']], '5', true, 'hour'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 15:00']], '10', true, 'hour'],
+
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 15:00']], '30', false, 'second'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 15:00']], '30', false, 'minute'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 15:00']], '1', false, 'hour'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 15:00']], '2', false, 'hour'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 15:00']], '5', false, 'hour'],
+            [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 15:00']], '10', false, 'hour'],
             // Test auto sort out by  union()
-            [[['2019-01-04 09:00:00','2019-01-04 12:00:00'], ['2019-01-04 08:00:00','2019-01-04 10:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '5', true, 'hour'],
+            [[['2019-01-04 09:00:00', '2019-01-04 12:00:00'], ['2019-01-04 08:00:00', '2019-01-04 10:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']], '5', true, 'hour'],
         ];
     }
-    
+
     /**
      * Expected Data - Shorten
      * @return array
@@ -1434,38 +1433,38 @@ class TimePeriodHelperTest extends TestCase
     protected static function shortenExpected()
     {
         return [
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 14:59:30']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 14:30:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 14:00:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
-            [['2019-01-04 08:00:00','2019-01-04 09:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 14:59:30']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 14:30:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 14:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 09:00:00']],
             [],
-            
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 14:59:30']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 14:30:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00'], ['2019-01-04 13:00:00','2019-01-04 14:00:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00']],
-            
-            [['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 14:59']],
-            [['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 14:30']],
-            [['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 14:00']],
-            [['2019-01-04 08:00','2019-01-04 12:00']],
-            [['2019-01-04 08:00','2019-01-04 09:00']],
+
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 14:59:30']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 14:30:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 14:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
+
+            [['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 14:59']],
+            [['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 14:30']],
+            [['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 14:00']],
+            [['2019-01-04 08:00', '2019-01-04 12:00']],
+            [['2019-01-04 08:00', '2019-01-04 09:00']],
             [],
-            
-            [['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 14:59']],
-            [['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 14:30']],
-            [['2019-01-04 08:00','2019-01-04 12:00'], ['2019-01-04 13:00','2019-01-04 14:00']],
-            [['2019-01-04 08:00','2019-01-04 12:00']],
-            [['2019-01-04 08:00','2019-01-04 12:00']],
-            [['2019-01-04 08:00','2019-01-04 12:00']],
+
+            [['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 14:59']],
+            [['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 14:30']],
+            [['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 14:00']],
+            [['2019-01-04 08:00', '2019-01-04 12:00']],
+            [['2019-01-04 08:00', '2019-01-04 12:00']],
+            [['2019-01-04 08:00', '2019-01-04 12:00']],
             // Test auto sort out by  union()
-            [['2019-01-04 08:00:00','2019-01-04 09:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 09:00:00']],
         ];
     }
-    
+
     /**
      * Test Data - Shorten
      * @return array
@@ -1474,10 +1473,10 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // Test auto sort out by  union()
-            [[['2019-01-04 09:00:00','2019-01-04 12:00:00'], ['2019-01-04 08:00:00','2019-01-04 10:00:00'], ['2019-01-04 13:00:00','2019-01-04 15:00:00']], '5', true, 'hour'],
+            [[['2019-01-04 09:00:00', '2019-01-04 12:00:00'], ['2019-01-04 08:00:00', '2019-01-04 10:00:00'], ['2019-01-04 13:00:00', '2019-01-04 15:00:00']], '5', true, 'hour'],
         ];
     }
-    
+
     /**
      * Expected Data - Shorten
      * @return array
@@ -1486,10 +1485,10 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // Test auto sort out by  union()
-            [['2019-01-04 08:00:00','2019-01-04 09:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 09:00:00']],
         ];
     }
-    
+
     /**
      * Test Data - Format
      * @return array
@@ -1497,13 +1496,13 @@ class TimePeriodHelperTest extends TestCase
     protected static function formatData()
     {
         return [
-            ['2019-01-04 08:11:11','2019-01-04 12:22:22'],
-            ['2019-01-04 04:33:33','2019-01-04 05:44:44'],
-            ['2019-01-04 05:55','2019-01-04 06:55'],
-            ['2019-01-04 07','2019-01-04 08'],
+            ['2019-01-04 08:11:11', '2019-01-04 12:22:22'],
+            ['2019-01-04 04:33:33', '2019-01-04 05:44:44'],
+            ['2019-01-04 05:55', '2019-01-04 06:55'],
+            ['2019-01-04 07', '2019-01-04 08'],
         ];
     }
-    
+
     /**
      * Expected Data - Format
      * @return array
@@ -1511,13 +1510,13 @@ class TimePeriodHelperTest extends TestCase
     protected static function formatExpectedS()
     {
         return [
-            ['2019-01-04 08:11:11','2019-01-04 12:22:22'],
-            ['2019-01-04 04:33:33','2019-01-04 05:44:44'],
-            ['2019-01-04 05:55:00','2019-01-04 06:55:00'],
-            ['2019-01-04 07:00:00','2019-01-04 08:00:00'],
+            ['2019-01-04 08:11:11', '2019-01-04 12:22:22'],
+            ['2019-01-04 04:33:33', '2019-01-04 05:44:44'],
+            ['2019-01-04 05:55:00', '2019-01-04 06:55:00'],
+            ['2019-01-04 07:00:00', '2019-01-04 08:00:00'],
         ];
     }
-    
+
     /**
      * Expected Data - Format
      * @return array
@@ -1525,13 +1524,13 @@ class TimePeriodHelperTest extends TestCase
     protected static function formatExpectedM()
     {
         return [
-            ['2019-01-04 08:11:00','2019-01-04 12:22:00'],
-            ['2019-01-04 04:33:00','2019-01-04 05:44:00'],
-            ['2019-01-04 05:55:00','2019-01-04 06:55:00'],
-            ['2019-01-04 07:00:00','2019-01-04 08:00:00'],
+            ['2019-01-04 08:11:00', '2019-01-04 12:22:00'],
+            ['2019-01-04 04:33:00', '2019-01-04 05:44:00'],
+            ['2019-01-04 05:55:00', '2019-01-04 06:55:00'],
+            ['2019-01-04 07:00:00', '2019-01-04 08:00:00'],
         ];
     }
-    
+
     /**
      * Expected Data - Format
      * @return array
@@ -1539,13 +1538,13 @@ class TimePeriodHelperTest extends TestCase
     protected static function formatExpectedH()
     {
         return [
-            ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 04:00:00','2019-01-04 05:00:00'],
-            ['2019-01-04 05:00:00','2019-01-04 06:00:00'],
-            ['2019-01-04 07:00:00','2019-01-04 08:00:00'],
+            ['2019-01-04 08:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 04:00:00', '2019-01-04 05:00:00'],
+            ['2019-01-04 05:00:00', '2019-01-04 06:00:00'],
+            ['2019-01-04 07:00:00', '2019-01-04 08:00:00'],
         ];
     }
-    
+
     /**
      * Test Data - Validate
      * @return array
@@ -1554,24 +1553,24 @@ class TimePeriodHelperTest extends TestCase
     {
         return [
             // pass
-            [['2019-01-04 02:00:00','2019-01-04 03:00:00']],
+            [['2019-01-04 02:00:00', '2019-01-04 03:00:00']],
             // target not array
             'string',
             // // content not array
             ['string'],
             // size error
-            [['2019-01-04 08:00:00','2019-01-04 12:00:00','2019-01-04 12:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00', '2019-01-04 12:00:00']],
             // size error
             [['2019-01-04 04:00:00']],
             // time format error
-            [['2019-01-04 04:00','2019-01-04 05:00:00']],
+            [['2019-01-04 04:00', '2019-01-04 05:00:00']],
             // sort error
-            [['2019-01-04 08:00:00','2019-01-04 05:00:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 05:00:00']],
             // error the same time
-            [['2019-01-04 19:00:00','2019-01-04 19:00:00']],
+            [['2019-01-04 19:00:00', '2019-01-04 19:00:00']],
         ];
     }
-    
+
     /**
      * Expected Data - FormValidateat
      * @return array
@@ -1597,7 +1596,7 @@ class TimePeriodHelperTest extends TestCase
             false,
         ];
     }
-    
+
     /**
      * Test Data - Filter
      * @return array
@@ -1605,12 +1604,12 @@ class TimePeriodHelperTest extends TestCase
     protected static function filterData1()
     {
         return [
-            ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 04:00:00','2019-01-04 05:00:00'],
-            ['2019-01-04 24:00:00','2019-01-05 24:00:00'],
+            ['2019-01-04 08:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 04:00:00', '2019-01-04 05:00:00'],
+            ['2019-01-04 24:00:00', '2019-01-05 24:00:00'],
         ];
     }
-    
+
     /**
      * Test Data - Filter
      * @return array
@@ -1618,16 +1617,16 @@ class TimePeriodHelperTest extends TestCase
     protected static function filterData2()
     {
         return [
-            ['2019-01-04 02:00:00','2019-01-04 03:00:00'],
-            ['2019-01-04 08:00:00','2019-01-04 12:00:00','2019-01-04 12:00:00'],
+            ['2019-01-04 02:00:00', '2019-01-04 03:00:00'],
+            ['2019-01-04 08:00:00', '2019-01-04 12:00:00', '2019-01-04 12:00:00'],
             ['2019-01-04 04:00:00'],
-            ['2019-01-04 04:00','2019-01-04 05:00:00'],
+            ['2019-01-04 04:00', '2019-01-04 05:00:00'],
             'string',
-            ['2019-01-04 08:00:00','2019-01-04 05:00:00'],
-            ['2019-01-04 19:00:00','2019-01-04 19:00:00'],
+            ['2019-01-04 08:00:00', '2019-01-04 05:00:00'],
+            ['2019-01-04 19:00:00', '2019-01-04 19:00:00'],
         ];
     }
-    
+
     /**
      * Expected Data - Filter
      * @return array
@@ -1635,12 +1634,12 @@ class TimePeriodHelperTest extends TestCase
     protected static function filterExpected1()
     {
         return [
-            ['2019-01-04 08:00:00','2019-01-04 12:00:00'],
-            ['2019-01-04 04:00:00','2019-01-04 05:00:00'],
-            ['2019-01-05 00:00:00','2019-01-06 00:00:00'],
+            ['2019-01-04 08:00:00', '2019-01-04 12:00:00'],
+            ['2019-01-04 04:00:00', '2019-01-04 05:00:00'],
+            ['2019-01-05 00:00:00', '2019-01-06 00:00:00'],
         ];
     }
-    
+
     /**
      * Expected Data - Filter
      * @return array
@@ -1648,10 +1647,10 @@ class TimePeriodHelperTest extends TestCase
     protected static function filterExpected2()
     {
         return [
-            ['2019-01-04 02:00:00','2019-01-04 03:00:00'],
+            ['2019-01-04 02:00:00', '2019-01-04 03:00:00'],
         ];
     }
-    
+
     /**
      * Test Data - IsDatetime
      * @return array
@@ -1664,7 +1663,7 @@ class TimePeriodHelperTest extends TestCase
             ['2019-01-04 08:00'],
         ];
     }
-    
+
     /**
      * Expected Data - IsDatetime
      * @return array
@@ -1677,7 +1676,7 @@ class TimePeriodHelperTest extends TestCase
             false,
         ];
     }
-    
+
     /**
      * Test Data - TimeFormatConv
      * @return array
@@ -1699,7 +1698,7 @@ class TimePeriodHelperTest extends TestCase
             ['2019-01-04 08', 'hour'],
         ];
     }
-    
+
     /**
      * Expected Data - TimeFormatConv
      * @return array
@@ -1721,7 +1720,7 @@ class TimePeriodHelperTest extends TestCase
             '2019-01-04 08:00:00',
         ];
     }
-    
+
     /**
      * Test Data - Time2Second
      * @return array
@@ -1736,7 +1735,7 @@ class TimePeriodHelperTest extends TestCase
             [30, 'hour'],
         ];
     }
-    
+
     /**
      * Expected Data - Time2Second
      * @return array
@@ -1751,5 +1750,4 @@ class TimePeriodHelperTest extends TestCase
             108000,
         ];
     }
-
 }
