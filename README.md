@@ -61,7 +61,9 @@ require __PATH__ . "vendor/autoload.php";
 1. Format: $timePeriods = [[$startDatetime1, $endDatetime1], [$startDatetime2, $endDatetime2], ...];
    - $Datetime = Y-m-d H:i:s ; Y-m-d H:i:00 ; Y-m-d H:00:00 ;
 2. If it is hour/minute/second, the end point is usually not included, for example, 8 o'clock to 9 o'clock is 1 hour.
+   - ●=====○
 3. If it is a day/month/year, it usually includes an end point, for example, January to March is 3 months.
+   - ●=====●
 4. When processing, assume that the $timePeriods format is correct. If necessary, you need to call the verification function to verify the data.
 5. **Ensure performance by keeping the $timePeriods format correct:**
    - When getting the raw $timePeriods, sort out it by format(), filter(), union().
@@ -598,12 +600,11 @@ Cut the time period of the specified length of time
 > 2. Whether $timePeriods is sorted out will affect the correctness of the results. Please refer to Note 5. Ensure performance by keeping the $timePeriods format correct.
 
 ```php
-cut(Array $timePeriods, Int $time, $extension = false, $sortOut = 'default') : array
+cut(Array $timePeriods, Int $time, $sortOut = 'default') : array
 ```
 > Parameters
 > - $timePeriods: Time period being processed. array
 > - $time: Specified length of time
-> - $extension: If the specified time is long, whether to extend the time period.(default:false)
 > - $sortOut: $sortOut Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
 > 
 > Return Values
@@ -625,21 +626,17 @@ TimePeriodHelper::setSortOut(false);
 $templete = TimePeriodHelper::union($templete);
 
 
-$resultM = TimePeriodHelper::setUnit('minutes')->cut($templete, '30', false);
+$resultM = TimePeriodHelper::setUnit('minutes')->cut($templete, '30');
 // $resultM = [
 //     ['2019-01-04 08:00:00','2019-01-04 08:30:00']
 // ];
 
 TimePeriodHelper::setUnit('hour');
-$resultH1 = TimePeriodHelper::cut($templete, '30', false);
+$resultH1 = TimePeriodHelper::cut($templete, '30');
 // $resultH1 = [
 //     ['2019-01-04 08:00:00','2019-01-04 12:00:00']
 // ];
 
-$resultH2 = TimePeriodHelper::setUnit('hour')->cut($templete, '30', true);
-// $resultH2 = [
-//     ['2019-01-04 08:00:00','2019-01-05 14:00:00']
-// ];
 ```
 
 > Unit:  
@@ -877,11 +874,10 @@ Remove invalid time period
 > Verify format, size, start/end time, and remove invalid.
 
 ```php
-filter(Array $timePeriods, $exception = false) : array
+filter(Array $timePeriods) : array
 ```
 > Parameters
 > - $timePeriods: Time period being processed. array
-> - $exception: Whether an exception is returned when an error occurs.(default false)
 >   @see setFilterDatetime();
 > 
 > Return Values
