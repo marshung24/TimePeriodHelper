@@ -3,7 +3,7 @@ The time period processing library provides functions such as sorting, union, di
 
 > Continuation library marshung/helper, only keep and maintain TimePeriodHelper
 
-[![Latest Stable Version](https://poser.pugx.org/marsapp/timeperiodhelper/v/stable)](https://packagist.org/packages/marsapp/timeperiodhelper) [![Total Downloads](https://poser.pugx.org/marsapp/timeperiodhelper/downloads)](https://packagist.org/packages/marsapp/timeperiodhelper) [![Latest Unstable Version](https://poser.pugx.org/marsapp/timeperiodhelper/v/unstable)](https://packagist.org/packages/marsapp/timeperiodhelper) [![License](https://poser.pugx.org/marsapp/timeperiodhelper/license)](https://packagist.org/packages/marsapp/timeperiodhelper)
+[![Latest Stable Version](https://poser.pugx.org/marsapp/timeperiodhelper/v/stable)](https://packagist.org/packages/marsapp/timeperiodhelper) [![Total Downloads](https://poser.pugx.org/marsapp/timeperiodhelper/downloads)](https://packagist.org/packages/marsapp/timeperiodhelper) [![Latest Unstable Version](https://poser.pugx.org/marsapp/timeperiodhelper/v/unstable)](https://packagist.org/packages/marsapp/timeperiodhelper) [![License](https://poser.pugx.org/marsapp/timeperiodhelper/license)](https://packagist.org/packages/marsapp/timeperiodhelper) [![Build Status](https://travis-ci.com/marshung24/TimePeriodHelper.svg?branch=master)](https://travis-ci.com/marshung24/TimePeriodHelper) [![codecov](https://codecov.io/gh/marshung24/TimePeriodHelper/branch/master/graph/badge.svg)](https://codecov.io/gh/marshung24/TimePeriodHelper) [![Maintainability](https://api.codeclimate.com/v1/badges/5da83d7370f723fa66af/maintainability)](https://codeclimate.com/github/marshung24/TimePeriodHelper/maintainability) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/marshung24/TimePeriodHelper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/marshung24/TimePeriodHelper/?branch=master)
 
 # Outline
 - [Installation](#installation)
@@ -382,12 +382,12 @@ $result = TimePeriodHelper::contact($templete, '2019-01-04 13:30:00', '2019-01-0
 Time period greater than the specified time
 
 ```php
-greaterThan(Array $timePeriods, $refDatetime, $intactTime = true, $sortOut = 'default') : Array
+greaterThan(Array $timePeriods, $refDatetime, $fullTimePeriod = true, $sortOut = 'default') : Array
 ```
 > Parameters
 > - $timePeriods: The time periods to compare from, array
 > - $refDatetime: Specified time to compare against, string
-> - $intactTime: Get only the intact time period, bool
+> - $fullTimePeriod: Get only the full time period, bool
 > - $sortOut: Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
 > 
 > Return Values
@@ -428,12 +428,12 @@ $result = TimePeriodHelper::greaterThan($templete, '2019-01-04 14:00:00');
 Time period less than the specified time
 
 ```php
-lessThan(Array $timePeriods, $refDatetime, $intactTime = true, $sortOut = 'default') : Array
+lessThan(Array $timePeriods, $refDatetime, $fullTimePeriod = true, $sortOut = 'default') : Array
 ```
 > Parameters
 > - $timePeriods: The time periods to compare from, array
 > - $refDatetime: Specified time to compare against, string
-> - $intactTime: Get only the intact time period, bool
+> - $fullTimePeriod: Get only the intact time period, bool
 > - $sortOut: Whether the input needs to be rearranged. Value: true, false, 'default'. If it is 'default', see getSortOut()
 > 
 > Return Values

@@ -4,6 +4,7 @@ namespace marsapp\helper\test\timeperiod;
 
 use PHPUnit\Framework\TestCase;
 use marsapp\helper\timeperiod\TimePeriodHelper;
+use marsapp\helper\timeperiod\classes\DataProcess;
 
 /**
  * Test for TimePeriodHelper - PHP Unit
@@ -143,7 +144,7 @@ class TimePeriodHelperTest extends TestCase
         TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'contact'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'contact'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
 
@@ -164,7 +165,7 @@ class TimePeriodHelperTest extends TestCase
         TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'greaterThan'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'greaterThan'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
 
@@ -185,7 +186,7 @@ class TimePeriodHelperTest extends TestCase
         TimePeriodHelper::setSortOut(true);
         foreach ($templetes as $k => $templete) {
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'lessThan'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'lessThan'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
 
@@ -313,7 +314,7 @@ class TimePeriodHelperTest extends TestCase
             unset($templete[2]);
 
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'cut'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'cut'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
 
@@ -324,7 +325,7 @@ class TimePeriodHelperTest extends TestCase
             TimePeriodHelper::setUnit($templete[2]);
             unset($templete[2]);
 
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'cut'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'cut'], $templete);
             $this->assertNotEquals($expectedsNS[$k], $result);
         }
 
@@ -337,7 +338,7 @@ class TimePeriodHelperTest extends TestCase
             $templete[2] = true;
 
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'cut'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'cut'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
 
@@ -349,7 +350,7 @@ class TimePeriodHelperTest extends TestCase
             // Set sort out by argument
             $templete[2] = false;
 
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'cut'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'cut'], $templete);
             $this->assertNotEquals($expectedsNS[$k], $result);
         }
 
@@ -376,7 +377,7 @@ class TimePeriodHelperTest extends TestCase
             unset($templete[3]);
 
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'extend'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'extend'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
 
@@ -388,7 +389,7 @@ class TimePeriodHelperTest extends TestCase
             unset($templete[3]);
 
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'extend'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'extend'], $templete);
             $this->assertNotEquals($expectedsNS[$k], $result);
         }
 
@@ -401,7 +402,7 @@ class TimePeriodHelperTest extends TestCase
             $templete[3] = true;
 
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'extend'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'extend'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
 
@@ -414,7 +415,7 @@ class TimePeriodHelperTest extends TestCase
             $templete[3] = false;
 
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'extend'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'extend'], $templete);
             $this->assertNotEquals($expectedsNS[$k], $result);
         }
 
@@ -442,7 +443,7 @@ class TimePeriodHelperTest extends TestCase
             unset($templete[3]);
 
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'shorten'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'shorten'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
 
@@ -454,7 +455,7 @@ class TimePeriodHelperTest extends TestCase
             unset($templete[3]);
 
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'shorten'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'shorten'], $templete);
             $this->assertNotEquals($expectedsNS[$k], $result);
         }
 
@@ -467,7 +468,7 @@ class TimePeriodHelperTest extends TestCase
             $templete[3] = true;
 
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'shorten'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'shorten'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
 
@@ -480,7 +481,7 @@ class TimePeriodHelperTest extends TestCase
             $templete[3] = false;
 
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'shorten'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'shorten'], $templete);
             $this->assertNotEquals($expectedsNS[$k], $result);
         }
 
@@ -583,7 +584,7 @@ class TimePeriodHelperTest extends TestCase
         // The same, Auto sorting out $templete
         foreach ($templetes as $k => $templete) {
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'isDatetime'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'isDatetime'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
     }
@@ -600,7 +601,7 @@ class TimePeriodHelperTest extends TestCase
         TimePeriodHelper::setUnit('second');
         foreach ($templetes as $k => $templete) {
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'timeFormatConv'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'timeFormatConv'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
     }
@@ -617,7 +618,7 @@ class TimePeriodHelperTest extends TestCase
         TimePeriodHelper::setUnit('second');
         foreach ($templetes as $k => $templete) {
             // The same
-            $result = call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'time2Second'], $templete);
+            $result = \call_user_func_array(['\marsapp\helper\timeperiod\TimePeriodHelper', 'time2Second'], $templete);
             $this->assertEquals($expecteds[$k], $result);
         }
     }
@@ -673,6 +674,16 @@ class TimePeriodHelperTest extends TestCase
             $result = false;
         }
         $this->assertEquals(false, $result);
+
+        // Check static options hour - need global
+        DataProcess::setUnit('hour');
+        $unitTime = TimePeriodHelper::getUnit('time');
+        $this->assertEquals('hour', $unitTime);
+
+        // Check static options minute - need global
+        TimePeriodHelper::setUnit('minute');
+        $unitTime = DataProcess::getUnit('format');
+        $this->assertEquals('minute', $unitTime);
     }
 
     /**
@@ -689,6 +700,11 @@ class TimePeriodHelperTest extends TestCase
         $this->assertEquals(true, $result);
         $result = TimePeriodHelper::setFilterDatetime(false)->getFilterDatetime();
         $this->assertEquals(false, $result);
+
+        // Check static options - need global
+        TimePeriodHelper::setFilterDatetime(true);
+        $result = DataProcess::getFilterDatetime();
+        $this->assertEquals(true, $result);
     }
 
     /**
@@ -705,6 +721,11 @@ class TimePeriodHelperTest extends TestCase
         $this->assertEquals(true, $result);
         $result = TimePeriodHelper::setSortOut(false)->getSortOut();
         $this->assertEquals(false, $result);
+
+        // Check static options - need global
+        TimePeriodHelper::setSortOut(true);
+        $result = DataProcess::getSortOut();
+        $this->assertEquals(true, $result);
     }
 
 
@@ -1022,6 +1043,10 @@ class TimePeriodHelperTest extends TestCase
             [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
             // 11
             [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
+            // 12
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00']],
+            // 13
+            [],
         ];
     }
 
@@ -1054,6 +1079,10 @@ class TimePeriodHelperTest extends TestCase
             [['2019-01-04 08:00:00', '2019-01-04 13:00:00']],
             // 11
             [['2019-01-04 09:00:00', '2019-01-04 13:00:00']],
+            // 12
+            [],
+            // 13
+            [['2019-01-04 09:00:00', '2019-01-04 13:00:00']],
         ];
     }
 
@@ -1063,7 +1092,7 @@ class TimePeriodHelperTest extends TestCase
      */
     protected static function isOverlapExpected()
     {
-        return [false, false, false, false, true, true, true, true, true, true, true];
+        return [false, false, false, false, true, true, true, true, true, true, true, false, false];
     }
 
     /**
@@ -1260,6 +1289,7 @@ class TimePeriodHelperTest extends TestCase
         return [
             [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']], '30', 'second'],
             [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']], '30', 'minute'],
+            [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']], '5', 'hour'],
             [[['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']], '30', 'hour'],
 
             [[['2019-01-04 08:00', '2019-01-04 12:00'], ['2019-01-04 13:00', '2019-01-04 16:00']], '30', 'second'],
@@ -1279,6 +1309,7 @@ class TimePeriodHelperTest extends TestCase
         return [
             [['2019-01-04 08:00:00', '2019-01-04 08:00:30']],
             [['2019-01-04 08:00:00', '2019-01-04 08:30:00']],
+            [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 14:00:00']],
             [['2019-01-04 08:00:00', '2019-01-04 12:00:00'], ['2019-01-04 13:00:00', '2019-01-04 16:00:00']],
 
             [],
@@ -1606,7 +1637,7 @@ class TimePeriodHelperTest extends TestCase
         return [
             ['2019-01-04 08:00:00', '2019-01-04 12:00:00'],
             ['2019-01-04 04:00:00', '2019-01-04 05:00:00'],
-            ['2019-01-04 24:00:00', '2019-01-05 24:00:00'],
+            ['2019-01-04 24:10:10', '2019-01-05 24:22:22'],
         ];
     }
 
@@ -1636,7 +1667,7 @@ class TimePeriodHelperTest extends TestCase
         return [
             ['2019-01-04 08:00:00', '2019-01-04 12:00:00'],
             ['2019-01-04 04:00:00', '2019-01-04 05:00:00'],
-            ['2019-01-05 00:00:00', '2019-01-06 00:00:00'],
+            ['2019-01-05 00:10:10', '2019-01-06 00:22:22'],
         ];
     }
 

@@ -18,8 +18,9 @@
     },
     "minimum-stability": "stable",
     "require-dev": {
-        "marsapp/devtools": "*"
+        "phpunit/phpunit": "^6"
     },
     "require": {
+        "php": "^7.0"
     }
 }

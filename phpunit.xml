@@ -7,7 +7,7 @@
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
          verbose="true">
-    <testsuite name="default">
+    <testsuite name="Time Period Helper Tests">
         <directory suffix="Test.php">tests</directory>
     </testsuite>
 
