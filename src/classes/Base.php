@@ -87,6 +87,7 @@ class Base
      * Get the unit used by the specified function
      * 
      * @param string $target Specify function's unit
+     * @param string $unit Time unit, if default,use self::$_options setting(set by setUnit())
      * @throws \Exception
      * @return string
      */
@@ -180,7 +181,7 @@ class Base
      * When the length is insufficient, it will add the missing
      * 
      * @param string $datetime
-     * @param string $unit Time unit, if default,use self::$_options setting
+     * @param string $unit Time unit, if default,use self::$_options setting(set by setUnit())
      * @return string
      */
     public static function timeFormatConv(string $datetime, $unit = 'default')
@@ -217,7 +218,7 @@ class Base
      * Time Conversion frm unit to second
      * 
      * @param number $time
-     * @param string $unit Time unit, if default,use self::$_options setting
+     * @param string $unit Time unit, if default,use self::$_options setting(set by setUnit())
      * @return int
      */
     public static function time2Second($time, $unit = 'default')

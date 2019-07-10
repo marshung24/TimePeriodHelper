@@ -42,6 +42,7 @@ The time period processing library provides functions such as sorting, union, di
     - [isDatetime()](#isdatetime)
     - [timeFormatConv()](#timeformatconv)
     - [time2Second()](#time2second)
+- [Log](#log)
 
 # [Installation](#outline)
 ## [Composer Install](#outline)
@@ -1174,8 +1175,14 @@ $result = TimePeriodHelper::time2Second(30, 'hour');
 // $result = 108000;
 ```
 
-
-
+# [Log](#outline)
+- 2019-03-24
+  - Create By Mars.Hung
+  - Document, Test
+- 2019-07-04
+  - Unit Test, Code Coverage
+- 2019-07-06
+  - Code Quality Test by scrutinizer, codeclimate
 
 
 
