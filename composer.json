@@ -17,10 +17,7 @@
         "psr-4": { "marsapp\\helper\\tests\\timeperiod\\": "tests"}
     },
     "minimum-stability": "stable",
-    "require-dev": {
-        "phpunit/phpunit": "^6"
-    },
     "require": {
-        "php": "^7.0"
+        "php": "^7 || ^8"
     }
 }
